@@ -1,0 +1,72 @@
+---
+- name: Add Airflow group
+  group:
+    name: "{{ airflow_group }}"
+
+- name: Add Airflow users
+  user:
+    name: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+
+- name: Ensures {{ airflow_root_dir }} exists
+  file:
+    path: "{{ airflow_root_dir }}"
+    state: directory
+
+- name: Ensures {{ airflow_root_dir }}/airflow-{{ airflow_version }} exists
+  file:
+    path: "{{ airflow_root_dir }}/airflow-{{ airflow_version }}"
+    state: directory
+
+- name: Ensures log directory
+  file:
+    path: '{{ airflow_log_dir }}'
+    state: directory
+    group: '{{ airflow_group }}'
+    owner: '{{ airflow_user }}'
+
+- name: Create directory for pid
+  file:
+    path: '{{ airflow_pid_dir }}'
+    state: directory
+    group: '{{ airflow_group }}'
+    owner: '{{ airflow_user }}'
+
+- name: Template airflow tmpfiles.d
+  template:
+    src: tmpfiles-airflow-webserver.conf.j2
+    dest: /etc/tmpfiles.d/airflow-webserver.conf
+
+- name: Create symbolic link to Airflow installation
+  file:
+    src: "{{ airflow_root_dir }}/airflow-{{ airflow_version }}"
+    dest: "{{ airflow_install_dir }}"
+    state: link
+
+- name: Template Constraint file
+  template:
+    src: constraints-3.6.txt.j2
+    dest: /tmp/constraints-3.6.txt
+
+- name: Pip install airflow 
+  pip:
+    name: "apache-airflow=={{ airflow_version }}"
+    executable: pip3
+    extra_args: --constraint /tmp/constraints-3.6.txt
+
+- name: Pip install celery 
+  pip:
+    name: "celery"
+    executable: pip3
+    extra_args: --constraint /tmp/constraints-3.6.txt
+
+- name: Pip install redis
+  pip:
+    name: "redis"
+    executable: pip3
+    extra_args: --constraint /tmp/constraints-3.6.txt
+
+- name: Template airflow.cfg file
+  template:
+    src: airflow.cfg.j2
+    dest: "{{ airflow_install_dir }}/airflow.cfg"
