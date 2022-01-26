@@ -8,6 +8,10 @@ Please check the main [Ansible TDP Roles](https://github.com/TOSIT-FR/ansible-td
 
 - `airflow`: deploys the Apache Airflow release (Airflow Webserver + Scheduler + Worker)
 
+## Example
+
+For examples on how to run these roles, please check out the [TDP Getting Started](https://github.com/TOSIT-FR/tdp-getting-started).
+
 ## Contribute
 
 Please follow the guidelines at [contributing](./docs/contributing.md) and respect the [code of conduct](./CODE_OF_CONDUCT.md).
@@ -15,3 +19,4 @@ Please follow the guidelines at [contributing](./docs/contributing.md) and respe
 ## Contributors
 
 - [leopaul36](https://github.com/leopaul36)
+- [DanielJohnHarty](https://github.com/DanielJohnHarty)

@@ -1,0 +1,5 @@
+---
+- name: Template ansible hosts file
+  template: 
+    src: ansible-hosts.j2
+    dest: inventory/hosts
