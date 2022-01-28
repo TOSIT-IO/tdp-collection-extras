@@ -2,13 +2,13 @@
 - name: Check /etc/ssl/certs dir exists
   stat:
     path: /etc/ssl/certs
-  register: certs_dir
+  register: cacert_dir
 
 - name: Create certs dir if missing
   file: 
     path: /etc/ssl/certs
     state: directory
-  when: not certs_dir.stat.exists
+  when: not cacert_dir.stat.exists
 
 - name: Distribute CA to nodes
   copy:
