@@ -1,16 +1,17 @@
 ---
-# SSH keygen parameters
-local_ssh_key_path: "files/ssh_keys/id_rsa_{{ owner }}"
-local_ssh_public_key_path: "files/id_rsa_{{ owner }}.pub"
 size: 2048
 type: rsa
-mode: 0644
-comment: tdp
+comment: "{{ owner }}@{{ inventory_hostname }}"
 owner: "{{ owner }}"
 group: "{{ owner }}"
 passphrase: ""
 
-# Deploying public key
-remote_ssh_public_key_path: "/home/{{ owner }}/.ssh/id_rsa.pub"
-remote_authorised_keys_path: "/home/{{ owner }}/.ssh/authorized_keys"
-remote_ssh_private_key_path: "/home/{{ owner }}/.ssh/id_rsa"
+ssh_key_name: "id_{{ type }}_{{ owner }}_{{ inventory_hostname }}"
+remote_ssh_dir: "/home/{{ owner }}/.ssh"
+remote_ssh_public_key_path: "{{ remote_ssh_dir }}/{{ ssh_key_name }}.pub"
+remote_authorized_keys_path: "{{ remote_ssh_dir }}authorized_keys"
+remote_ssh_private_key_path: "{{ remote_ssh_dir }}/{{ ssh_key_name }}"
+
+control_node_ssh_dir: files/ssh/
+control_node_ssh_public_key_path: "{{ control_node_ssh_dir }}{{ ssh_key_name }}.pub"
+control_node_ssh_private_key_path: "{{ control_node_ssh_dir }}{{ ssh_key_name }}"
