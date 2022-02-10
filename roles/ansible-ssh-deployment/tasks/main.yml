@@ -1,0 +1,4 @@
+---
+- include_tasks: generate-user-ssh-keys.yml
+- include_tasks: fetch-user-ssh-keys.yml
+- include_tasks: authorize-user-ssh-keys.yml

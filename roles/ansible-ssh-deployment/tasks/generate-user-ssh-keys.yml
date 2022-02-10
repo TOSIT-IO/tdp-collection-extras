@@ -1,8 +1,24 @@
 ---
-- name: Generate an OpenSSH rsa keypair
-  shell: "ssh-keygen -t {{type}}  -b {{size}} -f {{local_ssh_key_path}} -P '{{passphrase}}' -C '{{comment}}'"
+- name: Check if ssh key already exists
+  stat:
+    path: "{{ remote_ssh_private_key_path }}"
+  register: ssh_status
 
-- name: Assign local private_key permissions
-  file:
-    path: "{{local_ssh_key_path}}"
-    mode: "{{mode}}"
+- block:
+  - name: Ensure ssh dir exists
+    file:
+      path: "{{ remote_ssh_dir }}"
+      state: directory
+      owner: "{{ owner }}"
+      group: "{{ owner }}"
+      mode: 0660
+
+  - name: Generate an OpenSSH rsa keypair
+    shell: "ssh-keygen -t {{ type }}  -b {{ size }} -f {{ remote_ssh_private_key_path }} -P '{{ passphrase }}' -C '{{ comment }}'"
+
+  - name: Assign private_key permissions
+    file:
+      path: "{{ remote_ssh_private_key_path }}"
+      mode: 0660
+
+  when: not ssh_status.stat.exists
