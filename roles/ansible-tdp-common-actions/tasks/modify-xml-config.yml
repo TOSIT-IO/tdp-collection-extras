@@ -1,0 +1,23 @@
+---
+- name: Check existing  element in target xml
+  xml:
+    path: '{{ target_xml_filepath }}'
+    xpath: '{{ existence_check_xpath }}'
+    count: yes
+  register: existing_count
+
+- name: Backup file and remove any existing matching elements
+  xml:
+    path: '{{ target_xml_filepath }}'
+    state: absent
+    xpath: '{{ existence_check_xpath }}'
+    backup: yes
+  when: existing_count.count > 0
+
+- name:  Add new element to target xml
+  xml:
+    path: '{{ target_xml_filepath }}'
+    pretty_print: yes
+    xpath: '{{ added_child_root_xpath }}'
+    input_type: xml
+    add_children: "{{ lookup('template', 'add-xml-element.xml.j2') }}"
