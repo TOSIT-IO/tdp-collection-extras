@@ -1,0 +1,30 @@
+---
+- name: "Add sample users"
+  hosts: edge
+  strategy: linear # Do not use Mitogen
+  tasks:
+  - include_role:
+      name: ansible-hadoop-user 
+    vars:
+      ldap_admin_dn: cn=Manager,ou=tdp,o=tosit,c=io
+      ldap_admin_pwd: secret
+      ldap_group_base: ou=groups,c=io
+      ldap_user_base: ou=users,c=io
+      user: "{{ item.user }}"
+      password: "{{ item.password }}"
+      group: "{{ item.group }}"
+      uid: "{{ item.uid }}"
+      gid: "{{ item.gid }}"
+    loop:
+    - user: usera
+      password: secreta
+      group: usera
+      uid: 1101
+      gid: 1101
+    - user: userb
+      password: secretb
+      group: userb
+      uid: 1102
+      gid: 1102
+
+- import_playbook: collections/ansible_collections/tosit/tdp/playbooks/ranger_usersync_restart.yml
