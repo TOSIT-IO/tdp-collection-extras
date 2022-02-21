@@ -1,0 +1,11 @@
+---
+- name: Install packages
+  package:
+    name: 
+      - openldap-servers
+      - openldap-clients
+      - krb5-workstation
+      - krb5-libs
+      - krb5-server
+      - krb5-server-ldap
+

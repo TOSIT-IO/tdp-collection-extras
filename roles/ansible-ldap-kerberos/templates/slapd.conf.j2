@@ -1,0 +1,27 @@
+# {{ ansible_managed }}
+
+include /etc/openldap/schema/core.schema
+include /etc/openldap/schema/cosine.schema
+include /etc/openldap/schema/inetorgperson.schema
+include /etc/openldap/schema/nis.schema
+include /etc/openldap/schema/kerberos.schema
+
+pidfile /var/run/openldap/slapd.pid
+argsfile /var/run/openldap/slapd.args
+
+# ACLs
+access to *
+    by * read
+
+# Database configuration
+database bdb
+suffix "{{ ldap_suffix }}"
+rootdn "{{ ldap_rootdn }}"
+rootpw {{ ldap_rootpw }}
+directory {{ ldapdb_dir }}
+sizelimit unlimited
+index objectClass,uid,mail,cn eq,pres
+
+# Database index for Kerberos
+index krbPrincipalName eq,pres,sub
+

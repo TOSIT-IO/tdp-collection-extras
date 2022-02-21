@@ -1,0 +1,11 @@
+---
+- name: Install Kerberos client package
+  package:
+    name: krb5-workstation
+
+- name: Add krb5.conf
+  template:
+    src: krb5.conf.j2
+    dest: /etc/krb5.conf
+
+

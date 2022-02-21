@@ -1,0 +1,44 @@
+---
+- name: Delete slapd.d
+  file:
+    path: /etc/openldap/slapd.d
+    state: absent
+
+- name: Check Kerberos version
+  command: klist -V
+  register: reg_klist
+  changed_when: no
+
+- name: Copy kerberos schema to ldap folder
+  copy:
+    src: "/usr/share/doc/krb5-server-ldap-{{ reg_klist.stdout.split(' ')[-1] }}/kerberos.schema"
+    dest: /etc/openldap/schema
+    remote_src: yes
+
+- name: Configure slapd.conf
+  template:
+    src: slapd.conf.j2
+    dest: /etc/openldap/slapd.conf
+  notify: restart slapd
+
+- name: Start and enable slapd
+  service:
+    name: slapd
+    state: started
+    enabled: yes
+
+- name: Create tree
+  shell: |
+    ldapadd -x -D {{ ldap_rootdn }} -w {{ ldap_rootpw }} << EOF
+    {{ item }}
+    EOF
+  register: reg_ldapadd
+  failed_when: |
+    reg_ldapadd is failed and 
+    reg_ldapadd.rc != 68
+  changed_when: reg_ldapadd.rc != 68
+  loop:
+    - "{{ ldap_base_tree_ldif }}"
+    - "{{ ldap_users_tree_ldif }}"
+    - "{{ ldap_groups_tree_ldif }}"
+

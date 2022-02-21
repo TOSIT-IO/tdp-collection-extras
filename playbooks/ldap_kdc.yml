@@ -1,0 +1,17 @@
+---
+- hosts: ldap
+  tasks:
+    - import_role:
+        name: ansible-ldap-kerberos
+
+- hosts: ldap:master:worker:edge
+  tasks:
+    - import_role:
+        name: ansible-ldap-kerberos
+        tasks_from: sssd.yml
+
+- hosts: ldap:master:worker:edge
+  tasks:
+    - import_role:
+        name: ansible-ldap-kerberos
+        tasks_from: install_kerberos_client.yml
