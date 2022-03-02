@@ -1,0 +1,41 @@
+---
+- block:
+  - name: "Ranger: get group list"
+    uri:
+      url: "{{ ranger_hdfs_install_properties.POLICY_MGR_URL }}/service/xusers/groups"
+      headers:
+        Accept: application/json
+      url_username: "{{ ranger_admin_user }}"
+      url_password: "{{ ranger_admin_password }}"
+      force_basic_auth: yes
+      return_content: yes
+    register: jsoncontent
+
+  - name: Get group id from ranger
+    vars:
+      jmesquery: "vXGroups[? name == '{{ item.group }}'].id "
+    set_fact:
+      group_id: "{{ jsoncontent.json | community.general.json_query(jmesquery)}}"
+
+  - name: Create group in ranger when not exists
+    vars:
+      create_group:
+        {
+          "name": "{{ item.username }}",
+        }
+    uri:
+      url: "{{ ranger_hdfs_install_properties.POLICY_MGR_URL }}/service/xusers/secure/groups"
+      headers:
+        Accept: application/json
+      body: "{{ create_group | to_json }}"
+      body_format: json
+      url_username: "{{ ranger_admin_user }}"
+      url_password: "{{ ranger_admin_password }}"
+      force_basic_auth: yes
+      method: POST
+      return_content: yes
+    when: group_id == []
+    register: jsoncontent
+
+  when: item.group is defined
+
