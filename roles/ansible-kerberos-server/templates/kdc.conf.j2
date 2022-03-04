@@ -1,10 +1,13 @@
 [kdcdefaults]
  kdc_ports = {{ kdc_port }}
  kdc_tcp_ports = {{ kdc_port }}
+ renew_lifetime = 7d
+
 
 [realms]
  {{ realm_name|upper() }} = {
   #master_key_type = aes256-cts
+  max_renewable_life = 7d
   acl_file = {{ kadm5_acl_path }}
   dict_file = /usr/share/dict/words
   admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab

@@ -13,11 +13,13 @@ includedir /etc/krb5.conf.d/
  ticket_lifetime = 24h
  forwardable = true
  rdns = false
+ renew_lifetime = 7d
 
 [realms]
  {{ realm_name }} = {
   kdc =  {{ kdc_server }} 
-  admin_server = {{ kadmind_server }} 
+  admin_server = {{ kadmind_server }}
+  max_renewable_life = 7d
  }
 
 [domain_realm]

@@ -26,6 +26,8 @@
   template:
     src: kdc.conf.j2
     dest: "{{ kdc_conf_path }}"
+    force: yes
+    backup: yes
   notify:
     - Restart Kerberos
 
@@ -33,13 +35,17 @@
   template:
     src: kadm5.acl.j2
     dest: "{{ kadm5_acl_path }}"
+    force: yes
+    backup: yes
   notify:
     - Restart Kerberos
 
 - name: Copy client configuration file
   template:
     src: krb5.conf.j2
-    dest: /etc/krb5.conf
+    dest: "{{ krb5_conf_path }}"
+    force: yes
+    backup: yes
 
 - name: Create initial Kerberos database
   shell: kdb5_util -P {{ master_db_pass }} create -s

@@ -1,2 +1,2 @@
 ---
-kdc_conf_path: /etc/krb5.conf
+krb5_conf_path: /etc/krb5.conf

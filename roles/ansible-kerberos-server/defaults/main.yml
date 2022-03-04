@@ -5,3 +5,7 @@ kdc_port: 88
 master_db_pass: m4st3r_p4ssw0rd
 kadmin_user: defaultuser
 kadmin_pass: d3f4ultp4ss
+
+kdc_conf_path: /var/kerberos/krb5kdc/kdc.conf
+kadm5_acl_path: /var/kerberos/krb5kdc/kadm5.acl
+krb5_conf_path: /etc/krb5.conf
