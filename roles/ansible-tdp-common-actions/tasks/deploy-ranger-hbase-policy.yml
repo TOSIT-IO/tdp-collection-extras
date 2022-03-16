@@ -1,0 +1,30 @@
+---
+- name: "Ranger: get policy list"
+  uri:
+    url: "{{ ranger_hbase_install_properties.POLICY_MGR_URL }}/service/public/v2/api/policy"
+    headers:
+      Accept: application/json
+    url_username: "{{ ranger_admin_user }}"
+    url_password: "{{ ranger_admin_password }}"
+    force_basic_auth: yes
+    return_content: yes
+  register: jsoncontent
+
+- name: Get policy ids
+  vars:
+    policy_query: "[? name == '{{item.name}}'].id"
+  set_fact:
+    policy_id: "{{ jsoncontent.json | community.general.json_query(policy_query) }}"
+
+- name: Create policy if doesn't already exist
+  uri:
+    url: "{{ ranger_hbase_install_properties.POLICY_MGR_URL }}/service/public/v2/api/policy"
+    headers:
+      Accept: application/json
+    body: "{{ item | to_json }}"
+    body_format: json
+    url_username: "{{ ranger_admin_user }}"
+    url_password: "{{ ranger_admin_password }}"
+    force_basic_auth: yes
+    method: POST
+  when: policy_id == []
