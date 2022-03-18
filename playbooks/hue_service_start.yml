@@ -1,0 +1,10 @@
+---
+- hosts: hue_server
+  become: yes
+  tasks:
+    - tosit.tdp.resolve:
+        node_name: hue_server
+    - name: Start hue service
+      include_role:
+        name: ansible_roles/collections/ansible_collections/tosit/tdp/roles/hue
+        tasks_from: hue_service_start.yml
