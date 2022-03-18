@@ -1,0 +1,56 @@
+---
+- hosts: postgresql
+  name: Prepare postgresql for hue
+  become: yes
+  become_user: postgres
+  tasks:
+    - include_role:
+        name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/ansible-tdp-common-actions
+        tasks_from: deploy-new-postgres-role
+      with_items:
+        - hue
+
+- hosts: hue_server
+  become: yes
+  tasks:
+    - tosit.tdp.resolve:
+        node_name: hue_server
+    - name: Get active namenode adress
+      shell: |
+        kinit -kt /etc/security/keytabs/nn.service.keytab nn/{{ item.fqdn }}@{{ realm_name }}
+        hdfs haadmin -getAllServiceState | awk ' {if ($NF == "active") print $1}'
+      register: webhdfs_endpoint_result
+      delegate_to: "{{ item.ansible_host }}"
+      with_items:
+        - fqdn: "{{ groups['hdfs_nn'][0] | tosit.tdp.access_fqdn(hostvars) }}"
+          ansible_host: "{{ groups['hdfs_nn'][0] }}"
+    - name: Get active resource manager address
+      shell: |
+        kinit -kt /etc/security/keytabs/rm.service.keytab rm/{{ item.fqdn }}@{{ realm_name }}
+        yarn rmadmin -getAllServiceState | awk ' {if ($NF == "active") print $1}'
+      register: yarn_active_rm_result
+      delegate_to: "{{ item.ansible_host }}"
+      with_items:
+        - fqdn: "{{ groups['yarn_rm'][0] | tosit.tdp.access_fqdn(hostvars) }}"
+          ansible_host: "{{ groups['yarn_rm'][0] }}"
+
+    - name: Configure hue
+      vars:
+        webhdfs_endpoint: "{{ webhdfs_endpoint_result.results[0].stdout }}"
+        yarn_active_rm: "{{ yarn_active_rm_result.results[0].stdout_lines[0] }}"
+      include_role:
+        name: ansible_roles/collections/ansible_collections/tosit/tdp/roles/hue
+        tasks_from: config.yml
+
+- hosts: hue_server
+  become: yes
+  tasks:
+    - tosit.tdp.resolve:
+        node_name: hue_server
+    - name: Ensure krbtgt principal has renewable tickets
+      shell: |
+        kadmin -r {{realm}} -p {{kadmin_principal}} -w {{kadmin_password}} -q "modprinc -maxrenewlife 7day krbtgt/{{ realm_name }}@{{ realm_name }}"
+    - name: Ensure hue principal renewable tickets
+      shell: |
+        kadmin -r {{realm}} -p {{kadmin_principal}} -w {{kadmin_password}} -q "modprinc -maxrenewlife 7day +allow_renewable hue/{{ item }}@{{ realm_name }}"
+      with_items: "{{ groups['hue_server'] }}"
