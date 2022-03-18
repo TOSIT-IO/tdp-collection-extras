@@ -1,0 +1,6 @@
+---
+- name: start hue service
+  service:
+    name: hue
+    state: stopped
+

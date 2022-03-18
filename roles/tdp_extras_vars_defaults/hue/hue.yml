@@ -1,0 +1,87 @@
+---
+# Hue user
+hue_user: hue
+hue_group: hadoop
+hue_user_pass: hue-user123
+
+# Kerberos principal for hue user
+keytabs_dir: /etc/security/keytabs
+keytab: "hue.service.keytab"
+user: "{{ hue_user }}"
+owner: "{{ hue_user }}"
+principal: "{{ hue_user }}/{{ ansible_fqdn }}@{{ realm }}"
+group: "{{ hue_group }}"
+mode: "600"
+
+# Install/build config
+hue_release: hue-release-4.10.0
+hue_dist_file: hue-release-4.10.0.tar.gz
+hue_root_dir: /opt/tdp
+hue_current_dir: "{{ hue_root_dir }}/hue"
+hue_install_dir: "{{ hue_root_dir }}/{{ hue_release }}"
+hue_build_dir: "{{ hue_root_dir }}/{{ hue_release }}"
+hue_pid_dir: /run/hue
+hue_log_dir: /var/log/hue
+hue_server_conf_dir: /etc/hue
+hue_port: 8888
+hue_session_secret_key: '4ylAWaEYwLVrMHwVq.N1Vo?{bp+ur$GNJe2CF$V]y_)y#:=#[+FYjA2*16S$(jZ'
+cluster_name: mycluster
+
+# Hue web ui
+http_host: 0.0.0.0
+http_port: 8888
+
+build_supervisor: "{{ hue_build_dir }}/build/env/bin/supervisor"
+hue_service_file: "/usr/lib/systemd/system/hue.service"
+hue_ini_file: "{{ hue_build_dir }}/desktop/conf/hue.ini"
+hue_service_start_script: "{{ hue_build_dir }}/build/env/bin/hue_service_start_script.sh"
+hue_service_stop_script: "{{ hue_build_dir }}/build/env/bin/hue_service_stop_script.sh"
+hue_service_restart_script: "{{ hue_build_dir }}/build/env/bin/hue_service_restart.sh"
+hue_service_failover_update_script: "{{ hue_build_dir }}/build/env/bin/hue_service_failover_update_script.sh"
+
+# Kerberos
+kerberos_realm: REALM.TDP
+hdfs_nn_keytab:al: nn/{{ ansible_fqdn }}@{{ kerberos_realm }}
+hdfs_rm_keytab: /etc/security/keytabs/rm.service.keytab
+hdfs_rm_principal: /etc/security/keytabs/nn.service.keytab
+hdfs_nn_principl: rm/{{ ansible_fqdn }}@{{ kerberos_realm }}
+
+# Filename of SSL Certificate
+ssl_certificate: "/etc/ssl/certs/{{ ansible_fqdn }}.pem"
+# Filename of SSL RSA Private Key
+ssl_private_key: "/etc/ssl/certs/{{ ansible_fqdn }}.key"
+# Filename of SSL CA
+ca_certificate_file: "/etc/ssl/certs/root.pem"
+
+# Makefile.vars
+PYTHON_VER: python2.7
+PYTHON_EXE: "{{ hue_build_dir }}/build/env/bin/python"
+
+# HDFS policy for hue_user
+hue_user_hdfs_policy:
+  - name: hue_user-hdfs-home-policy
+    description: "tdp_user access to hdfs:////user/{{ hue_user }}"
+    isAuditEnabled: true
+    isEnabled: true
+    policyItems:
+      - accesses:
+          - { isAllowed: true, type: read }
+          - { isAllowed: true, type: write }
+          - { isAllowed: true, type: execute }
+        conditions: []
+        delegateAdmin: true
+        groups: []
+        users: ["{{ hue_user }}"]
+    repositoryType: hdfs
+    resources:
+      path:
+        isExcludes: false
+        isRecursive: true
+        values: ["hdfs:////user/{{ hue_user }}"]
+    service: hdfs-tdp
+
+zk_servers: |
+  {{ groups['zk'] | 
+     map('tosit.tdp.access_fqdn', hostvars) | 
+     map('regex_replace', '^(.*)$', '\1:2181') |
+     list | join(',') }}

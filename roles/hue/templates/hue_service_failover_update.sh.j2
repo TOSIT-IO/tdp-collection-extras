@@ -1,0 +1,10 @@
+#!/bin/bash
+
+/usr/bin/kinit -kt {{ hdfs_nn_keytab}} {{ hdfs_nn_principal }}
+
+# Ensure active namenode used in webhdfs url 
+/usr/bin/python {{ hue_service_failover_update_script }} {{ hue_ini_file }} r"(webhdfs_url=https:\/\/)([^\/]*\d{2,4})(.*)" $(hdfs haadmin -getAllServiceState | awk ' {if ($NF == "active") print $1}')
+
+# Ensure active resource manager in resource manager url
+/usr/bin/kinit -kt {{ hdfs_rm_keytab}} {{ hdfs_rm_principal }}
+/usr/bin/python {{ hue_service_failover_update_script }} {{ hue_ini_file }} r"(^resourcemanager_host=)(https://)?(.*)" $(yarn rmadmin -getAllServiceState | awk ' {if ($NF == "active") print $1}')
