@@ -1,0 +1,15 @@
+---
+- name: "Create {{ hue_user }} in Ranger"
+  include_role:
+    name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/ansible-tdp-common-actions
+    tasks_from: deploy-new-ranger-user
+  with_items:
+    - username: "{{ hue_user }}"
+      password: "{{ hue_user_pass }}"
+
+- name: Create hue user HDFS access policies in Ranger
+  include_role:
+    name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/ansible-tdp-common-actions
+    tasks_from: deploy-ranger-hdfs-policy
+  with_items:
+    - "{{ hue_user_hdfs_policy }}"

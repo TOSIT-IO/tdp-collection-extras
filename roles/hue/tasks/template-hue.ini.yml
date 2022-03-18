@@ -1,0 +1,12 @@
+---
+- name: Template hue.ini
+  template:
+    src: hue.ini.j2
+    dest: "{{ hue_build_dir }}/desktop/conf/hue.ini"
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+    mode: '0644'
+    force: yes
+    backup: yes
+    follow: yes
+

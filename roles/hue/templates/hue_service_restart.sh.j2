@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Kill any existing hue processes
+pids=( $(pgrep -f hue) )
+
+for pid in "${pids[@]}"
+do
+  if [[ $pid != $$ ]]
+    then
+      kill "$pid"
+  fi
+done
+
+kinit -kt /etc/security/keytabs/hue.service.keytab hue/master-02.tdp@REALM.TDP
+
+{{ hue_build_dir }}/build/env/bin/supervisor -d

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+pids=( $(pgrep -f hue) )
+
+for pid in "${pids[@]}"
+do
+  if [[ $pid != $$ ]]
+    then
+      kill "$pid"
+  fi
+done

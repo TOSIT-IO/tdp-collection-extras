@@ -1,0 +1,92 @@
+---
+- name: Get {{ hue_user }} uid
+  shell: cat /etc/passwd | grep "{{ hue_user }}:" | awk -F ":" '{print $3}'
+  register: hue_user_id_output
+
+- name: Template hue.ini
+  vars:
+    hue_user_id: "{{ hue_user_id_output.stdout | trim }}"
+    # webhdfs_endpoint: "{{ webhdfs_endpoint }}"
+    # yarn_active_rm: "{{ yarn_active_rm }}"
+  template:
+    src: hue.ini.j2
+    dest: "{{ hue_build_dir }}/desktop/conf/hue.ini"
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+    mode: '0644'
+    force: yes
+    backup: yes
+    follow: yes
+
+- name: Migrate Hue database
+  command: |
+    {{ hue_build_dir }}/build/env/bin/hue migrate
+  args:
+    chdir: "{{ hue_build_dir }}"
+  register: hue_database_migration
+  failed_when: hue_database_migration.rc != 0
+
+- name: Template Hue service file
+  template:
+    src: hue.service.j2
+    dest: "{{ hue_service_file }}"
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+    mode: '0644'
+    force: yes
+    backup: yes
+
+- name: Template hue-ini-failover-update.py
+  template:
+    src: hue-ini-failover-update.py.j2
+    dest: "{{ hue_service_failover_update_script }}"
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+    mode: '0754'
+    force: yes
+    backup: yes
+    follow: yes
+
+- name: Template hue_service_start.sh
+  template:
+    src: hue_service_start.sh.j2
+    dest: "{{ hue_service_start_script }}"
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+    mode: '0770'
+    force: yes
+    backup: yes
+    follow: yes
+
+- name: Template hue_service_stop_script.sh
+  template:
+    src: hue_service_stop.sh.j2
+    dest: "{{ hue_service_stop_script }}"
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+    mode: '0770'
+    force: yes
+    backup: yes
+    follow: yes
+
+- name: Template hue_service_restart_script.sh
+  template:
+    src: hue_service_restart.sh.j2
+    dest: "{{ hue_service_restart_script }}"
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+    mode: '0770'
+    force: yes
+    backup: yes
+    follow: yes
+
+- name: Template hue_service_failover_update.sh.j2
+  template:
+    src: hue_service_failover_update.sh.j2
+    dest: "{{ hue_service_failover_update_script }}"
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+    mode: '0770'
+    force: yes
+    backup: yes
+    follow: yes
