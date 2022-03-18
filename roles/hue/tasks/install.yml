@@ -1,0 +1,154 @@
+---
+- name: Upload hue dist file
+  copy:
+    src: "files/{{ hue_dist_file }}"
+    dest: /tmp
+- name: Ensures {{ hue_root_dir }} exists
+  file:
+    path: "{{ hue_root_dir }}"
+    state: directory
+- name: Extract hue dist file
+  unarchive:
+    src: "/tmp/{{ hue_dist_file }}"
+    dest: "{{ hue_root_dir }}"
+    group: root
+    owner: root
+    remote_src: yes
+    creates: "{{ hue_root_dir }}/{{ hue_release }}"
+- name: Create symbolic link to Hadoop installation
+  file:
+    src: "{{ hue_root_dir }}/{{ hue_release }}"
+    dest: "{{ hue_current_dir }}"
+    state: link
+- name: Create directory for pid
+  file:
+    path: "{{ hue_pid_dir }}"
+    state: directory
+    group: root
+    owner: root
+
+- include_role:
+    name: tosit.tdp.utils.group
+  vars:
+    group: "{{ hue_group }}"
+
+- include_role:
+    name: tosit.tdp.utils.user
+  vars:
+    user: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+
+- include_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: create_principal_keytab
+
+- name: Ensures hue_server_conf_dir exists
+  file:
+    path: "{{ hue_server_conf_dir }}"
+    state: directory
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+
+- name: Install OS Packages
+  yum:
+    name:
+      - ant
+      - asciidoc
+      - cyrus-sasl-devel
+      - cyrus-sasl-gssapi
+      - cyrus-sasl-plain
+      - gcc
+      - gcc-c++
+      - git
+      - krb5-devel
+      - libffi-devel
+      - libxml2-devel
+      - libxslt-devel
+      - make
+      - mysql
+      - mysql-devel
+      - openldap-devel
+      - python-devel
+      - sqlite-devel
+      - postgresql-devel
+      - gmp-devel
+      - maven
+      # - libtidy
+      - openssl-devel
+    state: present
+
+- name: Check python installed
+  command: |
+    python --version
+  register: python_version
+
+- name: Stop if python 2.7.5 not available
+  meta: end_play
+  when: "'python 2.7.5' not in {{ python_version.stderr_lines | lower }}"
+
+- name: Ensure pip installed
+  command: pip --version
+  register: pip_version
+  failed_when: no
+
+- name: Install pip
+  shell: |
+    yum install -y epel-release
+    yum install -y python-pip
+  when: pip_version.rc != 0
+
+- name: Ensure python27 compatible version of psycopg2
+  shell: |
+    pip uninstall psycopg2 --yes
+    pip install psycopg2==2.7.4
+
+- name: Ensure NPM installed
+  shell: |
+    curl -sL https://rpm.nodesource.com/setup_14.x | bash -
+    yum install -y nodejs
+    npm install --global npm
+
+- name: Check optional java dependency
+  command: java -version
+  register: java_version
+
+- name: Warn if java missing or incorrect
+  debug:
+    msg: |
+      Optional Java dependency missing. JDBC proxy connector may be impacted.
+  when: |
+    java_version.rc != 0 or (
+    'openjdk' not in java_version.stderr and
+    '1.8' not in java_version.stderr
+    )
+
+- name: Create directory for pid
+  file:
+    path: '{{ hue_pid_dir }}'
+    state: directory
+    group: root
+    owner: root
+
+- name: Create log directory
+  file:
+    path: '{{ hue_log_dir }}'
+    state: directory
+    owner: '{{ hue_user }}'
+    group: '{{ hue_group }}'
+    recurse: yes
+
+- name: Create symbolic link to Hue installation
+  file:
+    src: "{{ hue_install_dir }}"
+    dest: "{{ hue_current_dir }}"
+    state: link
+    owner: "{{ hue_user }}"
+    group: "{{ hue_group }}"
+
+- name: Ensure hue user owns hue dirs
+  shell: |
+    chown -R {{ hue_user }}:{{ hue_group }} {{ item }}
+  with_items:
+    - "{{ hue_root_dir }}"
+    - "/var/run/hue/"
+    - "{{ hue_log_dir }}"
