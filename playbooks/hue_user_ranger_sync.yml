@@ -1,10 +1,11 @@
 ---
-- hosts: hue_server
+- hosts: ranger_admin[0]
   become: yes
   tasks:
     - tosit.tdp.resolve:
         node_name: hue_server
+
     - name: Install hue
       include_role:
         name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/hue
-        tasks_from: install.yml
+        tasks_from: sync-user-to-ranger.yml
