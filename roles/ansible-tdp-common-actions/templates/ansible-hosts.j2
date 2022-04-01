@@ -91,3 +91,10 @@ master-03
 
 [spark_client]
 edge-01
+
+[spark_client:children]
+livy_server
+
+[livy_server]
+master-02
+
