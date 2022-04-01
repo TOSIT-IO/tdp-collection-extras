@@ -41,6 +41,7 @@
       include_role:
         name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/hue
         tasks_from: config.yml
+    - meta: clear_facts
 
 - hosts: hue_server
   become: yes
