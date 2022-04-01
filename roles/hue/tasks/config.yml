@@ -6,8 +6,6 @@
 - name: Template hue.ini
   vars:
     hue_user_id: "{{ hue_user_id_output.stdout | trim }}"
-    # webhdfs_endpoint: "{{ webhdfs_endpoint }}"
-    # yarn_active_rm: "{{ yarn_active_rm }}"
   template:
     src: hue.ini.j2
     dest: "{{ hue_build_dir }}/desktop/conf/hue.ini"
