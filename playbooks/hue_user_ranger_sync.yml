@@ -3,7 +3,7 @@
   become: yes
   tasks:
     - tosit.tdp.resolve:
-        node_name: hue_server
+        node_name: hue_service
 
     - name: Install hue
       include_role:

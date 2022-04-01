@@ -14,7 +14,7 @@
   become: yes
   tasks:
     - tosit.tdp.resolve:
-        node_name: hue_server
+        node_name: hue_service
     - name: Get active namenode adress
       shell: |
         kinit -kt /etc/security/keytabs/nn.service.keytab nn/{{ item.fqdn }}@{{ realm_name }}
@@ -47,7 +47,7 @@
   become: yes
   tasks:
     - tosit.tdp.resolve:
-        node_name: hue_server
+        node_name: hue_service
     - name: Ensure krbtgt principal has renewable tickets
       shell: |
         kadmin -r {{realm}} -p {{kadmin_principal}} -w {{kadmin_password}} -q "modprinc -maxrenewlife 7day krbtgt/{{ realm_name }}@{{ realm_name }}"
