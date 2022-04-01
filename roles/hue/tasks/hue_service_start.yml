@@ -1,13 +1,4 @@
 ---
-# - name: enable hue service
-#   service:
-#     name: hue
-#     enabled: yes
-
-# - name: start hue service
-#   service:
-#     name: hue
-#     state: started
 - name: Start hue service
   shell: |
     systemctl daemon-reload
