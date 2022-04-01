@@ -1,4 +1,4 @@
-# Ansible Hue TDP
+# Ansible Hue TDP Extra
 
 Currently the roles only supports the deployment of HA, SSL-enabled, Kerberos authenticated Hadoop clusters.
 
@@ -6,8 +6,7 @@ Currently the roles only supports the deployment of HA, SSL-enabled, Kerberos au
 
 - `java-1.8.0-openjdk` and `krb5-workstation` installed on all nodes
 - Hue release (`hue_dist_file` role variable) file available in `files`
-<!-- - Ranger TDP Hadoop plugin release .tar.gz (`ranger_hdfs_dist_file` role variable) file available in `files` -->
-- Groups `hue_server` defined in the Ansible inventory
+- Group `hue_server` defined in the Ansible inventory
 - Certificate files `{{ fqdn }}.key` and `{{ fqdn }}.pem` for every node available in `files`
 - Certificate of the CA available as `root.pem` in `files`
 - Admin access to a KDC with the `realm`, `kadmin_principal` and `kadmin_password` role vars provided
@@ -24,7 +23,7 @@ Currently the roles only supports the deployment of HA, SSL-enabled, Kerberos au
 
 The following hosts file and playbook are given as examples.
 
-A ranger synched admin user `hue` with password `hue-user123` is already deployed by this role (but you can't log in as this user until your 2nd login as by default the 1st login creates a new Hue user).
+A ranger synced admin user `hue` with password `hue-user123` is already deployed by this role (but you can't log in as this user until your 2nd login as by default the 1st login creates a new Hue user).
 
 ### Host file
 
