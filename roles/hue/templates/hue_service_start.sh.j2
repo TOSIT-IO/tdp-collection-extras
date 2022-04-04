@@ -22,3 +22,5 @@ done
 
 {# systemctl daemon-reload
 {{ hue_build_dir }}/build/env/bin/supervisor -d #}
+kinit -kt {{ keytabs_dir }}/{{ hue_keytab }} {{ hue_principal }}
+{{ hue_build_dir }}/build/env/bin/supervisor -d

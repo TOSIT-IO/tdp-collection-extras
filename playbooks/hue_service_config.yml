@@ -17,7 +17,7 @@
         node_name: hue_service
     - name: Get active namenode adress
       shell: |
-        kinit -kt /etc/security/keytabs/nn.service.keytab nn/{{ item.fqdn }}@{{ realm_name }}
+        kinit -kt {{ hdfs_nn_keytab }} {{ hdfs_nn_principal }}
         hdfs haadmin -getAllServiceState | awk ' {if ($NF == "active") print $1}'
       register: webhdfs_endpoint_result
       delegate_to: "{{ item.ansible_host }}"
