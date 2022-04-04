@@ -39,27 +39,3 @@
       service:
         name: hue.service
         state: restarted
-
-- hosts: hbase_master
-  become: yes
-  tasks:
-    - name: restart hbase-master.service
-      service:
-        name: hbase-master.service
-        state: restarted
-
-- hosts: hbase_rs
-  become: yes
-  tasks:
-    - name: restart hbase-regionserver.service
-      service:
-        name: hbase-regionserver.service
-        state: restarted
-
-- hosts: phoenix_queryserver_daemon
-  become: yes
-  tasks:
-    - name: restart phoenix_queryserver_daemon
-      service:
-        name: phoenix-queryserver.service
-        state: restarted
