@@ -41,6 +41,9 @@
 - include_role:
     name: tosit.tdp.utils.kerberos
     tasks_from: create_principal_keytab
+  vars:
+    principal: "{{ hue_principal }}"
+    keytab: "{{ hue_keytab }}"
 
 - name: Ensures hue_server_conf_dir exists
   file:

@@ -5,11 +5,12 @@ hue_group: hadoop
 hue_user_pass: hue-user123
 
 # Kerberos principal for hue user
-keytabs_dir: /etc/security/keytabs
-keytab: "hue.service.keytab"
+
 user: "{{ hue_user }}"
 owner: "{{ hue_user }}"
-principal: "{{ hue_user }}/{{ ansible_fqdn }}@{{ realm }}"
+hue_principal: "{{ hue_user }}/{{ ansible_fqdn }}@{{ realm }}"
+keytabs_dir: /etc/security/keytabs
+hue_keytab: hue.service.keytab
 group: "{{ hue_group }}"
 mode: "600"
 
@@ -41,10 +42,10 @@ hue_service_failover_update_script: "{{ hue_build_dir }}/build/env/bin/hue_servi
 
 # Kerberos
 kerberos_realm: REALM.TDP
-hdfs_nn_keytab:al: nn/{{ ansible_fqdn }}@{{ kerberos_realm }}
+hdfs_nn_principal: nn/{{ ansible_fqdn }}@{{ kerberos_realm }}
+hdfs_nn_keytab: /etc/security/keytabs/nn.service.keytab
+hdfs_rm_principal: rm/{{ ansible_fqdn }}@{{ kerberos_realm }}
 hdfs_rm_keytab: /etc/security/keytabs/rm.service.keytab
-hdfs_rm_principal: /etc/security/keytabs/nn.service.keytab
-hdfs_nn_principl: rm/{{ ansible_fqdn }}@{{ kerberos_realm }}
 
 # Filename of SSL Certificate
 ssl_certificate: "/etc/ssl/certs/{{ ansible_fqdn }}.pem"
