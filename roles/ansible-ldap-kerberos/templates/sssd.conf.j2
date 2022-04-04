@@ -1,0 +1,33 @@
+[sssd]
+domains = LDAP_cluster
+config_file_version = 2
+services = nss, pam
+
+
+[domain/LDAP_cluster]
+id_provider = ldap
+auth_provider = ldap
+chpass_provider = ldap
+cache_credentials = True
+ldap_uri = ldap://{{ ldap_server }}
+ldap_search_base = {{ ldap_suffix }}
+ldap_user_search_base = ou=users,{{ ldap_suffix }}
+ldap_group_search_base = ou=groups,{{ ldap_suffix }}
+ldap_default_bind_dn = {{ ldap_admin_dn }}
+ldap_default_authtok = {{ ldap_admin_dn_password }}
+sudo_provider = none
+enumerate = true
+debug_level = 6
+
+[nss]
+filter_groups = root
+filter_users = root
+reconnection_retries = 3
+entry_cache_timeout = 300
+
+[pam]
+reconnection_retries = 3
+offline_credentials_expiration = 2
+offline_failed_login_attempts = 3
+offline_failed_login_delay = 5
+

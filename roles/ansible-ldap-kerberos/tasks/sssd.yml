@@ -1,0 +1,31 @@
+---
+- name: Install sssd
+  package:
+    name: sssd
+
+- name: Template sssd.conf
+  template:
+    src: sssd.conf.j2
+    dest: /etc/sssd/sssd.conf
+    mode: 0600
+  notify: restart sssd
+
+- name: Check authconfig state
+  shell: authconfig --test
+  register: authconfig_test
+  changed_when: no
+  check_mode: no
+
+- name: Enable ssh auth via sssd
+  command: authconfig --enablesssd --enablesssdauth --update
+  when: "'pam_sss is disabled' in authconfig_test.stdout"
+
+- name: Enable home directory creation after ssh
+  command: authconfig --enablemkhomedir --update
+  when: "'pam_mkhomedir or pam_oddjob_mkhomedir is disabled' in authconfig_test.stdout"
+
+- name: Start and enable sssd
+  service:
+    name: sssd
+    state: started
+    enabled: yes
