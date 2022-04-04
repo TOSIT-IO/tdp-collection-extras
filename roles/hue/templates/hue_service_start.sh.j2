@@ -1,16 +1,5 @@
 #!/bin/bash
 
-# Kill any existing hue processes
-pids=( $(pgrep -f hue) )
-
-for pid in "${pids[@]}"
-do
-  if [[ $pid != $$ ]]
-    then
-      kill "$pid"
-  fi
-done
-
 /usr/bin/kinit -kt {{ hdfs_nn_keytab}} {{ hdfs_nn_principal }}
 
 # Ensure active namenode used in webhdfs url 
@@ -20,7 +9,5 @@ done
 /usr/bin/kinit -kt {{ hdfs_rm_keytab}} {{ hdfs_rm_principal }}
 /usr/bin/python {{ hue_service_failover_update_script }} {{ hue_ini_file }} r"(^resourcemanager_host=)(https://)?(.*)" $(yarn rmadmin -getAllServiceState | awk ' {if ($NF == "active") print $1}')
 
-{# systemctl daemon-reload
-{{ hue_build_dir }}/build/env/bin/supervisor -d #}
 kinit -kt {{ keytabs_dir }}/{{ hue_keytab }} {{ hue_principal }}
 {{ hue_build_dir }}/build/env/bin/supervisor -d
