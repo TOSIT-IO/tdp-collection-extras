@@ -1,0 +1,43 @@
+---
+ldapdb_dir: /var/lib/ldap
+
+ldap_rootpw: secret
+
+ldap_suffix: "c=io"
+ldap_basedn: "ou=tdp,o=tosit,{{ ldap_suffix }}"
+ldap_rootdn: "cn=Manager,{{ ldap_basedn }}"
+
+ldap_base_tree_ldif: | 
+  dn: c=io
+  c: io
+  objectClass: country
+ldap_users_tree_ldif: |
+  dn: ou=users,{{ ldap_suffix }}
+  objectClass: organizationalUnit
+  ou: users
+ldap_groups_tree_ldif: |
+  dn: ou=groups,{{ ldap_suffix }}
+  objectClass: organizationalUnit
+  ou: groups
+# client
+ldap_server: "{{ groups['ldap'][0] }}.{{ domain }}"
+domain: tdp
+realm: REALM.TDP
+
+ldap_admin_dn: "{{ ldap_rootdn }}"
+ldap_admin_dn_password: "{{ ldap_rootpw }}"
+
+#TODO create dedicated accounts
+kdc_service_dn: "{{ ldap_admin_dn }}"
+kdc_service_dn_password: "{{ ldap_admin_dn_password }}"
+kadmin_service_dn: "{{ ldap_admin_dn }}"
+kadmin_service_dn_password: "{{ ldap_admin_dn_password }}"
+ldap_password_file: /var/kerberos/krb5kdc/service.keyfile
+
+kerberos_db_master_key: master123
+
+kerberos_admin_principal: "admin/admin@{{ realm }}"
+kerberos_admin_password: admin123
+kerberos_kadmin_admin_template: "*/admin@{{ realm }}"
+
+kerberos_server: "{{ groups['ldap'][0] }}.{{ domain }}"

@@ -1,0 +1,20 @@
+---
+- name: restart slapd
+  service:
+    name: slapd
+    state: restarted
+
+- name: restart krb5kdc
+  service:
+    name: krb5kdc
+    state: restarted
+
+- name: restart kadmin
+  service:
+    name: kadmin
+    state: restarted
+
+- name: restart sssd
+  service:
+    name: sssd
+    state: restarted
