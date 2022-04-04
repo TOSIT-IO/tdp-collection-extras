@@ -5,11 +5,8 @@ Description=Hue
 User={{ hue_user }}
 Type=simple
 
-ExecStart={{ hue_build_dir }}/build/env/bin/supervisor
-
-# Stop all hue process
-Environment=pids=( $(pgrep -f hue) )
-ExecStop=sh -c "for pid in "${pids[@]}"; do if [[ $pid != $$ ]]; then kill "$pid"; fi; done"
+ExecStart={{ hue_service_start_script }}
+ExecStop={{ hue_service_stop_script }}
 
 [Install]
 WantedBy=multi-user.target

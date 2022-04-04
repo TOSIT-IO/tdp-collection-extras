@@ -1,6 +1,10 @@
 ---
-- name: Retart hue service
-  shell: |
-    systemctl stop hue
-    systemctl start hue
+- name: Stop hue service
+  service:
+    name: hue
+    state: stopped
 
+- name: Start hue service
+  service:
+    name: hue
+    state: started
