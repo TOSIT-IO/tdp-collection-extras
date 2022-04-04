@@ -13,6 +13,7 @@
       - curl
       - unzip
       - nc
+      - expect
     state: present
 
 - name: Set JAVA_HOME
