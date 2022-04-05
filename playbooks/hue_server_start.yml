@@ -8,3 +8,4 @@
       include_role:
         name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/hue
         tasks_from: hue_server_start.yml
+    - meta: clear_facts
