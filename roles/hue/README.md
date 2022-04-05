@@ -12,6 +12,8 @@ Currently the roles only supports the deployment of HA, SSL-enabled, Kerberos au
 - Admin access to a KDC with the `realm`, `kadmin_principal` and `kadmin_password` role vars provided
 - A `krb5.conf` file with this KDC information must be available at `files/krb5.conf`
 - The hue tarball must be present in the files directory. The tested version in [hue-4.10.0.tgz](https://cdn.gethue.com/downloads/hue-4.10.0.tgz).
+- The hue_user role must already exist on the target database where the hue desktop database will be created
+- All hue dependencies must exist on the target hue_server [check here for Hue dependencies](https://docs.gethue.com/administrator/installation/dependencies/)
 
 # Notes:
 - The first time you access the hue web-ui, you will have to create a hue admin user.

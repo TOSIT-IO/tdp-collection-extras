@@ -82,7 +82,15 @@ hue_user_hdfs_policy:
     service: hdfs-tdp
 
 zk_servers: |
-  {{ groups['zk'] | 
-     map('tosit.tdp.access_fqdn', hostvars) | 
+  {{ groups['zk'] |
+     map('tosit.tdp.access_fqdn', hostvars) |
      map('regex_replace', '^(.*)$', '\1:2181') |
      list | join(',') }}
+
+hue_desktop_db:
+  engine: sqlite3
+  host:
+  port:
+  user:
+  password:
+  name: "{{ hue_build_dir }}/desktop/desktop.db"
