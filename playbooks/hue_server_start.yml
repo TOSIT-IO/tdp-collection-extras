@@ -7,4 +7,4 @@
     - name: Start hue service
       include_role:
         name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/hue
-        tasks_from: hue_service_start.yml
+        tasks_from: hue_server_start.yml
