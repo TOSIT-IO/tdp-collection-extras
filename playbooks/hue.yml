@@ -1,12 +1,12 @@
 ---
 - name: Deploy Hue
-  import_playbook: hue_service_install.yml
+  import_playbook: hue_server_install.yml
 
-- name: Create Hue admin ranger policies
-  import_playbook: hue_user_ranger_sync.yml
+# - name: Create Hue admin ranger policies
+#   import_playbook: hue_user_ranger_sync.yml
 
 - name: Configure Services for Hue
-  import_playbook: hue_service_config.yml
+  import_playbook: hue_server_config.yml
 
 - name: Restart Hue related services
-  import_playbook: hue_service_start.yml
+  import_playbook: hue_server_start.yml
