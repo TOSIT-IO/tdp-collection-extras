@@ -7,4 +7,4 @@
     - name: Install hue
       include_role:
         name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/hue
-        tasks_from: install.yml
+        tasks_from: hue_server_install.yml
