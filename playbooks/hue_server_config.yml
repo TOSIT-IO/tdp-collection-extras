@@ -1,15 +1,4 @@
 ---
-- hosts: postgresql
-  name: Prepare postgresql for hue
-  become: yes
-  become_user: postgres
-  tasks:
-    - include_role:
-        name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/ansible-tdp-common-actions
-        tasks_from: deploy-new-postgres-role
-      with_items:
-        - hue
-
 - hosts: hue_server
   become: yes
   tasks:
@@ -33,7 +22,6 @@
       with_items:
         - fqdn: "{{ groups['yarn_rm'][0] | tosit.tdp.access_fqdn(hostvars) }}"
           ansible_host: "{{ groups['yarn_rm'][0] }}"
-
     - name: Configure hue
       vars:
         webhdfs_endpoint: "{{ webhdfs_endpoint_result.results[0].stdout }}"
@@ -55,3 +43,4 @@
       shell: |
         kadmin -r {{realm}} -p {{kadmin_principal}} -w {{kadmin_password}} -q "modprinc -maxrenewlife 7day +allow_renewable hue/{{ item }}@{{ realm_name }}"
       with_items: "{{ groups['hue_server'] }}"
+    - meta: clear_facts
