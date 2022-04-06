@@ -27,7 +27,7 @@
         webhdfs_endpoint: "{{ webhdfs_endpoint_result.results[0].stdout }}"
         yarn_active_rm: "{{ yarn_active_rm_result.results[0].stdout_lines[0] }}"
       include_role:
-        name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/hue
+        name: ../roles/hue/server
         tasks_from: hue_server_config.yml
     - meta: clear_facts
 

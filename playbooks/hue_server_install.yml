@@ -1,11 +1,9 @@
 ---
 - hosts: hue_server
-  become: yes
   tasks:
     - tosit.tdp.resolve:
         node_name: hue_service
-    - name: Install hue
-      include_role:
-        name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/hue
-        tasks_from: hue_server_install.yml
+    - include_role:
+        name: ../roles/hue/server
+        tasks_from: hue_server_install
     - meta: clear_facts
