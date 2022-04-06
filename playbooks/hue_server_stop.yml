@@ -6,6 +6,6 @@
         node_name: hue_service
     - name: Start hue service
       include_role:
-        name: ansible_roles/collections/ansible_collections/tosit/tdp-extra/roles/hue
+        name: ../roles/hue/server
         tasks_from: hue_server_stop.yml
     - meta: clear_facts
