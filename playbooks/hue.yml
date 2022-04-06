@@ -1,9 +1,4 @@
 ---
-- name: Deploy Hue
-  import_playbook: hue_server_install.yml
-
-- name: Configure Services for Hue
-  import_playbook: hue_server_config.yml
-
-- name: Restart Hue related services
-  import_playbook: hue_server_start.yml
+- import_playbook: hue_server_install.yml
+- import_playbook: hue_server_config.yml
+- import_playbook: hue_server_start.yml
