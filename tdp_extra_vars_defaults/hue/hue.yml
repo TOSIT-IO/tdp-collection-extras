@@ -61,7 +61,7 @@ PYTHON_EXE: "{{ hue_build_dir }}/build/env/bin/python"
 # HDFS policy for hue_user
 hue_user_hdfs_policy:
   - name: hue_user-hdfs-home-policy
-    description: "tdp_user access to hdfs:////user/{{ hue_user }}"
+    description: "tdp_user access to hdfs://user/{{ hue_user }}"
     isAuditEnabled: true
     isEnabled: true
     policyItems:
@@ -78,7 +78,7 @@ hue_user_hdfs_policy:
       path:
         isExcludes: false
         isRecursive: true
-        values: ["hdfs:////user/{{ hue_user }}"]
+        values: ["/user/{{ hue_user }}"]
     service: hdfs-tdp
 
 zk_servers: |
