@@ -1,0 +1,61 @@
+---
+# Livy version
+livy_release: apache-livy-0.7.1-incubating-bin
+livy_dist_file: "{{ livy_release }}.zip"
+
+# Livy user and group
+livy_user: livy
+hadoop_group: hadoop
+
+# Livy installation directory
+livy_root_dir: /opt/tdp
+livy_install_dir: "{{ livy_root_dir }}/livy"
+
+# Livy configuration directories
+livy_root_conf_dir: /etc/livy
+livy_server_conf_dir: "{{ livy_root_conf_dir }}/conf.server"
+
+# Livy pid directory
+livy_pid_dir: /var/run/livy
+
+# Livy logging directory
+livy_log_dir: /var/log/livy
+
+# Properties
+hadoop_home: /opt/tdp/hadoop
+hadoop_conf_dir: /etc/hadoop/conf
+spark_home: /opt/tdp/spark
+spark_conf_dir: /etc/spark/conf
+java_home: /usr/lib/jvm/jre-1.8.0-openjdk
+
+# SSL Keystore and Truststore
+livy_keystore_location: /etc/ssl/certs/keystore.jks
+livy_keystore_password: Keystore123!
+
+# livy.conf
+livy_conf:
+  livy.keystore: "{{ livy_keystore_location }}"
+  livy.keystore.password: "{{ livy_keystore_password }}"
+  livy.server.auth.type: kerberos
+  livy.server.auth.kerberos.principal: "HTTP/_HOST@{{ realm }}"
+  livy.server.auth.kerberos.keytab: /etc/security/keytabs/spnego.service.keytab
+  livy.server.launch.kerberos.principal: "livy/_HOST@{{ realm }}"
+  livy.server.launch.kerberos.keytab: /etc/security/keytabs/livy.service.keytab
+  livy.impersonation.enabled: true
+  livy.server.port: 8998
+  livy.server.session.timeout: 3600000
+
+# livy-env.sh
+livy_env:
+  JAVA_HOME: /usr/lib/jvm/jre-1.8.0-openjdk
+  HADOOP_HOME: "{{ hadoop_home }}"
+  HADOOP_CONF_DIR: "{{ hadoop_conf_dir }}"
+  SPARK_HOME: "{{ spark_home }}"
+  SPARK_CONF_DIR: "{{ spark_conf_dir }}"
+  LD_LIBRARY_PATH: "$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH"
+  LIVY_CONF_DIR: "{{ livy_server_conf_dir }}"
+  LIVY_LOG_DIR: "{{ livy_log_dir }}"
+  LIVY_PID_DIR: "{{ livy_pid_dir }}"
+
+# Service restart policies
+livy_restart: "no"

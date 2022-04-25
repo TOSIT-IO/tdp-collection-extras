@@ -7,6 +7,7 @@ Please check the main [Ansible TDP Roles](https://github.com/TOSIT-FR/ansible-td
 ## Available Roles
 
 - `airflow`: deploys the Apache Airflow release (Airflow Webserver + Scheduler + Worker)
+- `livy.server`: deploys Apache Livy Server
 
 ## Example
 
@@ -20,3 +21,4 @@ Please follow the guidelines at [contributing](./docs/contributing.md) and respe
 
 - [leopaul36](https://github.com/leopaul36)
 - [DanielJohnHarty](https://github.com/DanielJohnHarty)
+- [Nuttymoon](https://github.com/Nuttymoon)

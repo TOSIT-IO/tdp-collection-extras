@@ -1,0 +1,5 @@
+---
+- name: Restart livy-server
+  service:
+    name: livy-server
+    state: restarted

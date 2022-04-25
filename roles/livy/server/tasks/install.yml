@@ -1,0 +1,51 @@
+---
+- include_role:
+    name: tosit.tdp.utils.user
+  vars:
+    user: "{{ livy_user }}"
+    group: "{{ hadoop_group }}"
+
+- name: Upload {{ livy_dist_file }}
+  copy:
+    src: "files/{{ livy_dist_file }}"
+    dest: /tmp
+  diff: no
+
+- name: Ensure livy root dir exists
+  file:
+    path: "{{ livy_root_dir }}"
+    state: directory
+
+- name: Extract Livy
+  unarchive:
+    src: "/tmp/{{ livy_dist_file }}"
+    dest: "{{ livy_root_dir }}"
+    group: root
+    owner: root
+    remote_src: yes
+
+- name: Create symbolic link to Livy installation
+  file:
+    dest: "{{ livy_install_dir }}"
+    src: "{{ livy_root_dir }}/{{ livy_release }}/"
+    state: link
+
+- name: Create directory for pid
+  file:
+    path: "{{ livy_pid_dir }}"
+    state: directory
+    group: "{{ hadoop_group }}"
+    owner: "{{ livy_user }}"
+
+- name: Create log directory
+  file:
+    path: "{{ livy_log_dir }}"
+    state: directory
+    group: "{{ hadoop_group }}"
+    owner: "{{ livy_user }}"
+    recurse: yes
+
+- name: Template Livy Server service file
+  template:
+    src: livy-server.service.j2
+    dest: /usr/lib/systemd/system/livy-server.service
