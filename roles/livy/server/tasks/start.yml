@@ -1,0 +1,5 @@
+---
+- name: Start livy-server
+  service:
+    name: livy-server
+    state: started

@@ -1,0 +1,16 @@
+[Unit]
+Description=Livy Server
+
+[Service]
+User={{ livy_user }}
+Group={{ hadoop_group }}
+PIDFile={{ livy_pid_dir }}/livy-livy-server.pid
+Environment="LIVY_CONF_DIR={{ livy_server_conf_dir }}"
+Type=forking
+ExecStart={{ livy_install_dir }}/bin/livy-server start
+ExecStop={{ livy_install_dir }}/bin/livy-server stop
+LimitNOFILE=64000
+Restart={{ livy_restart }}
+
+[Install]
+WantedBy=multi-user.target
