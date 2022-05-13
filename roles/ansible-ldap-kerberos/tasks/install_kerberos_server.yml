@@ -1,4 +1,28 @@
 ---
+# --- services dependencies --- #
+
+- name: Add krb5kdc dependency to slapd
+  lineinfile:
+    path: /usr/lib/systemd/system/krb5kdc.service
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - regexp: "^Wants="
+      line: Wants=network-online.target slapd.service
+    - regexp: "^After="
+      line: After=syslog.target network.target network-online.target slapd.service
+
+- name: Add kadmin dependency to slapd
+  lineinfile:
+    path: /usr/lib/systemd/system/kadmin.service
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - regexp: "^Wants="
+      line: Wants=network-online.target slapd.service
+    - regexp: "^After="
+      line: After=syslog.target network.target network-online.target slapd.service
+
 # --- kdc setup --- #
 
 - name: Template kdc.conf
@@ -21,7 +45,7 @@
     dest: "{{ ldap_password_file }}"
     owner: root
     group: root
-    mode: '0600'
+    mode: "0600"
   notify:
     - restart krb5kdc
     - restart kadmin
@@ -42,7 +66,7 @@
 - name: Template kadm5.acl
   template:
     src: kadm5.acl.j2
-    dest: /var/kerberos/krb5kdc/kadm5.acl  
+    dest: /var/kerberos/krb5kdc/kadm5.acl
   notify: restart kadmin
 
 - name: Start and enable kadmin
