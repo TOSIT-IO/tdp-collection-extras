@@ -1,0 +1,14 @@
+[Unit]
+Description=Nessie Server
+
+[Service]
+Type=simple
+User={{ nessie_user }}
+Group={{ hadoop_group }}
+ExecStart={{ nessie_install_dir }}/nessie-server 
+LimitNOFILE=64000
+Restart={{ nessie_restart }}
+EnvironmentFile={{ nessie_server_conf_dir }}/nessie-server.env
+
+[Install]
+WantedBy=multi-user.target

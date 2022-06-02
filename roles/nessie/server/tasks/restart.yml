@@ -1,0 +1,5 @@
+---
+- name: Restart nessie-server
+  service:
+    name: nessie-server
+    state: restarted

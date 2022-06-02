@@ -1,0 +1,5 @@
+---
+- name: Start nessie-server
+  service:
+    name: nessie-server
+    state: started

@@ -1,0 +1,33 @@
+---
+# Nessie version
+nessie_release: nessie-quarkus-0.29.0-runner
+nessie_dist_file: "{{ nessie_release }}"
+
+# Nessie user and group
+nessie_user: nessie
+hadoop_group: hadoop
+
+# Nessie installation directory
+nessie_root_dir: /opt/tdp
+nessie_install_dir: "{{ nessie_root_dir }}/nessie"
+
+# Nessie configuration directory
+nessie_root_conf_dir: /etc/nessie
+nessie_server_conf_dir: "{{ nessie_root_conf_dir }}/conf.server"
+
+# SSL Keystore and Truststore
+nessie_keystore_location: /etc/ssl/certs/keystore.jks
+nessie_keystore_password: Keystore123!
+
+# Service restart policies
+nessie_restart: "no"
+
+# nessie-server.env
+nessie_server_env:
+  # Refer to configuration documentation - https://projectnessie.org/try/configuration/
+  # Note, Nessie is a Quarkus application, it is configured via properties converted from environment variables,
+  # Follow the conversion rules specified by [MicroProfile Config](https://github.com/eclipse/microprofile-config/blob/master/spec/src/main/asciidoc/configsources.asciidoc#default-configsources). 
+  QUARKUS_HTTP_INSECURE_REQUESTS: redirect
+  QUARKUS_HTTP_SSL_PORT: 19433 # The default SSL port 8443 is most likely already taken by another component
+  QUARKUS_HTTP_SSL_CERTIFICATE_KEY_STORE_FILE: "{{ nessie_keystore_location }}"
+  QUARKUS_HTTP_SSL_CERTIFICATE_KEY_STORE_PASSWORD: "{{ nessie_keystore_password }}"

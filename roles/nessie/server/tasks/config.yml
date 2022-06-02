@@ -1,0 +1,26 @@
+---
+- name: Check if Nessie Server config exists
+  stat:
+    path: "{{ nessie_server_conf_dir }}/"
+  register: nessie_config
+
+- name: Backup Nessie Server config
+  copy:
+    src: "{{ nessie_server_conf_dir }}/"
+    dest: "{{ nessie_server_conf_dir }}.{{ ansible_date_time.epoch }}"
+    group: "{{ hadoop_group }}"
+    owner: "{{ nessie_user }}"
+    remote_src: yes
+  when: nessie_config.stat.exists
+
+- name: Ensure Nessie Server config dir exists
+  file:
+    path: "{{ nessie_server_conf_dir }}/"
+    state: directory
+
+- name: Template nessie-server.env
+  template:
+    src: nessie-server.env.j2
+    dest: "{{ nessie_server_conf_dir }}/nessie-server.env"
+    owner:
+    mode:

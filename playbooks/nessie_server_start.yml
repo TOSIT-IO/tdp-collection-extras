@@ -1,0 +1,10 @@
+---
+- name: Nessie Server Start
+  hosts: nessie_server
+  tasks:
+    - tosit.tdp.resolve:
+        node_name: nessie_server
+    - import_role:
+        name: tosit.tdp_extra.nessie.server
+        tasks_from: start
+    - meta: clear_facts
