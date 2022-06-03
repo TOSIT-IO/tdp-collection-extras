@@ -29,14 +29,14 @@ edge-01
 
 ### Available Playbooks
 
-- [kafka.yml](../../playbooks/kafka.yml)
-- [kafka.yml](../../playbooks/kafka_binary_download.yml) # Requires root
-- [kafka_install.yml](../../playbooks/kafka_install.yml)
-- [kafka_config.yml](../../playbooks/kafka_config.yml)
-- [kafka_start.yml](../../playbooks/kafka_start.yml)
-- [kafka_stop.yml](../../playbooks/kafka_stop.yml)
+[kafka](../../playbooks/kafka.yml)
+[kafka_ssl-tls_install](../../playbooks/kafka_ssl-tls_install.yml)
+[kafka_kerberos_install](../../playbooks/kafka_kerberos_install.yml)
+[kafka_client](../../playbooks/kafka_client.yml)
+[kafka_broker](../../playbooks/kafka_broker.yml)
+[kafka_broker_stop](../../playbooks/kafka_broker_stop.yml)
+[kafka_broker_start](../../playbooks/kafka_broker_start.yml)
+[kafka_broker_install](../../playbooks/kafka_broker_install.yml)
+[kafka_broker_config](../../playbooks/kafka_broker_config.yml)
 
-# ToDo
-- Kerberos auth
-- ssl/tls
 
