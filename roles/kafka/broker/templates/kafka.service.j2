@@ -1,0 +1,17 @@
+[Unit]
+Description=Kafka broker service
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+Type=simple
+Restart={{ kafka_restart }}
+
+User={{ kafka_user }}
+Group={{ kafka_group }}
+
+ExecStart={{ kafka_install_dir }}/bin/kafka-server-start.sh {{ kafka_config_dir }}/server.properties
+ExecStop={{ kafka_install_dir }}/bin/kafka-server-stop.sh {{ kafka_config_dir }}/server.properties
+
+[Install]
+WantedBy=multi-user.target

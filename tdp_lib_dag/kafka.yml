@@ -1,0 +1,26 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: kafka
+  depends_on: []
+
+- name: kafka_broker
+  depends_on: []
+
+- name: kafka_client
+  depends_on: []
+
+- name: kafka_broker_config
+  depends_on:
+    - kafka_broker_install
+
+- name: kafka_broker_start
+  depends_on:
+    - kafka_broker_install
+    - kafka_broker_config
+
+- name: kafka_broker_stop
+  depends_on:
+    - kafka_broker_install
+    - kafka_broker_config

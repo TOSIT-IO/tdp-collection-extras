@@ -1,0 +1,13 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: SSL-TLS Kafka broker install
+  hosts: kafka_broker
+  tasks:
+    - tosit.tdp.resolve:
+        node_name: kafka_broker
+    - import_role:
+        name: tosit.tdp_extra.kafka.server
+        tasks_from: ssl-tls
+    - meta: clear_facts

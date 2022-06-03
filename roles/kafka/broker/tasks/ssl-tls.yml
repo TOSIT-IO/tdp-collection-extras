@@ -1,0 +1,10 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- include_role:
+    name: tosit.tdp.utils.ssl_tls
+    tasks_from: create_keystore
+  vars:
+    keystore_location: "{{ kafka_keystore_location }}"
+    keystore_password: "{{ kafka_keystore_password }}"

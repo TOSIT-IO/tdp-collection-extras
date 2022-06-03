@@ -1,0 +1,45 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+kafka_binary_download_uri: https://dlcdn.apache.org/kafka/3.2.0/kafka_2.13-3.2.0.tgz
+kafka_binary_path: files/kafka_2.13-3.2.0.tgz
+binary_download_sha512_checksum: 736a129823b058dc10788d0893bde47b6f39b9e4972f9eac2d5c9e85e51e477344c6f1e1ebd126ce34d5fd430eb07e55fdd60d60cb541f1d48655c0ebc0a4778
+kafka_user: kafka
+kafka_group: hadoop
+kafka_root_dir: /opt/tdp
+kafka_dist_file: kafka_2.13-3.2.0.tgz
+kafka_release: kafka_2.13-3.2.0
+kafka_install_dir: "{{ kafka_root_dir }}/kafka"
+kafka_pid_dir: /var/run/kafka
+kafka_log_dir: /var/log/kafka
+kafka_data_dir: "{{ kafka_install_dir }}/kafka_data_dir"
+kafka_config_dir: "/opt/tdp/kafka/config"
+
+# SSL Keystore and Truststore
+kafka_keystore_location: /etc/ssl/certs/keystore.jks
+kafka_keystore_password: Keystore123!
+
+# Zookeeper
+zookeeper_data_dir: "{{ kafka_config_dir }}/zookeeper_data"
+zk_servers: |
+  {{ groups['zk'] | 
+     map('tosit.tdp.access_fqdn', hostvars) | 
+     map('regex_replace', '^(.*)$', '\1:2888:3888') |
+     list }}
+tickTime: 2000
+initLimit: 10
+syncLimit: 5
+clientPort: 2181
+zookeeper_quorum: |
+  {{ groups['zk'] | 
+     map('tosit.tdp.access_fqdn', hostvars) |
+     map('regex_replace', '^(.*)$', '\1:2181') |
+     list |
+     join(',') }}
+
+# systemd
+systemd_service_file: /usr/lib/systemd/system/kafka.service
+
+# Service restart policies
+kafka_restart: "no"

@@ -1,0 +1,70 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Ensure kafka_config_dir exists
+  file:
+    path: "{{ kafka_config_dir }}"
+    state: directory
+
+- name: Set zookeeper id
+  template:
+    src: myid.j2
+    dest: "{{ zookeeper_data_dir }}/myid"
+    owner: '{{ kafka_user }}'
+    group: '{{ kafka_group }}'
+    mode: '0600'
+  vars:
+    broker_id: "{{ groups['all'].index(inventory_hostname) + 1 }}"
+
+- name: Template zookeeper.properties
+  template:
+    src: zookeeper.properties.j2
+    dest: '{{ kafka_config_dir }}/zookeeper.properties'
+    owner: '{{ kafka_user }}'
+    group: '{{ kafka_group }}'
+    mode: '0600'
+
+- name: Template log4j.properties
+  template:
+    src: log4j.properties.j2
+    dest: '{{ kafka_config_dir }}/log4j.properties'
+    owner: '{{ kafka_user }}'
+    group: '{{ kafka_group }}'
+    mode: '0600'
+
+- name: Template server.properties
+  template:
+    src: server.properties.j2
+    dest: '{{ kafka_config_dir }}/server.properties'
+    owner: '{{ kafka_user }}'
+    group: '{{ kafka_group }}'
+    mode: '0600'
+  vars:
+    broker_id: "{{ groups['all'].index(inventory_hostname) + 1 }}"
+
+- name: Create directory for pid
+  file:
+    path: '{{ kafka_pid_dir }}'
+    state: directory
+    group: '{{ kafka_group }}'
+    owner: '{{ kafka_user }}'
+
+- name: Template spark tmpfiles.d
+  template:
+    src: tmpfiles-kafka-broker.conf.j2
+    dest: "/etc/tmpfiles.d/tmpfiles-kafka-broker.conf"
+
+- name: Template kafka service file
+  template:
+    src: kafka.service.j2
+    dest: '{{ systemd_service_file }}'
+    owner: root
+    group: root
+    mode: '0600'
+  vars:
+    broker_id: "{{ groups['all'].index(inventory_hostname) }}"
+
+- name: Reread systemd configs
+  systemd:
+    daemon_reload: yes
