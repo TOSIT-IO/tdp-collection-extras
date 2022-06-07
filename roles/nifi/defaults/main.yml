@@ -5,7 +5,7 @@
 
 ---
 nifi_name: nifi
-nifi_version: 1.16.12
+nifi_version: 1.16.1
 nifi_release: "{{ nifi_name }}-{{ nifi_version }}-bin"
 nifi_dist_file: "{{ nifi_release }}.tar.gz"
 
