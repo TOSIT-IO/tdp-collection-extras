@@ -1,5 +1,5 @@
 ---
 - name: Start livy-server
   service:
-    name: livy-server
+    name: "livy-server-{{ spark_version }}"
     state: started
