@@ -3,8 +3,8 @@
 livy_release: apache-livy-0.8.0-incubating-TDP-0.1.0-SNAPSHOT-bin
 livy_dist_file: "{{ livy_release }}.zip"
 
-# Spark version ('spark2' or 'spark3')
-spark_version: spark2
+# Spark version
+spark_version: spark3
 
 # Livy user and group
 livy_user: livy
@@ -12,23 +12,23 @@ hadoop_group: hadoop
 
 # Livy installation directory
 livy_root_dir: /opt/tdp
-livy_install_dir: "{{ livy_root_dir }}/livy"
+livy_install_dir: "{{ livy_root_dir }}/livyspark3"
 
 # Livy configuration directories
-livy_root_conf_dir: /etc/livy
+livy_root_conf_dir: /etc/livyspark3
 livy_server_conf_dir: "{{ livy_root_conf_dir }}/conf.server"
 
 # Livy pid directory
-livy_pid_dir: /var/run/livy
+livy_pid_dir: /var/run/livyspark3
 
 # Livy logging directory
-livy_log_dir: /var/log/livy
+livy_log_dir: /var/log/livyspark3
 
 # Properties
 hadoop_home: /opt/tdp/hadoop
 hadoop_conf_dir: /etc/hadoop/conf
-spark_home: /opt/tdp/spark
-spark_conf_dir: /etc/spark/conf
+spark_home: /opt/tdp/spark3
+spark_conf_dir: /etc/spark3/conf
 java_home: /usr/lib/jvm/jre-1.8.0-openjdk
 
 # SSL Keystore and Truststore
@@ -45,7 +45,7 @@ livy_conf:
   livy.server.launch.kerberos.principal: "livy/_HOST@{{ realm }}"
   livy.server.launch.kerberos.keytab: /etc/security/keytabs/livy.service.keytab
   livy.impersonation.enabled: true
-  livy.server.port: 8998
+  livy.server.port: 8999
   livy.server.session.timeout: 3600000
   livy.spark.master: yarn
   livy.spark.deploy-mode: cluster
@@ -57,6 +57,7 @@ livy_env:
   HADOOP_CONF_DIR: "{{ hadoop_conf_dir }}"
   SPARK_HOME: "{{ spark_home }}"
   SPARK_CONF_DIR: "{{ spark_conf_dir }}"
+  PYSPARK_PYTHON: python3
   LD_LIBRARY_PATH: "$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH"
   LIVY_CONF_DIR: "{{ livy_server_conf_dir }}"
   LIVY_LOG_DIR: "{{ livy_log_dir }}"

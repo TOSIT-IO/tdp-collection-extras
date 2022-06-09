@@ -1,0 +1,10 @@
+---
+- name: Livy Server Start
+  hosts: livyspark3_server
+  tasks:
+    - tosit.tdp.resolve:
+        node_name: livyspark3_server
+    - import_role:
+        name: tosit.tdp_extra.livy.server
+        tasks_from: start
+    - meta: clear_facts

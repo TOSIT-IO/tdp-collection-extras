@@ -48,4 +48,4 @@
 - name: Template Livy Server service file
   template:
     src: livy-server.service.j2
-    dest: /usr/lib/systemd/system/livy-server.service
+    dest: "/usr/lib/systemd/system/livy-server-{{ spark_version }}.service"
