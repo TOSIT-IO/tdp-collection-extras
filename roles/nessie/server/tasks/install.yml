@@ -1,0 +1,34 @@
+---
+- include_role:
+    name: tosit.tdp.utils.user
+  vars:
+    user: "{{ nessie_user }}"
+    group: "{{ hadoop_group }}"
+
+- name: Ensure Nessie root dir exists
+  file:
+    path: "{{ nessie_root_dir }}"
+    state: directory
+
+- name: Upload {{ nessie_dist_file }}
+  copy:
+    src: "files/{{ nessie_dist_file }}"
+    dest: "{{ nessie_root_dir }}"
+    mode: 755
+  diff: no
+
+- name: Ensure Nessie install dir exists
+  file:
+    path: "{{ nessie_install_dir }}"
+    state: directory
+    
+- name: Create symbolic link to Nessie Server
+  file:
+    dest: "{{ nessie_install_dir }}/nessie-server"
+    src: "{{ nessie_root_dir }}/{{ nessie_release }}"
+    state: link
+
+- name: Template Nessie Server service file
+  template:
+    src: nessie-server.service.j2
+    dest: /usr/lib/systemd/system/nessie-server.service

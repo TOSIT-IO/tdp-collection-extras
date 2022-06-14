@@ -1,0 +1,7 @@
+---
+- include_role:
+    name: tosit.tdp.utils.ssl_tls
+    tasks_from: create_keystore
+  vars:
+    keystore_location: "{{ nessie_keystore_location }}"
+    keystore_password: "{{ nessie_keystore_password }}"

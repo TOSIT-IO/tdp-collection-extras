@@ -1,0 +1,5 @@
+---
+- import_playbook: nessie_server_install.yml
+- import_playbook: nessie_ssl-tls_install.yml
+- import_playbook: nessie_server_config.yml
+- import_playbook: nessie_server_start.yml
