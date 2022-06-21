@@ -1,9 +1,9 @@
 ---
 - name: Kerberos Livy Server Install
-  hosts: livyspark3_server
+  hosts: livy_spark3_server
   tasks:
     - tosit.tdp.resolve:
-        node_name: livyspark3_server
+        node_name: livy_spark3_server
     - import_role:
         name: tosit.tdp_extra.livy.server
         tasks_from: kerberos
