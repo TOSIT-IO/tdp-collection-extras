@@ -12,17 +12,17 @@ hadoop_group: hadoop
 
 # Livy installation directory
 livy_root_dir: /opt/tdp
-livy_install_dir: "{{ livy_root_dir }}/livyspark3"
+livy_install_dir: "{{ livy_root_dir }}/livy-spark3"
 
 # Livy configuration directories
-livy_root_conf_dir: /etc/livyspark3
+livy_root_conf_dir: /etc/livy-spark3
 livy_server_conf_dir: "{{ livy_root_conf_dir }}/conf.server"
 
 # Livy pid directory
-livy_pid_dir: /var/run/livyspark3
+livy_pid_dir: /var/run/livy-spark3
 
 # Livy logging directory
-livy_log_dir: /var/log/livyspark3
+livy_log_dir: /var/log/livy-spark3
 
 # Properties
 hadoop_home: /opt/tdp/hadoop
