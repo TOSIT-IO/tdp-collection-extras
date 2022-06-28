@@ -3,7 +3,7 @@
   hosts: livy_spark3_server
   tasks:
     - tosit.tdp.resolve:
-        node_name: livy_spark3_server
+        node_name: livy-spark3_server
     - import_role:
         name: tosit.tdp_extra.livy.server
         tasks_from: install
