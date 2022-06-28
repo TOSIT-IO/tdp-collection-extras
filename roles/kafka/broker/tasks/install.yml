@@ -3,7 +3,7 @@
 
 ---
 - import_role:
-    name: tosit.tdp.kafka.common
+    name: tosit.tdp_extra.kafka.common
     tasks_from: install
 
 - name: Create configuration directory
