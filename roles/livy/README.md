@@ -1,4 +1,4 @@
-# Ansible Livy TDP Extra
+# Ansible Livy TDP Extras
 
 Deploys Apache Livy servers to the `livy_server` Ansible group.
 
