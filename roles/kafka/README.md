@@ -5,7 +5,7 @@ This is the main Kafka directory. It includes the following sub-roles:
 - Kafka Broker
 - Kafka Client
 
-Currently the roles only supports the deployment of SSL-enabled, Kerberos authenticated Kafka clusters (= `SASL_SSL` listener + `GSSAPI` mechanism).
+Currently the roles only supports the deployment of SSL-enabled, Kerberos authenticated Kafka clusters (= `SASL_SSL` listener + `GSSAPI` mechanism) and the Kafka Ranger plugin is installed and enabled by default.
 
 ## Prerequisites
 
@@ -14,6 +14,7 @@ Currently the roles only supports the deployment of SSL-enabled, Kerberos authen
 - Group `kafka_broker` defined in the Ansible inventory
 - Certificate of the CA available as `root.pem` in `files`
 - Certificate files `{{ fqdn }}.key` and `{{ fqdn }}.pem` available in `files`
+- One certificate dedicated to the Kafka Ranger plugin with a Common Name equal to `ranger_kafka_service_properties.commonNameForCertificate` available in `files`
 - Admin access to a KDC with the `realm`, `kadmin_principal` and `kadmin_password` role vars provided
 
 ## Example
