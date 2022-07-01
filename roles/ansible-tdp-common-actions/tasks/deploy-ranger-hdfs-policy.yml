@@ -12,7 +12,7 @@
 
 - name: Get policy ids
   vars:
-    hdfs_policy_query: "[? name == '{{item.name}}'].id"
+    hdfs_policy_query: "[? name == '{{ item.name }}'].id"
   set_fact:
     hdfs_policy_id: "{{ jsoncontent.json | community.general.json_query(hdfs_policy_query) }}"
 
@@ -27,4 +27,4 @@
     url_password: "{{ ranger_admin_password }}"
     force_basic_auth: yes
     method: POST
-  when: hdfs_policy_id == []
+  when: not hdfs_policy_id

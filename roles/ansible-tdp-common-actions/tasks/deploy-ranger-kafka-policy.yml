@@ -1,7 +1,7 @@
 ---
 - name: "Ranger: get policy list"
   uri:
-    url: "{{ ranger_hive_install_properties.POLICY_MGR_URL }}/service/public/v2/api/policy"
+    url: "{{ ranger_kafka_install_properties.POLICY_MGR_URL }}/service/public/v2/api/policy"
     headers:
       Accept: application/json
     url_username: "{{ ranger_admin_user }}"
@@ -12,13 +12,13 @@
 
 - name: Get policy ids
   vars:
-    hive_policy_query: "[? name == '{{ item.name }}'].id"
+    kafka_policy_query: "[? name == '{{ item.name }}'].id"
   set_fact:
-    hive_policy_id: "{{ jsoncontent.json | community.general.json_query(hive_policy_query) }}"
+    kafka_policy_id: "{{ jsoncontent.json | community.general.json_query(kafka_policy_query) }}"
 
-- name: Create Hive policy for user
+- name: Create Kafka policy for user
   uri:
-    url: "{{ ranger_hive_install_properties.POLICY_MGR_URL }}/service/public/v2/api/policy"
+    url: "{{ ranger_kafka_install_properties.POLICY_MGR_URL }}/service/public/v2/api/policy"
     headers:
       Accept: application/json
     body: "{{ item | to_json }}"
@@ -27,4 +27,4 @@
     url_password: "{{ ranger_admin_password }}"
     force_basic_auth: yes
     method: POST
-  when: not hive_policy_id
+  when: not kafka_policy_id
