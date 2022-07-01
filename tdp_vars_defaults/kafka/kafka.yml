@@ -64,6 +64,8 @@ kafka_server_properties:
   ssl.keystore.password: "{{ kafka_keystore_password }}"
   ssl.truststore.location: "{{ kafka_truststore_location }}"
   ssl.truststore.password: "{{ kafka_truststore_password }}"
+  # Ranger
+  authorizer.class.name: org.apache.ranger.authorization.kafka.authorizer.RangerKafkaAuthorizer
   # Socket Server Settings
   num.network.threads: 3
   num.io.threads: 8
@@ -83,7 +85,7 @@ kafka_server_properties:
   log.retention.check.interval.ms: 300000
   # ZooKeeper
   zookeeper.connect: "{{ zookeeper_client_quorum }}/kafka"
-  zookeeper.connection.timeout.ms: 18000
+  zookeeper.connection.timeout.ms: 60000
   zookeeper.set.acl: "true"
   # Group Coordinator Settings
   group.initial.rebalance.delay.ms: 3
@@ -105,6 +107,36 @@ kafka_consumer_properties: {}
 
 # Service restart policies
 kafka_restart: "no"
+
+# Hadoop client directories (used if XAAUDIT_HDFS_ENABLE is true)
+hadoop_install_dir: "/opt/tdp/hadoop"
+hadoop_client_conf_dir: "/etc/hadoop/conf"
+hadoop_client_missing_jars:
+  - "{{ hadoop_install_dir }}/share/hadoop/common/hadoop-common-3.1.1-TDP-0.1.0-SNAPSHOT.jar"
+  - "{{ hadoop_install_dir }}/share/hadoop/hdfs/hadoop-hdfs-client-3.1.1-TDP-0.1.0-SNAPSHOT.jar"
+  - "{{ hadoop_install_dir }}/share/hadoop/hdfs/lib/commons-logging-1.1.3.jar"
+  - "{{ hadoop_install_dir }}/share/hadoop/hdfs/lib/woodstox-core-5.0.3.jar"
+  - "{{ hadoop_install_dir }}/share/hadoop/hdfs/lib/stax2-api-3.1.4.jar"
+  - "{{ hadoop_install_dir }}/share/hadoop/hdfs/lib/guava-11.0.2.jar"
+  - "{{ hadoop_install_dir }}/share/hadoop/hdfs/lib/commons-collections-3.2.2.jar"
+hadoop_client_class_path: "{{ hadoop_client_missing_jars | join(':') }}"
+
+# Ranger Kafka properties
+ranger_kafka_release: ranger-2.0.1-TDP-0.1.0-SNAPSHOT-kafka-plugin
+ranger_kafka_dist_file: "{{ ranger_kafka_release }}.tar.gz"
+ranger_kafka_install_dir: "{{ kafka_root_dir }}/ranger-kafka-plugin"
+ranger_kafka_install_properties:
+  POLICY_MGR_URL: "https://{{ groups['ranger_admin'][0] | tosit.tdp.access_fqdn(hostvars) }}:6182"
+  REPOSITORY_NAME: kafka-tdp
+  XAAUDIT_SOLR_ENABLE: "{% if 'ranger_solr' in groups and groups['ranger_solr'] %}true{% else %}false{% endif %}"
+  XAAUDIT_SOLR_URL: "{% if 'ranger_solr' in groups and groups['ranger_solr'] %}http://{{ groups['ranger_solr'][0] | tosit.tdp.access_fqdn(hostvars) }}:8983/solr/ranger_audits{% else %}NONE{% endif %}"
+  # HDFS audits disabled because not functional
+  XAAUDIT_HDFS_ENABLE: "false"
+  audit_hdfs: hdfs://mycluster
+ranger_kafka_keystore_location: /etc/ssl/certs/ranger-kafka-plugin-keystore.jks
+ranger_kafka_keystore_password: Keystore123!
+ranger_kafka_service_properties:
+  commonNameForCertificate: "ranger-kafka-plugin.{{ domain }}"
 
 # JMX Exporter configuration directory
 jmx_exporter_conf_dir: /etc/jmx-exporter
