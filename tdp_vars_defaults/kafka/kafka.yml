@@ -48,7 +48,7 @@ kafka_broker_heap_opts: -Xms1G -Xmx1G
 # ZooKeeper quorum
 zookeeper_client_port: 2191
 zookeeper_client_quorum: |-
-  {{ groups['zk_kafka'] |
+  {{ groups['zk'] |
      map('tosit.tdp.access_fqdn', hostvars) |
      map('regex_replace', '^(.*)$', '\1:' + (zookeeper_client_port | string)) |
      list | join(',') }}
