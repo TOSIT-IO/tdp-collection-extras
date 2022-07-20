@@ -27,14 +27,26 @@ postgresql_global_config_options:
 # Host based authentication (hba) entries to be added to the pg_hba.conf. This
 # variable's defaults reflect the defaults that come with a fresh installation.
 postgresql_hba_entries:
-  - {type: local, database: all, user: postgres, auth_method: peer}
-  - {type: local, database: all, user: all, auth_method: peer}
-  - {type: host, database: all, user: all, address: '127.0.0.1/32', auth_method: "{{ postgresql_auth_method }}"}
-  - {type: host, database: all, user: all, address: '::1/128', auth_method: "{{ postgresql_auth_method }}"}
+  - { type: local, database: all, user: postgres, auth_method: peer }
+  - { type: local, database: all, user: all, auth_method: peer }
+  - {
+      type: host,
+      database: all,
+      user: all,
+      address: "127.0.0.1/32",
+      auth_method: "{{ postgresql_auth_method }}",
+    }
+  - {
+      type: host,
+      database: all,
+      user: all,
+      address: "::1/128",
+      auth_method: "{{ postgresql_auth_method }}",
+    }
 
 # Debian only. Used to generate the locales used by PostgreSQL databases.
 postgresql_locales:
-  - 'en_US.UTF-8'
+  - "en_US.UTF-8"
 
 # Databases to ensure exist.
 postgresql_databases: []
@@ -68,3 +80,5 @@ postgresql_users: []
 
 # Whether to output user data when managing users.
 postgres_users_no_log: true
+
+config_tdp_getting_started: no
