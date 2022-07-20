@@ -11,6 +11,7 @@
 
 - include_tasks: initialize.yml
 - include_tasks: configure.yml
+- include_tasks: service.yml
 
 - name: Ensure PostgreSQL is started and enabled on boot.
   service:
@@ -23,5 +24,9 @@
 - import_tasks: databases.yml
 - import_tasks: users_props.yml
 
+# Trust connections from postgresql_client
+- import_tasks: trust-clients.yml
+
 # Configure for TDP-getting-started use
 - import_tasks: configure-for-tdp-getting-started.yml
+  when: config_tdp_getting_started

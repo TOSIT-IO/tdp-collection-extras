@@ -1,13 +1,4 @@
 ---
-- name: Trust connections from postgresql_client (add to pg_hba.conf)
-  blockinfile:
-    path: "{{ postgresql_data_dir }}/pg_hba.conf"
-    block: |
-      host all all {{ hostvars[item]['ansible_host'] }}/32 trust
-      host all all {{ item }}.{{ hostvars[item]['domain'] }} trust
-    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item }}"
-  loop: "{{ groups['postgresql_client'] }}"
-
 - name: Trust connections from the ansible host (add to pg_hba.conf)
   lineinfile:
     dest: /var/lib/pgsql/data/pg_hba.conf
