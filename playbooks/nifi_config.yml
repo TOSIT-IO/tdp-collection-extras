@@ -1,0 +1,15 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+# Author: Pierre Marty <pmarty@linagora.com>
+# Date: 2022-06-07
+
+---
+- name: Configure NiFi
+  hosts: nifi
+  tasks:
+    - tosit.tdp.resolve:
+        node_name: nifi
+    - import_role:
+        name: tosit.tdp_extra.nifi
+        tasks_from: configure
+    - meta: clear_facts

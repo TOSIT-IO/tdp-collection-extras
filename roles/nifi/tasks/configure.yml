@@ -1,0 +1,8 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+# Author: Pierre Marty <pmarty@linagora.com>
+# Date: 2022-06-07
+
+---
+- name: Configure Nifi
+  shell: "echo hello"

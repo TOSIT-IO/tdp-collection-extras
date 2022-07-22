@@ -1,0 +1,24 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+# Author: Pierre Marty <pmarty@linagora.com>
+# Date: 2022-06-07
+
+---
+- name: Upload {{ nifi_dist_file }}
+  copy:
+    src: "files/{{ nifi_dist_file }}"
+    dest: /tmp
+  diff: no
+
+- name: Ensure NiFi root dir exists
+  file:
+    path: "{{ nifi_root_dir }}"
+    state: directory
+
+- name: Extract NiFi
+  unarchive:
+    src: "/tmp/{{ nifi_dist_file }}"
+    dest: "{{ nifi_root_dir }}"
+    group: root
+    owner: root
+    remote_src: yes
