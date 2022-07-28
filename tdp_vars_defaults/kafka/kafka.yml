@@ -36,6 +36,15 @@ kafka_client_brokers: |-
      map('regex_replace', '^(.*)$', '\1:' + (kafka_listener_port | string)) |
      list | join(',') }}
 
+# Kerberos
+###
+# Set to 'no' to skip service principals and keytabs creation.
+# This can be useful if TDP operators don't have admin access to the Kerberos server,
+# or if the Kerberos server does not support MIT Kerberos tools.
+###
+krb_create_principals_keytabs: yes
+kafka_headless_principal: kafka
+
 # SSL Keystore and Truststore
 kafka_keystore_location: /etc/ssl/certs/keystore.jks
 kafka_keystore_password: Keystore123!
