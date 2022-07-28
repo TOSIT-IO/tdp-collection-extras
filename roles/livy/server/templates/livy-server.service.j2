@@ -1,5 +1,7 @@
 [Unit]
 Description=Livy Server for {{ spark_version | capitalize }}
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 User={{ livy_user }}
