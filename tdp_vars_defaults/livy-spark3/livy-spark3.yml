@@ -31,6 +31,14 @@ spark_home: /opt/tdp/spark3
 spark_conf_dir: /etc/spark3/conf
 java_home: /usr/lib/jvm/jre-1.8.0-openjdk
 
+# Kerberos
+###
+# Set to 'no' to skip service principals and keytabs creation.
+# This can be useful if TDP operators don't have admin access to the Kerberos server,
+# or if the Kerberos server does not support MIT Kerberos tools.
+###
+krb_create_principals_keytabs: yes
+
 # SSL Keystore and Truststore
 livy_keystore_location: /etc/ssl/certs/keystore.jks
 livy_keystore_password: Keystore123!

@@ -20,3 +20,15 @@
     user: "{{ kafka_user }}"
     group: "{{ kafka_group }}"
     mode: "600"
+  when: krb_create_principals_keytabs
+
+- import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: check_secure_keytab
+  vars:
+    principal: "kafka/{{ ansible_fqdn }}"
+    keytab: "kafka.service.keytab"
+    user: "{{ kafka_user }}"
+    group: "{{ kafka_group }}"
+    mode: "600"
+  when: not krb_create_principals_keytabs

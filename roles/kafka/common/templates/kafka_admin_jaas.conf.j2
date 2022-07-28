@@ -3,5 +3,5 @@ KafkaClient {
     useKeyTab=true
     storeKey=true
     keyTab="/etc/security/keytabs/kafka.headless.keytab"
-    principal="kafka@{{ realm }}";
+    principal="{{ kafka_headless_principal }}@{{ realm }}";
 };
