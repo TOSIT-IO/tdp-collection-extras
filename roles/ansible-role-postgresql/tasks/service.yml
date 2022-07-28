@@ -1,10 +1,4 @@
 ---
-# - name: Template postgres.service
-#   template:
-#     src: postgresql.service.j2
-#     dest: /usr/lib/systemd/system/postgresql.service
-#   notify: restart postgresql
-
 - name: Overwrite PGDATA in postgres.service
   lineinfile:
     path: /usr/lib/systemd/system/postgresql.service
