@@ -37,6 +37,11 @@
     group: "{{ hadoop_group }}"
     owner: "{{ livy_user }}"
 
+- name: Template livy tmpfiles.d
+  template:
+    src: tmpfiles-livy.conf.j2
+    dest: /etc/tmpfiles.d/livy.conf
+
 - name: Create log directory
   file:
     path: "{{ livy_log_dir }}"
