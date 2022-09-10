@@ -83,6 +83,9 @@ zookeeper_cfg:
   kerberos.removeRealmFromPrincipal: "true"
   4lw.commands.whitelist: ruok, mntr
 
+# Service start on boot policies
+zk_start_on_boot: no
+
 # Service restart policies
 zk_restart: "no"
 

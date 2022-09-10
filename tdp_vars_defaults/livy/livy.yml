@@ -70,5 +70,8 @@ livy_env:
   LIVY_LOG_DIR: "{{ livy_log_dir }}"
   LIVY_PID_DIR: "{{ livy_pid_dir }}"
 
+# Service start on boot policies
+livy_start_on_boot: no
+
 # Service restart policies
 livy_restart: "no"
