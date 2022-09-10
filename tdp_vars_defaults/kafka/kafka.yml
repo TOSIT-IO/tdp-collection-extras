@@ -114,6 +114,9 @@ kafka_producer_properties: {}
 # consumer.properties
 kafka_consumer_properties: {}
 
+# Service start on boot policies
+kafka_start_on_boot: no
+
 # Service restart policies
 kafka_restart: "no"
 
