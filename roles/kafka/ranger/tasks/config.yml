@@ -48,3 +48,9 @@
               <name>xasecure.audit.destination.hdfs.config.fs.hdfs.impl</name>
               <value>org.apache.hadoop.hdfs.DistributedFileSystem</value>
           </property>
+
+# Workaround to force the plugin to fetch policies on /secure Ranger Admin endpoint
+- name: Template mock core-site.xml for secure Ranger authentication
+  template:
+    src: core-site.xml.j2
+    dest: "{{ kafka_broker_conf_dir }}/core-site.xml"
