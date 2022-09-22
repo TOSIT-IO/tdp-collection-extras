@@ -8,7 +8,7 @@ kafka_dist_file: "{{ kafka_release }}.tgz"
 
 # Kafka user and group
 kafka_user: kafka
-kafka_group: kafka
+kafka_group: hadoop
 
 # Kafka installation directory
 kafka_root_dir: /opt/tdp
