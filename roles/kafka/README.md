@@ -14,7 +14,6 @@ Currently the roles only supports the deployment of SSL-enabled, Kerberos authen
 - Group `kafka_broker` defined in the Ansible inventory
 - Certificate of the CA available as `root.pem` in `files`
 - Certificate files `{{ fqdn }}.key` and `{{ fqdn }}.pem` available in `files`
-- One certificate dedicated to the Kafka Ranger plugin with a Common Name equal to `ranger_kafka_service_properties.commonNameForCertificate` available in `files`
 - Admin access to a KDC with the `realm`, `kadmin_principal` and `kadmin_password` role vars provided
 
 ## Example
