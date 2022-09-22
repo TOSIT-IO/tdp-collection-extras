@@ -13,7 +13,6 @@
       configs:
         username: kafka
         password: kafka
-        commonNameForCertificate: "{{ ranger_kafka_service_properties.commonNameForCertificate }}"
         policy.download.auth.users: kafka
         zookeeper.connect: "{{ kafka_server_properties['zookeeper.connect'] }}"
       type: kafka

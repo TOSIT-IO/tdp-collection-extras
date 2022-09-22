@@ -39,9 +39,6 @@
     - kafka_ranger_install
     - kafka_broker_config
 
-- name: kafka_ranger_ssl-tls_install
-  depends_on: []
-
 - name: kafka_ranger_init
   depends_on:
     - ranger_admin_init
@@ -62,7 +59,6 @@
     - kafka_kerberos_install
     - kafka_ssl-tls_install
     - kafka_ranger_install
-    - kafka_ranger_ssl-tls_install
 
 - name: kafka_config
   noop: yes

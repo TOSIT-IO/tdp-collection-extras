@@ -8,7 +8,6 @@
 - import_playbook: ../kafka_kerberos_install.yml
 - import_playbook: ../kafka_client_config.yml
 - import_playbook: ../kafka_ranger_install.yml
-- import_playbook: ../kafka_ranger_ssl-tls_install.yml
 - import_playbook: ../kafka_ssl-tls_install.yml
 # kafka_install
 - import_playbook: ../kafka_broker_config.yml

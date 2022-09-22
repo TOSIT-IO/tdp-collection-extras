@@ -145,10 +145,6 @@ ranger_kafka_install_properties:
   # HDFS audits disabled because not functional
   XAAUDIT_HDFS_ENABLE: "false"
   audit_hdfs: hdfs://mycluster
-ranger_kafka_keystore_location: /etc/ssl/certs/ranger-kafka-plugin-keystore.jks
-ranger_kafka_keystore_password: Keystore123!
-ranger_kafka_service_properties:
-  commonNameForCertificate: "ranger-kafka-plugin.{{ domain }}"
 
 # JMX Exporter configuration directory
 jmx_exporter_conf_dir: /etc/jmx-exporter
