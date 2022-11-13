@@ -1,0 +1,39 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Backup configuration
+  copy:
+    src: "{{ jupyterhub_server_conf_dir }}/"
+    dest: "{{ jupyterhub_server_conf_dir }}.{{ ansible_date_time.epoch }}"
+    owner: root
+    group: root
+    mode: "0755"
+    remote_src: true
+  tags:
+    - backup
+
+- name: Template Jupyterhub service file
+  template:
+    src: jupyterhub.service.j2
+    dest: /usr/lib/systemd/system/jupyterhub.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload systemd
+
+- name: Template jupyterhub_start.sh
+  template:
+    src: jupyterhub_start.sh.j2
+    dest: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/bin/jupyterhub_start.sh"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Template Jupyterhub configuration
+  template:
+    src: jupyterhub_config.py.j2
+    dest: "{{ jupyterhub_server_conf_dir }}/jupyterhub_config.py"
+    owner: root
+    group: root
+    mode: "0644"

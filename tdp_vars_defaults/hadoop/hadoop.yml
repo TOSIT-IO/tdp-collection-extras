@@ -1,0 +1,11 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+auth_to_local:
+  jupyterhub:
+    - RULE:[2:$1/$2@$0](jupyterhub/.*@{{ realm }})s/.*/jupyterhub/
+
+core_site:
+  hadoop.proxyuser.jupyterhub.groups: '*'
+  hadoop.proxyuser.jupyterhub.hosts: '*'

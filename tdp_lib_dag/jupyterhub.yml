@@ -1,0 +1,58 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: jupyterhub_server_install
+  depends_on: []
+
+- name: jupyterhub_server_config
+  depends_on:
+    - jupyterhub_server_install
+    - jupyterhub_kerberos_install
+    - jupyterhub_ssl-tls_install
+
+- name: jupyterhub_server_start
+  depends_on:
+    - jupyterhub_server_config
+
+- name: jupyterhub_server_hdfs-init
+  depends_on:
+    - hdfs_init
+
+- name: jupyterhub_server_init
+  depends_on:
+    - jupyterhub_server_hdfs-init
+    - jupyterhub_server_start
+
+- name: jupyterhub_kerberos_install
+  depends_on:
+    - jupyterhub_server_install
+
+- name: jupyterhub_ssl-tls_install
+  depends_on:
+    - jupyterhub_server_install
+
+- name: jupyterhub_install
+  noop: yes
+  depends_on:
+    - jupyterhub_server_install
+
+- name: jupyterhub_config
+  noop: yes
+  depends_on:
+    - jupyterhub_install
+    - jupyterhub_server_config
+
+- name: jupyterhub_start
+  noop: yes
+  depends_on:
+    - jupyterhub_config
+    - jupyterhub_server_start
+
+- name: jupyterhub_init
+  noop: yes
+  depends_on:
+    - yarn_init
+    - spark3_init
+    - jupyterhub_start
+    - jupyterhub_server_init

@@ -1,0 +1,25 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Kinit for jupyterhub
+  run_once: true
+  command: kinit -kt /etc/security/keytabs/jupyterhub.service.keytab {{ jupyterhub_principal }}
+  become: true
+  become_user: "{{ jupyterhub_user }}"
+  changed_when: false
+
+- name: Put yarn venv to HDFS
+  run_once: true
+  command: >-
+    {{ hadoop_install_dir }}/bin/hdfs
+    --config {{ hadoop_client_conf_dir }}
+    dfs
+    -put {{ jupyterhub_install_dir }}/share/yarn_environment.tar.gz {{ jupyterhub_properties['yarnspawner']['localize_files']['environment']['source'] }}
+  become: true
+  become_user: "{{ jupyterhub_user }}"
+  register: hdfs_put_venv
+  changed_when: hdfs_put_venv.rc == 0
+  failed_when: |
+    hdfs_put_venv.rc > 1 or
+    (hdfs_put_venv.rc == 1 and 'File exists' not in hdfs_put_venv.stderr)
