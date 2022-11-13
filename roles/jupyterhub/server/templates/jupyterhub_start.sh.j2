@@ -1,0 +1,3 @@
+#!/bin/bash
+
+{{ jupyterhub_install_dir }}/bin/python -m jupyterhub.app -f {{ jupyterhub_server_conf_dir }}/jupyterhub_config.py &>> {{ jupyterhub_log_dir }}/jupyterhub.log

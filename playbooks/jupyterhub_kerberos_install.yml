@@ -1,0 +1,15 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Kerberos Jupyterhub Server install
+  hosts: jupyterhub_server
+  strategy: linear
+  tasks:
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: jupyterhub_kerberos
+    - name: Install Jupyterhub Server Kerberos
+      import_role:
+        name: tosit.tdp_extra.jupyterhub.server
+        tasks_from: kerberos
+    - meta: clear_facts # noqa unnamed-task

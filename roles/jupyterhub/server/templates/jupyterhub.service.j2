@@ -1,0 +1,20 @@
+[Unit]
+Description=Jupyterhub Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Environment="PATH={{ jupyterhub_install_dir }}/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin"
+ExecStart={{ jupyterhub_install_dir }}/bin/jupyterhub_start.sh
+Group={{ jupyterhub_group }}
+# Settings from: https://tljh.jupyter.org/en/latest/howto/admin/systemd.html
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+Restart={{ jupyterhub_restart }}
+User={{ jupyterhub_user }}
+WorkingDirectory={{ jupyterhub_working_dir }}
+
+[Install]
+WantedBy=multi-user.target

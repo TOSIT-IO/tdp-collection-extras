@@ -1,0 +1,113 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+# Jupyterhub version
+jupyterhub_release: jupyterhub-2.3.1-TDP-0.1.0
+jupyterhub_dist_file: "{{ jupyterhub_release }}.tar.gz"
+
+jupyterhub_upload_directory: "/tmp"
+
+jupyterhub_python_executable: "python3.6"
+
+# Jupyterhub user and group
+jupyterhub_user: jupyterhub
+jupyterhub_group: jupyterhub
+
+# Jupyterhub installation directory
+jupyterhub_root_dir: /opt/tdp
+jupyterhub_install_dir: "{{ jupyterhub_root_dir }}/jupyterhub"
+
+# Jupyterhub configuration directories
+jupyterhub_root_conf_dir: /etc/jupyterhub
+jupyterhub_server_conf_dir: "{{ jupyterhub_root_conf_dir }}/conf.server"
+jupyterhub_server_certs_folder: "{{ jupyterhub_server_conf_dir }}/certs"
+
+certificates_path: /etc/ssl/certs
+certificates_cert_filename: "{{ inventory_hostname }}.{{ domain }}"
+certificates_public_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.pem"
+certificates_private_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.key"
+
+jupyterhub_public_key: "{{ jupyterhub_server_certs_folder }}/{{ certificates_cert_filename }}.pem"
+jupyterhub_private_key: "{{ jupyterhub_server_certs_folder }}/{{ certificates_cert_filename }}.key"
+
+# Jupyterhub logging directory
+jupyterhub_log_dir: /var/log/jupyterhub
+
+# Jupyterhub working directory
+jupyterhub_working_dir: /var/lib/jupyterhub
+
+# Jupyterhub configuration
+jupyterhub_port: 8000
+
+jupyterhub_properties:
+  jupyterhub:
+    active_server_limit: 0
+    active_user_window: 1800
+    authenticator_class: ldapauthenticator.LDAPAuthenticator
+    bind_url: http://{{ ansible_fqdn }}:{{ jupyterhub_port }}
+    cleanup_proxy: false
+    cleanup_servers: false
+    concurrent_spawn_limit: 100
+    cookie_secret_file: "{{ jupyterhub_working_dir }}/jupyterhub_cookie_secret"
+    data_files_path: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/share/jupyterhub/"
+    db_url: sqlite:///{{ jupyterhub_working_dir }}/jupyterhub.sqlite
+    hub_ip: "{{ ansible_fqdn }}"
+    proxy_class: jupyterhub_traefik_proxy.TraefikTomlProxy
+    spawner_class: yarnspawner.YarnSpawner
+    ssl_cert: "{{ jupyterhub_public_key }}"
+    ssl_key: "{{ jupyterhub_private_key }}"
+  spawner: {}
+  authenticator: {}
+  ldapauthenticator:
+    lookup_dn: false
+    lookup_dn_search_user: cn=Manager,ou=tdp,o=tosit,c=io
+    lookup_dn_search_password: secret
+    bind_dn_template: uid={username},ou=users,c=io
+    server_address: "{{ groups['ldap'] | first | tosit.tdp.access_fqdn(hostvars) }}"
+    post_auth_hook: f:post_auth_hook
+  traefiktomlproxy:
+    should_start: True
+    toml_static_config_file: "{{ jupyterhub_working_dir }}/traefik.toml"
+    toml_dynamic_config_file: "{{ jupyterhub_working_dir }}/rules.toml"
+    traefik_api_username: admin
+    traefik_api_password: TraefikAdmin123
+    traefik_api_validate_cert: false
+  yarnspawner:
+    auth_state_hook: f:auth_state_hook
+    cmd:
+      - python -m yarnspawner.jupyter_labhub
+    default_url: /lab
+    # environment:
+    keytab: /etc/security/keytabs/jupyterhub.service.keytab
+    localize_files:
+      environment:
+        source: hdfs:///jupyterhub/virtualenvs/yarn_environment.tar.gz
+    mem_limit: 8G
+    cpu_limit: 2
+    options_form: |-
+      f:"""<label for="queue">Queue name:&nbsp;</label>
+      <input name="queue" type="text" value="default" required /><br />
+      <label for="cpu">Instance Cpu:&nbsp;</label>
+      <input name="cpu" type="number" min="1" step="1" value="1" required /><br />
+      <label for="memory">Instance Memory:&nbsp;</label>
+      <input name="memory" type="text" value="2048M" required /><br />"""
+    pre_spawn_hook: f:pre_spawn_hook
+    principal: "{{ jupyterhub_principal }}"
+    prologue: source environment/bin/activate
+
+# Kerberos
+###
+# Set to 'no' to skip service principals and keytabs creation.
+# This can be useful if TDP operators don't have admin access to the Kerberos server,
+# or if the Kerberos server does not support MIT Kerberos tools.
+###
+krb_create_principals_keytabs: yes
+jupyterhub_principal: jupyterhub/{{ ansible_fqdn }}@{{ realm}}
+hdfs_user: hdfs
+
+# Service start on boot policies
+jupyterhub_start_on_boot: no
+
+# Service restart policies
+jupyterhub_restart: "no"

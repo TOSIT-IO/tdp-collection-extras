@@ -1,0 +1,132 @@
+# Configuration file for jupyterhub.
+
+#------------------------------------------------------------------------------
+# Application(SingletonConfigurable) configuration
+#------------------------------------------------------------------------------
+
+## This is an application.
+
+## The date format used by logging formatters for %(asctime)s
+#c.Application.log_datefmt = '%Y-%m-%d %H:%M:%S'
+
+## The Logging format template
+#c.Application.log_format = '[%(name)s]%(highlevel)s %(message)s'
+
+## Set the log level by value or name.
+#c.Application.log_level = 30
+
+#------------------------------------------------------------------------------
+# JupyterHub(Application) configuration
+#------------------------------------------------------------------------------
+
+## An Application for starting a Multi-User Jupyter Notebook server.
+{% for key, value in jupyterhub_properties.get('jupyterhub', {}).items() +%}
+c.JupyterHub.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
+{% endfor %}
+
+#------------------------------------------------------------------------------
+# Spawner(LoggingConfigurable) configuration
+#------------------------------------------------------------------------------
+
+## Base class for spawning single-user notebook servers.
+#  
+#  Subclass this, and override the following methods:
+#  
+#  - load_state - get_state - start - stop - poll
+#  
+#  As JupyterHub supports multiple users, an instance of the Spawner subclass is
+#  created for each user. If there are 20 JupyterHub users, there will be 20
+#  instances of the subclass.
+{% for key, value in jupyterhub_properties.get('spawner', {}).items() +%}
+c.Spawner.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
+{% endfor %}
+
+#------------------------------------------------------------------------------
+# Authenticator(LoggingConfigurable) configuration
+#------------------------------------------------------------------------------
+
+## Base class for implementing an authentication provider for JupyterHub
+{% for key, value in jupyterhub_properties.get('authenticator', {}).items() +%}
+c.Authenticator.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
+{% endfor %}
+
+#------------------------------------------------------------------------------
+# CryptKeeper(SingletonConfigurable) configuration
+#------------------------------------------------------------------------------
+
+## Encapsulate encryption configuration
+#  
+#  Use via the encryption_config singleton below.
+{% for key, value in jupyterhub_properties.get('cryptKeeper', {}).items() +%}
+c.CryptKeeper.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
+{% endfor %}
+
+#------------------------------------------------------------------------------
+# TraefikTomlProxy(Proxy) configuration
+#------------------------------------------------------------------------------
+{% for key, value in jupyterhub_properties.get('traefiktomlproxy', {}).items() +%}
+c.TraefikTomlProxy.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
+{% endfor %}
+
+#------------------------------------------------------------------------------
+# LDAPAuthenticator(Authenticator) configuration
+#------------------------------------------------------------------------------
+# Bug with ldap authenticator where usernames are surround with double quotes
+def post_auth_hook(authenticator, handler, authentication):
+    return authentication
+{% for key, value in jupyterhub_properties.get('ldapauthenticator', {}).items() +%}
+c.LDAPAuthenticator.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
+{% endfor %}
+
+#------------------------------------------------------------------------------
+# YarnSpawner(Spawner) configuration
+#------------------------------------------------------------------------------
+import json
+def redefine_dumped_oauth_token(spawner):
+    "Oauth scopes dumped into env var can't be parsed"
+    return json.dumps(spawner.oauth_scopes).replace('"', '\\"')
+
+def auth_state_hook(spawner, auth_state):
+    "Custom hook to customize Spawner instance"
+    # spawner.user.name <-- username
+    spawner.environment['JUPYTERHUB_OAUTH_SCOPES'] = redefine_dumped_oauth_token
+    # spawner.localize_files = {"environment": {"source": "/fake/venv"} }
+
+
+from jupyterhub.traitlets import TraitError, ByteSpecification
+from tornado import web
+
+MAX_RAM = ByteSpecification("{{ jupyterhub_properties['yarnspawner']['mem_limit'] }}")
+MAX_RAM_VALUE = MAX_RAM.validate(MAX_RAM, MAX_RAM.default_value)
+MAX_CPU = {{ jupyterhub_properties['yarnspawner']['cpu_limit'] }}
+
+from yarnspawner import YarnSpawner
+
+def pre_spawn_hook(spawner):
+    # spawner.user_options holds the value parsed from the form
+    # values are always list of strings
+    queue = spawner.user_options.get("queue", ["default"])[0]
+    cpu_limit = spawner.user_options.get("cpu", ["1"])[0]
+    mem_limit = spawner.user_options.get("memory", ["2G"])[0]
+    mem_limit = int(mem_limit) if mem_limit.isnumeric() else mem_limit
+
+    # check values are correct
+    try:
+        if not cpu_limit.isnumeric():
+            raise ValueError("CPU should be a numeric value")
+        cpu_limit = int(cpu_limit)
+        if YarnSpawner.cpu_limit.validate(None, cpu_limit) > MAX_CPU:
+            raise ValueError(f"Invalid number of CPU, max cpu = {MAX_CPU}")
+        if YarnSpawner.mem_limit.validate(None, mem_limit) > MAX_RAM_VALUE:
+            raise ValueError(f"Invalid memory, max memory = {MAX_RAM.default_value}")
+    except (TraitError, ValueError) as e:
+        raise web.HTTPError(status_code=400, log_message=str(e))
+
+    # assign parameters to spawner
+    spawner.cpu_limit = cpu_limit
+    spawner.mem_limit = mem_limit
+    spawner.queue = queue
+
+{% for key, value in jupyterhub_properties.get('yarnspawner', {}).items() +%}
+c.YarnSpawner.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
+{% endfor %}

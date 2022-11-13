@@ -1,0 +1,94 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Ensure jupyterhub user exists
+  include_role:
+    name: tosit.tdp.utils.group
+  vars:
+    group: "{{ jupyterhub_group }}"
+
+- name: Ensure jupyterhub group exists
+  include_role:
+    name: tosit.tdp.utils.user
+  vars:
+    user: "{{ jupyterhub_user }}"
+    group: "{{ jupyterhub_group }}"
+
+- name: Upload {{ jupyterhub_dist_file }}
+  copy:
+    src: files/{{ jupyterhub_dist_file }}
+    dest: "{{ jupyterhub_upload_directory }}"
+    owner: root
+    group: root
+    mode: "0644"
+  diff: false
+
+- name: Ensure {{ jupyterhub_root_dir }} exists
+  file:
+    path: "{{ jupyterhub_root_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Extract {{ jupyterhub_dist_file }}
+  unarchive:
+    src: "{{ jupyterhub_upload_directory }}/{{ jupyterhub_dist_file }}"
+    dest: "{{ jupyterhub_root_dir }}"
+    owner: root
+    group: root
+    remote_src: true
+    creates: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}"
+
+- name: Install Jupyterhub
+  pip:
+    requirements: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/requirements.txt"
+    extra_args: "--no-index --find-links=file://{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/dependencies"
+    umask: "0022"
+    virtualenv: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}"
+    virtualenv_python: "{{ jupyterhub_python_executable }}"
+
+- name: Ensure capabilities on traefik executable
+  capabilities:
+    path: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/bin/traefik"
+    capability: cap_net_bind_service+ep
+    state: present
+
+- name: Create symbolic link to Jupyterhub installation
+  file:
+    src: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}"
+    dest: "{{ jupyterhub_install_dir }}"
+    state: link
+
+- name: Create configuration directory
+  file:
+    path: "{{ jupyterhub_server_conf_dir }}"
+    state: directory
+    group: root
+    owner: root
+    mode: "0755"
+
+- name: Create certificates directory
+  file:
+    path: "{{ jupyterhub_server_certs_folder }}"
+    state: directory
+    group: root
+    owner: root
+    mode: "0755"
+
+- name: Create log directory
+  file:
+    path: "{{ jupyterhub_log_dir }}"
+    state: directory
+    group: "{{ jupyterhub_group }}"
+    owner: "{{ jupyterhub_user }}"
+    mode: "0750"
+
+- name: Create working directory
+  file:
+    path: "{{ jupyterhub_working_dir }}"
+    state: directory
+    group: "{{ jupyterhub_group }}"
+    owner: "{{ jupyterhub_user }}"
+    mode: "0750"
