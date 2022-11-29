@@ -3,7 +3,7 @@
 
 ---
 - name: Zookeeper Server for Kafka install
-  hosts: zk
+  hosts: zk_kafka
   tasks:
     - tosit.tdp.resolve:
         node_name: zookeeper-kafka_server

@@ -3,7 +3,7 @@
 
 ---
 - name: Zookeeper for Kafka service check
-  hosts: zk_client
+  hosts: zk_kafka_client
   tasks:
     - tosit.tdp.resolve:
         node_name: zookeeper-kafka
