@@ -11,3 +11,6 @@
   copy:
     content: "{{ jmx_exporter | to_nice_yaml }}"
     dest: "{{ jmx_exporter_conf_dir }}/kafka.yml"
+    group: root
+    owner: root
+    mode: "644"
