@@ -8,6 +8,7 @@
     dest: "{{ kafka_broker_conf_dir }}.{{ ansible_date_time.epoch }}"
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
+    mode: "755"
     remote_src: yes
   tags:
     - backup
@@ -16,11 +17,17 @@
   template:
     src: log4j.properties.j2
     dest: "{{ kafka_broker_conf_dir }}/log4j.properties"
+    owner: root
+    group: root
+    mode: "644"
 
 - name: Template server.properties
   template:
     src: server.properties.j2
     dest: "{{ kafka_broker_conf_dir }}/server.properties"
+    owner: root
+    group: root
+    mode: "644"
   vars:
     broker_id: "{{ groups['all'].index(inventory_hostname) }}"
 
@@ -28,6 +35,9 @@
   template:
     src: kafka-env.conf.j2
     dest: "{{ kafka_broker_conf_dir }}/kafka-env.conf"
+    owner: root
+    group: root
+    mode: "644"
   vars:
     broker_id: "{{ groups['all'].index(inventory_hostname) }}"
 
@@ -35,3 +45,6 @@
   template:
     src: jmxremote.password.j2
     dest: "{{ kafka_broker_conf_dir }}/jmxremote.password"
+    owner: root
+    group: root
+    mode: "640"

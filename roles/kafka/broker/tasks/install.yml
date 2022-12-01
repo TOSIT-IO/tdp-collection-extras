@@ -12,6 +12,7 @@
     state: directory
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
+    mode: "755"
 
 - name: Create data directories
   file:
@@ -19,9 +20,13 @@
     state: directory
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
+    mode: "750"
   loop: "{{ kafka_data_dirs.split(',')  }}"
 
 - name: Template Kafka Broker service file
   template:
     src: kafka-broker.service.j2
     dest: /usr/lib/systemd/system/kafka-broker.service
+    owner: root
+    group: root
+    mode: "644"
