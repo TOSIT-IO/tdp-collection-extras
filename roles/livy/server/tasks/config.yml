@@ -10,6 +10,7 @@
     dest: "{{ livy_server_conf_dir }}.{{ ansible_date_time.epoch }}"
     group: "{{ hadoop_group }}"
     owner: "{{ livy_user }}"
+    mode: "755"
     remote_src: yes
   when: livy_config.stat.exists
 
@@ -17,25 +18,38 @@
   file:
     path: "{{ livy_server_conf_dir }}/"
     state: directory
+    group: root
+    owner: root
+    mode: "755"
 
 - name: Template livy-env.sh
   template:
     src: livy-env.sh.j2
     dest: "{{ livy_server_conf_dir }}/livy-env.sh"
-    owner:
-    mode:
+    owner: root
+    group: root
+    mode: "644"
 
 - name: Template livy-client.conf
   template:
     src: livy-client.conf.j2
     dest: "{{ livy_server_conf_dir }}/livy-client.conf"
+    owner: root
+    group: root
+    mode: "644"
 
 - name: Template livy.conf
   template:
     src: livy.conf.j2
     dest: "{{ livy_server_conf_dir }}/livy.conf"
+    owner: root
+    group: root
+    mode: "644"
 
 - name: Template log4j.properties
   template:
     src: log4j.properties.j2
     dest: "{{ livy_server_conf_dir }}/log4j.properties"
+    owner: root
+    group: root
+    mode: "644"

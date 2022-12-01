@@ -9,12 +9,18 @@
   copy:
     src: "files/{{ livy_dist_file }}"
     dest: /tmp
+    group: root
+    owner: root
+    mode: "644"
   diff: no
 
 - name: Ensure livy root dir exists
   file:
     path: "{{ livy_root_dir }}"
     state: directory
+    group: root
+    owner: root
+    mode: "755"
 
 - name: Extract Livy
   unarchive:
@@ -22,6 +28,7 @@
     dest: "{{ livy_root_dir }}"
     group: root
     owner: root
+    mode: "755"
     remote_src: yes
 
 - name: Create symbolic link to Livy installation
@@ -36,11 +43,15 @@
     state: directory
     group: "{{ hadoop_group }}"
     owner: "{{ livy_user }}"
+    mode: "750"
 
 - name: Template livy tmpfiles.d
   template:
     src: tmpfiles-livy.conf.j2
     dest: "/etc/tmpfiles.d/livy-server-{{ spark_version }}.conf"
+    owner: root
+    group: root
+    mode: "644"
 
 - name: Create log directory
   file:
@@ -48,9 +59,13 @@
     state: directory
     group: "{{ hadoop_group }}"
     owner: "{{ livy_user }}"
+    mode: "750"
     recurse: yes
 
 - name: Template Livy Server service file
   template:
     src: livy-server.service.j2
     dest: "/usr/lib/systemd/system/livy-server-{{ spark_version }}.service"
+    owner: root
+    group: root
+    mode: "644"
