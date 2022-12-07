@@ -10,6 +10,9 @@
   template:
     src: kafka_server_jaas.conf.j2
     dest: "{{ kafka_broker_conf_dir }}/kafka_server_jaas.conf"
+    owner: root
+    group: root
+    mode: "644"
 
 - import_role:
     name: tosit.tdp.utils.kerberos

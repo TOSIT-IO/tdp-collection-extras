@@ -30,6 +30,7 @@
     dest: "{{ kafka_root_dir }}"
     group: root
     owner: root
+    mode: "755"
     remote_src: yes
     creates: "{{ kafka_root_dir }}/{{ kafka_release }}"
 
@@ -45,3 +46,4 @@
     state: directory
     group: "{{ kafka_group }}"
     owner: "{{ kafka_user }}"
+    mode: "750"
