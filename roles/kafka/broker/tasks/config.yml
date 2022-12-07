@@ -47,4 +47,4 @@
     dest: "{{ kafka_broker_conf_dir }}/jmxremote.password"
     owner: root
     group: root
-    mode: "640"
+    mode: "644"

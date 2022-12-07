@@ -6,6 +6,9 @@
   template:
     src: install_kafka.properties.j2
     dest: "{{ ranger_kafka_install_dir }}/install.properties"
+    owner: root
+    group: root
+    mode: "644"
 
 # enable-kakfa-plugin.sh will only modify configuration files in /opt/tdp/kafka/config
 # There is no way to tell the script to use /etc/kafka/conf.broker
@@ -54,3 +57,6 @@
   template:
     src: core-site.xml.j2
     dest: "{{ kafka_broker_conf_dir }}/core-site.xml"
+    owner: root
+    group: root
+    mode: "644"

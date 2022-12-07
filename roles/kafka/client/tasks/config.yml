@@ -6,8 +6,9 @@
   copy:
     src: "{{ kafka_client_conf_dir }}/"
     dest: "{{ kafka_client_conf_dir }}.{{ ansible_date_time.epoch }}"
-    group: "{{ kafka_group }}"
-    owner: "{{ kafka_user }}"
+    owner: root
+    group: root
+    mode: "755"
     remote_src: yes
   tags:
     - backup
@@ -16,22 +17,33 @@
   template:
     src: client.properties.j2
     dest: "{{ kafka_client_conf_dir }}/client.properties"
+    owner: root
+    group: root
+    mode: "644"
 
 - name: Template producer.properties
   template:
     src: producer.properties.j2
     dest: "{{ kafka_client_conf_dir }}/producer.properties"
+    owner: root
+    group: root
+    mode: "644"
 
 - name: Template consumer.properties
   template:
     src: consumer.properties.j2
     dest: "{{ kafka_client_conf_dir }}/consumer.properties"
+    owner: root
+    group: root
+    mode: "644"
 
 - name: Template Kafka commands
   template:
     src: kafka-command.sh.j2
     dest: "/usr/bin/{{ item }}"
-    mode: 0755
+    owner: root
+    group: root
+    mode: "755"
   loop:
     - kafka-acls.sh
     - kafka-broker-api-versions.sh
