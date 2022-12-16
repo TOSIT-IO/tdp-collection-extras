@@ -4,6 +4,7 @@
 ---
 - name: HDFS Init Jupyterhub Server
   hosts: jupyterhub_edge
+  strategy: linear
   tasks:
     - tosit.tdp.resolve: # noqa unnamed-task
         node_name: jupyterhub_server
