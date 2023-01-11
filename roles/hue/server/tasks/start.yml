@@ -1,0 +1,9 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Start Hue server
+  service:
+    name: hue
+    state: started
+    enabled: "{{ hue_start_on_boot }}"

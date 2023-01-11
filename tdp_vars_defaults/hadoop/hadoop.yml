@@ -5,7 +5,11 @@
 auth_to_local:
   jupyterhub:
     - RULE:[2:$1/$2@$0](jupyterhub/.*@{{ realm }})s/.*/jupyterhub/
+  hue:
+  - RULE:[2:$1/$2@$0](hue/.*@{{ realm }})s/.*/hue/
 
 core_site:
   hadoop.proxyuser.jupyterhub.groups: '*'
   hadoop.proxyuser.jupyterhub.hosts: '*'
+  hadoop.proxyuser.hue.hosts: '*'
+  hadoop.proxyuser.hue.groups: '*'

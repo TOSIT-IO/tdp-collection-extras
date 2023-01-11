@@ -1,46 +1,27 @@
----
-- hosts: hue_server
-  become: yes
-  tasks:
-    - tosit.tdp.resolve:
-        node_name: hue_service
-    - name: Get active namenode adress
-      shell: |
-        kinit -kt {{ hdfs_nn_keytab }} {{ hdfs_nn_principal }}
-        hdfs haadmin -getAllServiceState | awk ' {if ($NF == "active") print $1}'
-      register: webhdfs_endpoint_result
-      delegate_to: "{{ item.ansible_host }}"
-      with_items:
-        - fqdn: "{{ groups['hdfs_nn'][0] | tosit.tdp.access_fqdn(hostvars) }}"
-          ansible_host: "{{ groups['hdfs_nn'][0] }}"
-    - name: Get active resource manager address
-      shell: |
-        kinit -kt /etc/security/keytabs/rm.service.keytab rm/{{ item.fqdn }}@{{ realm_name }}
-        yarn rmadmin -getAllServiceState | awk ' {if ($NF == "active") print $1}'
-      register: yarn_active_rm_result
-      delegate_to: "{{ item.ansible_host }}"
-      with_items:
-        - fqdn: "{{ groups['yarn_rm'][0] | tosit.tdp.access_fqdn(hostvars) }}"
-          ansible_host: "{{ groups['yarn_rm'][0] }}"
-    - name: Configure hue
-      vars:
-        webhdfs_endpoint: "{{ webhdfs_endpoint_result.results[0].stdout }}"
-        yarn_active_rm: "{{ yarn_active_rm_result.results[0].stdout_lines[0] }}"
-      include_role:
-        name: ../roles/hue/server
-        tasks_from: hue_server_config.yml
-    - meta: clear_facts
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
 
-- hosts: hue_server
-  become: yes
+---
+- name: Configure Hue Server
+  hosts: hue_server
   tasks:
-    - tosit.tdp.resolve:
-        node_name: hue_service
-    - name: Ensure krbtgt principal has renewable tickets
-      shell: |
-        kadmin -r {{realm}} -p {{kadmin_principal}} -w {{kadmin_password}} -q "modprinc -maxrenewlife 7day krbtgt/{{ realm_name }}@{{ realm_name }}"
-    - name: Ensure hue principal renewable tickets
-      shell: |
-        kadmin -r {{realm}} -p {{kadmin_principal}} -w {{kadmin_password}} -q "modprinc -maxrenewlife 7day +allow_renewable hue/{{ item }}@{{ realm_name }}"
-      with_items: "{{ groups['hue_server'] }}"
-    - meta: clear_facts
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: hue_server
+    - name: Configure Hue Server
+      import_role:
+        name: tosit.tdp_extra.hue.server
+        tasks_from: config
+    - meta: clear_facts # noqa unnamed-task
+
+- name: Configure Hive for Hue Server
+  hosts: hue_server
+  tasks:
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: hive_hue
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: hue_server
+    - name: Configure Hive for Hue Server
+      import_role:
+        name: tosit.tdp_extra.hue.server
+        tasks_from: config_hive
+    - meta: clear_facts # noqa unnamed-task

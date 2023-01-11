@@ -1,0 +1,9 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- import_playbook: ../hue_server_install.yml
+- import_playbook: ../hue_kerberos_install.yml
+- import_playbook: ../hue_ssl-tls_install.yml
+- import_playbook: ../hue_server_config.yml
+- import_playbook: ../hue_server_start.yml

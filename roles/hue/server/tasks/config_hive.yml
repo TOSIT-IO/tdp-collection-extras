@@ -1,0 +1,11 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Template hive-site.xml
+  template:
+    src: hive-site.xml.j2
+    dest: "{{ hue_conf_dir }}/hive-site.xml"
+    owner: root
+    group: root
+    mode: "644"
