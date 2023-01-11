@@ -1,0 +1,6 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+#hive-site.xml for Hue
+hive_hue_properties: "{{ hive_site | combine(hiveserver2_site) }}"

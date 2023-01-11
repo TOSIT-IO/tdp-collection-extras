@@ -1,12 +1,18 @@
 [Unit]
-Description=Hue
+Description=Hue Server
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 User={{ hue_user }}
+Group={{ hadoop_group }}
 Type=simple
-
-ExecStart={{ hue_service_start_script }}
-ExecStop={{ hue_service_stop_script }}
+PIDFile={{ hue_pid_dir }}/hue.pid
+ExecStart={{ hue_install_dir }}/build/env/bin/supervisor -l {{ hue_log_dir }} &
+ExecStop={{ hue_install_dir }}/build/env/bin/stop-hue-server.sh
+SuccessExitStatus=143
+LimitNOFILE=64000
+Restart={{ hue_restart }}
 
 [Install]
 WantedBy=multi-user.target

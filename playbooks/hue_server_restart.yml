@@ -1,11 +1,14 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
 ---
-- hosts: hue_server
-  become: yes
+- name: Start Hue Server
+  hosts: hue_server
   tasks:
-    - tosit.tdp.resolve:
-        node_name: hue_service
-    - name: Start hue service
-      include_role:
-        name: ../roles/hue/server
-        tasks_from: hue_server_restart.yml
-    - meta: clear_facts
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: hue_server
+    - name: Start Hue Server
+      import_role:
+        name: tosit.tdp_extra.hue.server
+        tasks_from: restart
+    - meta: clear_facts # noqa unnamed-task

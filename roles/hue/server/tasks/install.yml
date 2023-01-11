@@ -1,0 +1,146 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Ensure hadoop group exists
+  include_role:
+    name: tosit.tdp.utils.group
+  vars:
+    group: "{{ hadoop_group }}"
+
+- name: Ensure hue user exists
+  include_role:
+    name: tosit.tdp.utils.user
+  vars:
+    user: "{{ hue_user }}"
+    group: "{{ hadoop_group }}"
+
+- name: Upload {{ hue_dist_file }}
+  copy:
+    src: files/{{ hue_dist_file }}
+    dest: /tmp
+    owner: root
+    group: root
+    mode: "644"
+  diff: false
+
+- name: Ensure {{ hue_root_dir }} exists
+  file:
+    path: "{{ hue_root_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "755"
+
+- name: Extract {{ hue_dist_file }}
+  unarchive:
+    src: "/tmp/{{ hue_dist_file }}"
+    dest: "{{ hue_root_dir }}"
+    owner: root
+    group: root
+    mode: "755"
+    remote_src: true
+    creates: "{{ hue_root_dir }}/{{ hue_release }}"
+
+- name: Ensure hue installation permissions
+  file:
+    path: "{{ hue_root_dir }}/{{ hue_release }}"
+    owner: root
+    group: root
+    mode: "755"
+    state: directory
+    recurse: true
+
+- name: Create symbolic link to Hue installation
+  file:
+    src: "{{ hue_root_dir }}/{{ hue_release }}"
+    dest: "{{ hue_install_dir }}"
+    state: link
+
+- name: Create directory for pid
+  file:
+    path: "{{ hue_pid_dir }}"
+    state: directory
+    group: root
+    owner: root
+    mode: "755"
+
+- name: Create configuration directory
+  file:
+    path: "{{ hue_root_conf_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "755"
+
+- name: Create symbolic link to Hue installation
+  file:
+    src: "{{ hue_root_dir }}/{{ hue_release }}/desktop/conf"
+    dest: "{{ hue_conf_dir }}"
+    state: link
+
+- name: Create certificates directory
+  file:
+    path: "{{ hue_certs_folder }}"
+    state: directory
+    group: root
+    owner: root
+    mode: "0755"
+
+- name: Create directory for pid
+  file:
+    path: "{{ hue_pid_dir }}"
+    state: directory
+    group: root
+    owner: root
+    mode: "755"
+
+- name: Template hive tmpfiles.d
+  template:
+    src: tmpfiles-hue.conf.j2
+    dest: /etc/tmpfiles.d/hue.conf
+    owner: root
+    group: root
+    mode: "644"
+
+- name: Create log directory
+  file:
+    path: "{{ hue_log_dir }}"
+    state: directory
+    owner: "{{ hue_user }}"
+    group: "{{ hadoop_group }}"
+    mode: "750"
+
+- name: "Activation du postgresql{{ postgresql_version }} repo"
+  ini_file:
+    path: /etc/yum.repos.d/postgresql.repo
+    section: "postgresql{{ postgresql_version }}"
+    option: enabled
+    value: "1"
+    no_extra_spaces: yes
+  vars:
+    postgresql_version: 12
+  notify: yum makecache
+
+- name: Install PostgreSQL adapter for Python
+  package:
+    name: "{{ psycopg2_package }}"
+    state: present
+
+- name: Template Hue stop script
+  template:
+    src: stop-hue-server.sh.j2
+    dest: "{{ hue_install_dir }}/build/env/bin/stop-hue-server.sh"
+    owner: root
+    group: root
+    mode: "644"
+
+- name: Template Hue service file
+  template:
+    src: hue.service.j2
+    dest: /usr/lib/systemd/system/hue.service
+    owner: root
+    group: root
+    mode: "644"
+
+- 

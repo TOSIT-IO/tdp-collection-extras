@@ -1,0 +1,32 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Ensure kerberos common installation steps are performed
+  import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: install
+
+- name: Ensure hive user's principal and keytab exist
+  import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: create_principal_keytab
+  vars:
+    principal: hue/{{ ansible_fqdn }}
+    keytab: hue.service.keytab
+    user: "{{ hue_user }}"
+    group: "{{ hadoop_group }}"
+    mode: "0600"
+  when: krb_create_principals_keytabs
+
+- name: Ensure hue's keytab is working
+  import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: check_secure_keytab
+  vars:
+    principal: hue/{{ ansible_fqdn }}
+    keytab: hue.service.keytab
+    user: "{{ hue_user }}"
+    group: "{{ hadoop_group }}"
+    mode: "0600"
+  when: not krb_create_principals_keytabs

@@ -6,6 +6,6 @@ for pid in "${pids[@]}"
 do
   if [[ $pid != $$ ]]
     then
-      kill "$pid"
+      kill -9 "$pid"
   fi
 done

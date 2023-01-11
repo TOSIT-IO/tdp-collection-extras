@@ -1,0 +1,42 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Backup configuration
+  copy:
+    src: "{{ hue_conf_dir }}/"
+    dest: "{{ hue_conf_dir }}.{{ ansible_date_time.epoch }}"
+    owner: root
+    group: root
+    mode: "755"
+    remote_src: true
+  tags:
+    - backup
+
+- name: Get {{ hue_user }} uid
+  shell: id -u hue
+  register: hue_user_id_output
+
+- name: Template hue.ini
+  template:
+    src: hue.ini.j2
+    dest: "{{ hue_conf_dir }}/hue.ini"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    hue_user_id: "{{ hue_user_id_output.stdout | trim }}"
+
+- name: Template Hue log configuration
+  template:
+    src: log.conf.j2
+    dest: "{{ hue_conf_dir }}/log.conf"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Initiate Hue database
+  command: |
+    {{ hue_install_dir }}/build/env/bin/hue migrate
+  register: hue_database_migrate
+  failed_when: hue_database_migrate.rc != 0

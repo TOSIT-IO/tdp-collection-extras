@@ -1,0 +1,128 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+# Hue user and group
+hue_user: hue
+hdfs_user: hdfs
+hadoop_group: hadoop
+
+# Hue version
+hue_release: hue-release-4.10.0
+hue_dist_file: "{{ hue_release }}.tar.gz"
+
+# Hue configuration directories
+hue_root_dir: /opt/tdp
+hue_install_dir: "{{ hue_root_dir }}/hue"
+hue_pid_dir: /var/run/hue
+hue_log_dir: /var/log/hue
+hue_root_conf_dir: /etc/hue
+hue_conf_dir: "{{ hue_root_conf_dir }}/conf"
+hue_certs_folder: "{{ hue_root_conf_dir }}/certs"
+hadoop_conf_dir: /etc/hadoop/conf
+
+#Hue database 
+db_hue_user: hue
+db_hue_password: hue
+db_hue_name: hue
+postgresql_port: 5432
+
+# Kerberos
+realm: TDP.LOCAL
+krb_create_principals_keytabs: true
+
+#SSL configuration
+certificates_path: /etc/ssl/certs
+certificates_cert_filename: "{{ ansible_fqdn }}"
+certificates_ca_filename: "tdp_ca"
+certificates_public_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.pem"
+certificates_private_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.key"
+certificates_ca: "{{ certificates_path }}/{{ certificates_ca_filename }}.crt" 
+hue_public_key: "{{ hue_certs_folder }}/{{ certificates_cert_filename }}.pem"
+hue_private_key: "{{ hue_certs_folder }}/{{ certificates_cert_filename }}.key"
+ca_certificate_file: "{{ hue_certs_folder }}/{{ certificates_ca_filename }}.crt"
+
+#hue.ini configuration
+hue_session_secret_key: '4ylAWaEYwLVrMHwVq.N1Vo?{bp+ur$GNJe2CF$V]y_)y#:=#[+FYjA2*16S$(jZ'
+hue_http_port: 8888
+ssl_certificate: "{{ hue_public_key }}"
+ssl_private_key: "{{ hue_private_key }}"
+ssl_cacerts: "{{ ca_certificate_file }}"
+ssl_validate: "true"
+app_blacklist: "sentry,solr,hbase,oozie,security,search"
+audit_event_log_dir: "{{ hue_log_dir }}/audit.log"
+backend_auth: "desktop.auth.backend.LdapBackend"
+ldapauth:
+  base_dn: "c=fr"
+  ldap_url: ldap://{{ groups['ldap'][0] | tosit.tdp.access_fqdn(hostvars) }}
+  bind_dn: "cn=changeme,ou=tdp,o=tosit,c=fr"
+  bind_password: "changeme"
+  create_users_on_login: "true"
+  sync_groups_on_login: "true"
+  search_bind_authentication: "true"
+  subgroups: "nested"
+  users:
+    user_filter: "objectclass=objectClass"
+    user_name_attr: "attr"
+
+database:
+  engine: "postgresql_psycopg2"
+  host: "{{ groups['postgresql'][0] | tosit.tdp.access_fqdn(hostvars) }}"
+  port: "{{ postgresql_port }}"
+  user: "{{ db_hue_user }}"
+  password: "{{ db_hue_password }}"
+  name: "{{ db_hue_name }}"
+kerberos:
+  hue_keytab: "/etc/security/keytabs/hue.service.keytab"
+  hue_principal: "hue/{{ ansible_fqdn }}@{{ realm }}"
+  kinit_path: "/usr/bin/kinit"
+interpreters:
+  hive:
+    name: "Hive"
+    interface: "hiveserver2"
+hadoop:
+  hdfs:
+    fs_defaults: "hdfs://{{ cluster_name }}:{{ hdfs_nn_rpc_port }}"
+    webhdfs_url: "https://{{ groups['hdfs_httpfs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ hdfs_httpfs_port }}/webhdfs/v1"
+    security_enabled: "true"
+    hadoop_conf_dir: "{{ hadoop_conf_dir }}"
+    is_enabled: "true"
+  yarn:
+    resourcemanager_host: "{{ groups['yarn_rm'][0] | tosit.tdp.access_fqdn(hostvars) }}"
+    resourcemanager_port: "{{ yarn_rm_https_port }}"
+    security_enabled: "true"
+    resourcemanager_api_url: "https://{{ groups['yarn_rm'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ yarn_rm_https_port}}"
+    history_server_api_url: "https://{{ groups['mapred_jhs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ mapred_jhs_https_port }}"
+    spark_history_server_url: "https://{{ groups['spark3_hs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ spark3_hs_https_port }}"
+    spark_history_server_security_enabled: "true"
+    ssl_cert_ca_verify: "true"
+beeswax:
+  hive_server_host: "{{ groups['hive_s2'][0] | tosit.tdp.access_fqdn(hostvars) }}"
+  hive_server_port: "{{ hive_hiveserver2_thrift_port }}"
+  hive_server_http_port: "{{ hive_hiveserver2_thrift_port }}"
+  hive_discovery_hs2: "true"
+  hive_discovery_hiveserver2_znode: "/hiveserver2"
+  hive_metastore_host: "{{ groups['hive_ms'][0] | tosit.tdp.access_fqdn(hostvars) }}"
+  hive_metastore_port: "{{ hive_metastore_thrift_port }}"
+  hive_conf_dir: "{{ hue_conf_dir }}"
+  thrift_version: "11"
+  use_sasl: "true"
+  cacerts: "{{ ca_certificate_file }}"
+  ssl_validate: "true"
+filebrowser:
+  archive_upload_tempdir: "/tmp"
+  show_download_button: "true"
+  show_upload_button: "true"
+  enable_extract_uploaded_archive: "true"
+libzookeeper:
+  ensemble: "{{ \n  groups['zk'] | \n  map('tosit.tdp.access_fqdn', hostvars) |\n  map('regex_replace', '^(.*)$', '\\1:' + zookeeper_server_client_port | string) |\n  list |\n  join(',')\n}}"
+  principal_name: "zookeeper/{{ ansible_fqdn }}@{{ realm }}"
+
+# Service start on boot policies
+hue_start_on_boot: no
+
+# Service restart policies
+hue_restart: "no"
+
+#PostgreSQL adapter for Python
+psycopg2_package: python2-psycopg2
