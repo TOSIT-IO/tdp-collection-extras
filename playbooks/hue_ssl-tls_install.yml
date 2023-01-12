@@ -6,7 +6,7 @@
   hosts: hue_server
   tasks:
     - tosit.tdp.resolve: # noqa unnamed-task
-        node_name: hue_server
+        node_name: hue_ssl-tls
     - name: Install Hue Server SSL-TLS
       import_role:
         name: tosit.tdp_extra.hue.server
