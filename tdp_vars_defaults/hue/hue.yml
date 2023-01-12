@@ -115,7 +115,14 @@ filebrowser:
   show_upload_button: "true"
   enable_extract_uploaded_archive: "true"
 libzookeeper:
-  ensemble: "{{ \n  groups['zk'] | \n  map('tosit.tdp.access_fqdn', hostvars) |\n  map('regex_replace', '^(.*)$', '\\1:' + zookeeper_server_client_port | string) |\n  list |\n  join(',')\n}}"
+  ensemble: >-
+    {{ 
+      groups['zk'] |
+      map('tosit.tdp.access_fqdn', hostvars) |
+      map('regex_replace', '^(.*)$', '\1:' + zookeeper_server_client_port | string) |
+      list |
+      join(',')
+    }}
   principal_name: "zookeeper/{{ ansible_fqdn }}@{{ realm }}"
 
 # Service start on boot policies
@@ -123,6 +130,3 @@ hue_start_on_boot: no
 
 # Service restart policies
 hue_restart: "no"
-
-#PostgreSQL adapter for Python
-psycopg2_package: python2-psycopg2

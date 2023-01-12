@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- name: Start Hue Server
+- name: Restart Hue Server
   hosts: hue_server
   tasks:
     - tosit.tdp.resolve: # noqa unnamed-task
         node_name: hue_server
-    - name: Start Hue Server
+    - name: Restart Hue Server
       import_role:
         name: tosit.tdp_extra.hue.server
         tasks_from: restart
