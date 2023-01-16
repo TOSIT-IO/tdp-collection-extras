@@ -1,6 +1,0 @@
----
-- name: Add all users to host's authorized_keys file
-  authorized_key:
-    user: "{{ owner }}"
-    state: present
-    key: "{{ lookup('file',  '{{ control_node_ssh_public_key_path }}') }}"
