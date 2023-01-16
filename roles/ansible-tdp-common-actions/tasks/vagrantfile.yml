@@ -1,5 +1,0 @@
----
-- name: Template Vagrant file
-  template: 
-    src: Vagrantfile.j2
-    dest: Vagrantfile

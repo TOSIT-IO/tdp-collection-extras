@@ -1,7 +1,0 @@
----
-- name: Overwrite PGDATA in postgres.service
-  lineinfile:
-    path: /usr/lib/systemd/system/postgresql.service
-    regexp: "^Environment=PGDATA="
-    line: "Environment=PGDATA={{ postgresql_data_dir }}"
-  notify: restart postgresql
