@@ -116,3 +116,11 @@ jmx_exporter:
 # zookeeper resources allocation
 zookeeper_server_heapsize: 512m
 zookeeper_server_data_dirs: "{{ zookeeper_install_dir }}/zkData"
+
+# Fluentbit configuration
+fluent_bit_configuration_file: "{{ zookeeper_server_conf_dir }}/zookeeper-server-fluent-bit.conf"
+fluent_bit_configuration:
+  INPUT:
+    Name: tail
+    Path: "{{ zookeeper_log_dir }}/{{ zookeeper_log_file }}"
+
