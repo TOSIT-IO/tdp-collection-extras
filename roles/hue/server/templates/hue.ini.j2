@@ -1239,10 +1239,10 @@ resourcemanager_host={{ hadoop.yarn.resourcemanager_host }}
 resourcemanager_port={{ hadoop.yarn.resourcemanager_port }}
 
 # Whether to submit jobs to this cluster
-submit_to=true
+submit_to={{ hadoop.yarn.submit_to }}
 
 # Resource Manager logical name (required for HA)
-#logical_name=
+logical_name={{ hadoop.yarn.logical_name }}
 
 # Change this if your YARN cluster is Kerberos-secured
 security_enabled={{ hadoop.yarn.security_enabled }}
@@ -1270,17 +1270,17 @@ ssl_cert_ca_verify={{ hadoop.yarn.ssl_cert_ca_verify }}
   # Redefine different properties there.
   # e.g.
 
-  # [[[ha]]]
-  # Resource Manager logical name (required for HA)
-  ## logical_name=my-rm-name
-
-  # Un-comment to enable
-  ## submit_to=true
-
-  # URL of the ResourceManager API
-  ## resourcemanager_api_url=http://localhost:8088
-
-  # ...
+[[[ha]]]
+resourcemanager_host={{ hadoop.yarn.ha.resourcemanager_host }}
+resourcemanager_port={{ hadoop.yarn.ha.resourcemanager_port }}
+submit_to={{ hadoop.yarn.ha.submit_to }}
+logical_name={{ hadoop.yarn.ha.logical_name }}
+security_enabled={{ hadoop.yarn.ha.security_enabled }}
+resourcemanager_api_url={{ hadoop.yarn.ha.resourcemanager_api_url }}
+history_server_api_url={{ hadoop.yarn.ha.history_server_api_url }}  
+spark_history_server_url={{ hadoop.yarn.ha.spark_history_server_url }}
+spark_history_server_security_enabled={{ hadoop.yarn.ha.spark_history_server_security_enabled }}
+ssl_cert_ca_verify={{ hadoop.yarn.ha.ssl_cert_ca_verify }}
 
 
 ###########################################################################
