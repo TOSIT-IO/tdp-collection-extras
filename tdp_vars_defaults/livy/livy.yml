@@ -43,6 +43,8 @@ krb_create_principals_keytabs: yes
 livy_keystore_location: /etc/ssl/certs/keystore.jks
 livy_keystore_password: Keystore123!
 
+livy_server_port: 8998
+
 # livy.conf
 livy_conf:
   livy.keystore: "{{ livy_keystore_location }}"
@@ -53,10 +55,12 @@ livy_conf:
   livy.server.launch.kerberos.principal: "livy/_HOST@{{ realm }}"
   livy.server.launch.kerberos.keytab: /etc/security/keytabs/livy.service.keytab
   livy.impersonation.enabled: true
-  livy.server.port: 8998
+  livy.server.port: "{{ livy_server_port }}"
   livy.server.session.timeout: 3600000
   livy.spark.master: yarn
   livy.spark.deploy-mode: cluster
+  livy.repl.enable-hive-context: "true"
+  livy.superusers: "hue,livy"
 
 # livy-env.sh
 livy_env:

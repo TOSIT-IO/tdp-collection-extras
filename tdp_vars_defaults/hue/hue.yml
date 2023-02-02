@@ -52,6 +52,7 @@ ssl_validate: "true"
 app_blacklist: "sentry,solr,hbase,oozie,security,search"
 audit_event_log_dir: "{{ hue_log_dir }}/audit.log"
 backend_auth: "desktop.auth.backend.LdapBackend"
+gunicorn_work_class: "sync"
 ldapauth:
   base_dn: "c=fr"
   ldap_url: ldap://{{ groups['ldap'][0] | tosit.tdp.access_fqdn(hostvars) }}
@@ -64,7 +65,6 @@ ldapauth:
   users:
     user_filter: "objectclass=objectClass"
     user_name_attr: "attr"
-
 database:
   engine: "postgresql_psycopg2"
   host: "{{ groups['postgresql'][0] | tosit.tdp.access_fqdn(hostvars) }}"
@@ -137,7 +137,11 @@ libzookeeper:
       join(',')
     }}
   principal_name: "zookeeper/{{ ansible_fqdn }}@{{ realm }}"
-
+spark:
+  livy_server_host: "{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}"
+  security_enabled: "true"
+  ssl_cert_ca_verify: "true"
+  use_sasl: "true"
 # Service start on boot policies
 hue_start_on_boot: no
 

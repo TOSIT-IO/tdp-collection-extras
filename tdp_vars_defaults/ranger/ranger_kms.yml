@@ -5,3 +5,5 @@
 kms_site:
   hadoop.kms.proxyuser.jupyterhub.groups: '*'
   hadoop.kms.proxyuser.jupyterhub.hosts: '*'
+  hadoop.kms.proxyuser.livy.groups: '*'
+  hadoop.kms.proxyuser.livy.hosts: '*'
