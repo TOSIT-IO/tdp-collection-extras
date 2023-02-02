@@ -63,7 +63,7 @@ http_500_debug_mode=true
 ## use_cherrypy_server=true
 
 # Gunicorn work class: gevent or evenlet, gthread or sync.
-## gunicorn_work_class=eventlet
+gunicorn_work_class={{ gunicorn_work_class }}
 
 # The number of Gunicorn worker processes. If not specified, it uses: (number of CPU * 2) + 1.
 ## gunicorn_number_of_workers=1
@@ -1024,17 +1024,17 @@ show_notebooks=true
 #   interface=sqlalchemy
 #   options='{"url": "hive://user:password@localhost:10000/database"}'
 
-# [[[sparksql]]]
-#   name=SparkSql
-#   interface=livy
+[[[sparksql]]]
+  name=SparkSql
+  interface=livy
 
-# [[[spark]]]
-#   name=Scala
-#   interface=livy
+[[[spark]]]
+  name=Scala
+  interface=livy
 
-# [[[pyspark]]]
-#   name=PySpark
-#   interface=livy
+[[[pyspark]]]
+  name=PySpark
+  interface=livy
 
 # [[[r]]]
 #   name=R
@@ -1513,10 +1513,10 @@ validate={{ beeswax.ssl_validate }}
 
 [spark]
 # The Livy Server URL.
-## livy_server_url=http://localhost:8998
+livy_server_url=https://{{ spark.livy_server_host }}:{{ livy_port }}
 
 # Whether Livy requires client to perform Kerberos authentication.
-## security_enabled=true
+security_enabled={{ spark.security_enabled }}
 
 # Whether Livy requires client to use csrf protection.
 ## csrf_enabled=false
@@ -1529,10 +1529,10 @@ validate={{ beeswax.ssl_validate }}
 ## sql_server_port=10000
 
 # Choose whether Hue should validate certificates received from the server.
-## ssl_cert_ca_verify=true
+ssl_cert_ca_verify={{ spark.ssl_cert_ca_verify }}
 
 # Use SASL framework to establish connection to host.
-## use_sasl=false
+use_sasl={{ spark.use_sasl }}
 
 ###########################################################################
 # Settings to configure the Oozie app

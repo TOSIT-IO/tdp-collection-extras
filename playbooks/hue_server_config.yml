@@ -6,6 +6,8 @@
   hosts: hue_server
   tasks:
     - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: livy-spark3_server
+    - tosit.tdp.resolve: # noqa unnamed-task
         node_name: hue_server
     - name: Configure Hue Server
       import_role:
