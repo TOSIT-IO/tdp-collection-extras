@@ -5,5 +5,10 @@
 - import_playbook: ../hue_server_install.yml
 - import_playbook: ../hue_kerberos_install.yml
 - import_playbook: ../hue_ssl-tls_install.yml
+# hue_install
 - import_playbook: ../hue_server_config.yml
+# hue_config
 - import_playbook: ../hue_server_start.yml
+# hue_server_init
+# hue_start
+# hue_init

@@ -8,7 +8,7 @@ hdfs_user: hdfs
 hadoop_group: hadoop
 
 # Hue version
-hue_release: hue-release-4.10.0
+hue_release: hue-release-4.10.0-TDP-0.1.0
 hue_dist_file: "{{ hue_release }}.tar.gz"
 
 # Hue configuration directories

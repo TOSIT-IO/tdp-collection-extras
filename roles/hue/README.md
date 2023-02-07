@@ -8,15 +8,14 @@ Currently the roles only supports the deployment of HA, SSL-enabled, Kerberos au
 - Hue release (`hue_dist_file` role variable) file available in `files`
 - Group `hue_server` defined in the Ansible inventory
 - Certificate files `{{ fqdn }}.key` and `{{ fqdn }}.pem` for every node available in `files`
-- Certificate of the CA available as `root.pem` in `files`
 - Admin access to a KDC with the `realm`, `kadmin_principal` and `kadmin_password` role vars provided
-- A `krb5.conf` file with this KDC information must be available at `files/krb5.conf`
-- The hue tarball must be present in the files directory. The tested version in [hue-release-4.10.0.tgz](https://github.com/TOSIT-IO/hue/releases/tag/release-4.10.0).
+- The hue tarball must be present in the files directory. The tested version in [hue-release-4.10.0-TDP-0.1.0.tar.gz] for python2.7 and [hue-release-4.10.0-TDP-0.1.0-python36.tar.gz] for python3.6 (https://github.com/TOSIT-IO/hue/releases/tag/hue-release-4.10.0-TDP-0.1.0-python36).
 - The hue_user role must already exist on the target database where the hue desktop database will be created
+- The LDAP confifugration (`ldapauth` path of variable file) needs to be adapted to your environment.
 - All hue dependencies must exist on the target hue_server [check here for Hue dependencies](https://docs.gethue.com/administrator/installation/dependencies/)
 
 # Notes:
-- The first time you access the hue web-ui, you will have to create a hue admin user.
+- The first user logged to the hue web-ui will be the hue admin user.
 - Upon a successful deployment of hue, the default web-ui url is `https://<_hue_server_host_>:<hue_port>`
 - `yarn_rm` and `hdfs_nn` *must* be defined in the ansible hosts file
 - Errors resembling `The error was: ansible.errors.AnsibleUndefinedVariable: 'dict object' has no attribute 'ats'` are often related to a missing entry in the ansible hosts file.
@@ -25,25 +24,16 @@ Currently the roles only supports the deployment of HA, SSL-enabled, Kerberos au
 
 The following hosts file and playbook are given as examples.
 
-A ranger synced admin user `hue` with password `hue-user123` is already deployed by this role (but you can't log in as this user until your 2nd login as by default the 1st login creates a new Hue user).
-
 ### Host file
 
 ```
 [hue_server]
-tdp-master-1
+edge
 ```
-
-After deploying you will need to give the hue user in ranger access hbase tables in order to use the phoenix notebook.
 
 ### Available playbooks
 
 ## TODO
 
-- Implement automatic failover (currently automates hue.ini config only on installation)
-- Parameterize many of the hui.ini hardcoded values
-- Create python env for running hue server with correct dependencies (especially psycog2)
-- Configure hbase client
-- Fix 'YARN RM returned a failed response: No connection adapters were found' to browse yarn jobs created by Hive
-- Fix ` Cannot access: /user/tdp_user.HTTPSConnectionPool(host='master-01.tdp', port=8020): Max retries exceeded with url: /webhdfs/v1/user/tdp_user?op=GETFILESTATUS&user.name=hue&doas=tdp_user (Caused by SSLError(SSLEOFError(8, u'EOF occurred in violation of protocol (_ssl.c:618)'),))` to view hdfs using tdp_user
-- Auto add hue admin user on deployment
+- Implement automatic failover for Hive and Hue
+
