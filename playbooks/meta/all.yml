@@ -2,6 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
+- import_playbook: ../firewall_generic_config.yml
+- import_playbook: ../firewall_generic_start.yml
+# firewall_install
+# firewall_config
+# firewall_start
+# firewall_init
 - import_playbook: ../jupyterhub_server_install.yml
 # jupyterhub_install
 - import_playbook: ../jupyterhub_kerberos_install.yml

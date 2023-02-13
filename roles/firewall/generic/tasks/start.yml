@@ -1,0 +1,10 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: "Start {{ firewall_service }}"
+  service:
+    name: "{{ firewall_service }}"
+    state: started
+    enabled: "{{ firewall_start_on_boot }}"
+  when: firewall_tdp_managed

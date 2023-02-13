@@ -1,0 +1,14 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Firewall generic start
+  hosts: tdp_cluster
+  tasks:
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: firewall_generic
+    - name: Start firewall
+      import_role:
+        name: tosit.tdp_extra.firewall.generic
+        tasks_from: start
+    - meta: clear_facts # noqa unnamed-task

@@ -1,0 +1,819 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+# Should TDP manage firewall rules on cluster nodes
+firewall_tdp_managed: no
+# Only takes effect if 'firewall_tdp_managed: yes'
+firewall_start_on_boot: no
+# For now only 'firewalld' is supported
+firewall_service: firewalld
+
+firewalld_files_prefix: tdp_
+
+# 'groups' and/or 'addresses' has to be != [] in order for the zone to take effect
+# One source can only be used in one zone
+firewalld_zones:
+  - name: public
+    short: TDP cluster public zone
+    groups: []
+    addresses:
+      - 0.0.0.0/1
+      - 128.0.0.0/1
+  - name: internal
+    short: TDP cluster internal zone
+    groups:
+      - tdp_cluster
+    addresses: []
+
+firewalld_rules:
+  # Rule format:
+  # ansible_group:
+  #   - name: rule_name
+  #     short: Rule short desc. Follow the format: "Service Component - Port desc - linked.property"
+  #     description: (Optional) Rule long description
+  #     port: port number or port range (templated using a variable from `tdp-cluster`)
+  #     protocol: `tcp` or `udp`
+  #     zones:
+  #       - zone1
+  #       - zone2
+  #     state: `present` or `absent`
+
+  # Kerberos/LDAP
+  kdc:
+    - name: kerberos_kdc_tcp_port
+      short: Kerberos KDC - TCP port - ?
+      port: "{{ kerberos_kdc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: kerberos_kdc_udp_port
+      short: Kerberos KDC - UDP port - ?
+      port: "{{ kerberos_kdc_port }}"
+      protocol: udp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: kerberos_admin_tdp_port
+      short: Kerberos Admin - TCP port - ?
+      port: "{{ kerberos_admin_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: kerberos_admin_udp_port
+      short: Kerberos Admin - UDP port - ?
+      port: "{{ kerberos_admin_port }}"
+      protocol: udp
+      zones:
+        - internal
+        - public
+      state: present
+  kdcproxy:
+    - name: kerberos_kdcproxy_port
+      short: Kerberos KDC Proxy - Bind port - ?
+      port: "{{ kerberos_kdcproxy_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  ldap:
+    - name: openldap_server_ldap_port
+      short: OpenLDAP Server - LDAP port - ?
+      port: "{{ openldap_server_ldap_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: openldap_server_ldaps_port
+      short: OpenLDAP Server - LDAPS port - ?
+      port: "{{ openldap_server_ldaps_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # PostgreSQL
+  postgresql:
+    - name: postgresql_server_port
+      short: PostgreSQL Server - Database port - ?
+      port: "{{ postgresql_server_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # Ranger
+  ranger_solr:
+    - name: ranger_solr_http_port
+      short: Ranger Solr - HTTP port - ?
+      port: "{{ ranger_solr_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+  ranger_admin:
+    - name: ranger_adm_https_port
+      short: Ranger Admin - HTTPS port - ranger.service.https.port
+      port: "{{ ranger_adm_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_ranger_ra_http_port
+      short: Ranger Admin - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_ranger_ra_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  ranger_usersync:
+    - name: ranger_usersync_https_port
+      short: Ranger Usersync - HTTPS port - ?
+      port: "{{ ranger_usersync_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_ranger_ru_http_port
+      short: Ranger Usersync - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_ranger_ru_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  ranger_kms:
+    - name: ranger_kms_https_port
+      short: Ranger KMS - HTTPS port - ranger.service.https.port
+      port: "{{ ranger_kms_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_ranger_kms_http_port
+      short: Ranger KMS - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_ranger_kms_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # ZooKeeper
+  zk:
+    - name: zookeeper_server_quorum_port
+      short: ZooKeeper Server - Quorum port - server.X
+      description: >-
+        Peers use the former port to connect to other peers, for example, to agree upon the order of updates. More specifically, a ZooKeeper server uses this port to connect followers to the leader.
+      port: "{{ zookeeper_server_quorum_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: zookeeper_server_election_port
+      short: ZooKeeper Server - Election port - server.X
+      description: >-
+        Port used during the ZooKeeper leader election phase.
+        See [ZooKeeper Administrator's Guide](https://zookeeper.apache.org/doc/r3.4.6/zookeeperAdmin.html#sc_configuration)
+      port: "{{ zookeeper_server_election_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: zookeeper_server_client_port
+      short: ZooKeeper Server - Client port - clientPort
+      port: "{{ zookeeper_server_client_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_zookeeper_server_http_port
+      short: ZooKeeper Server - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_zookeeper_server_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # HDFS
+  hdfs_nn:
+    - name: hdfs_zkfc_rpc_port
+      short: HDFS ZooKeeper Failover Controller - RPC port - dfs.ha.zkfc.port
+      port: "{{ hdfs_zkfc_rpc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: hdfs_nn_rpc_port
+      short: HDFS NameNode - RPC port - dfs.namenode.rpc-address.{{ cluster_name }}.nnX
+      description: >-
+        The main RPC port used by client to communicate with HDFS using a binary protocol.
+        See [hdfs-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+      port: "{{ hdfs_nn_rpc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: hdfs_nn_https_port
+      short: HDFS NameNode - HTTPS port - dfs.namenode.https-address.{{ cluster_name }}.nnX
+      description: >-
+        The NameNode secure HTTP server port. It provides access to the HDFS web UI.
+        See [hdfs-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+      port: "{{ hdfs_nn_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_hdfs_nn_http_port
+      short: HDFS NameNode - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hdfs_nn_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: exporter_hdfs_zkfc_http_port
+      short: HDFS ZooKeeper Failover Controller - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hdfs_zkfc_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  hdfs_dn:
+    - name: hdfs_dn_data_port
+      short: HDFS DataNode - Data transfer port - dfs.datanode.address
+      port: "{{ hdfs_dn_data_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: hdfs_dn_ipc_port
+      short: HDFS DataNode - Metadata port - dfs.datanode.ipc.address
+      port: "{{ hdfs_dn_ipc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: hdfs_dn_https_port
+      short: HDFS DataNode - HTTPS port - dfs.datanode.https.address
+      description: >-
+        The datanode secure HTTP server address and port. It is used to access the status, logs, etc, and file data operations when using WebHDFS or HttpFS. The NameNode UI redirects the user to the DataNode server when browsing files.
+        See [hdfs-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+      port: "{{ hdfs_dn_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_hdfs_dn_http_port
+      short: HDFS DataNode - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hdfs_dn_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  hdfs_jn:
+    - name: hdfs_jn_rpc_port
+      short: HDFS JournalNode - RPC port - dfs.journalnode.rpc-address
+      port: "{{ hdfs_jn_rpc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: hdfs_jn_https_port
+      short: HDFS JournalNode - HTTPS port - dfs.journalnode.https-address
+      description: >-
+        The address and port the JournalNode HTTPS server listens on. If the port is 0 then the server will start on a free port.
+        See [hdfs-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml)
+      port: "{{ hdfs_jn_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_hdfs_jn_http_port
+      short: HDFS JournalNode - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hdfs_jn_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # YARN
+  yarn_rm:
+    - name: yarn_rm_scheduler_port
+      short: YARN ResourceManager - Scheduler port - yarn.resourcemanager.scheduler.address.rmX
+      port: "{{ yarn_rm_scheduler_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: yarn_rm_tracker_port
+      short: YARN ResourceManager - Resource tracker port - yarn.resourcemanager.resource-tracker.address.rmX
+      description: >-
+        This is used by the Node Manager to register/nodeHeartbeat/unregister with the ResourceManager.
+        See [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+      port: "{{ yarn_rm_tracker_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: yarn_rm_jobs_port
+      short: YARN ResourceManager - Jobs submission port - yarn.resourcemanager.address.rmX
+      description: >-
+        The address of the applications manager interface in the RM. It is used to submit jobs. In YARN non HA configuration `yarn.resourcemanager.address` uses port `8050`. In YARN HA configuration, `yarn.resourcemanager.address` is redundant and instead `yarn.resourcemanager.address.{id}` is resolved and uses port `8032`.
+        See [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+        See [YARN HAD port](https://community.cloudera.com/t5/Support-Questions/What-is-the-default-Yarn-resource-manager-port-Is-it-8032-or/td-p/138143)
+      port: "{{ yarn_rm_jobs_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: yarn_rm_admin_port
+      short: YARN ResourceManager - Admin port - yarn.resourcemanager.admin.address.rmX
+      description: >-
+        It is used by administrators and developers.
+        See [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+      port: "{{ yarn_rm_admin_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: yarn_rm_https_port
+      short: YARN ResourceManager - HTTPS port - yarn.resourcemanager.webapp.https.address.rmX
+      description: >-
+        The HTTPS adddress of the RM web UI application. It is used to monitor applications.
+        See [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+      port: "{{ yarn_rm_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_yarn_rm_http_port
+      short: YARN ResourceManager - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_yarn_rm_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  yarn_nm:
+    - name: yarn_nm_rpc_port
+      short: YARN NodeManager - RPC port - yarn.nodemanager.address
+      description: >-
+        The address of the container manager in the NodeManager. Access is typically granted to admins, and Dev/Support teams.
+        See [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+      port: "{{ yarn_nm_rpc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: yarn_nm_localizer_port
+      short: YARN NodeManager - Localizer port - yarn.nodemanager.localizer.address
+      description: >-
+        Address where the localizer IPC is. It is responsible for downloading and copying remote resources on the local filesystem.
+        See [yarn-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)
+      port: "{{ yarn_nm_localizer_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: yarn_nm_https_port
+      short: YARN NodeManager - HTTPS port - yarn.nodemanager.webapp.https.address
+      port: "{{ yarn_nm_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: mapred_sh_shuffle_port
+      short: MapReduce ShuffleHandler - Shuffle port - mapreduce.shuffle.port
+      description: >-
+        ShuffleHandler is a service run at the NodeManager to facilitate transfers of intermediate Map outputs to requesting Reducers.
+        See [mapred-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml)
+      port: "{{ mapred_sh_shuffle_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    # YARN MapReduce apps
+    - name: mapred_am_bind_portrange
+      short: MapReduce ApplicationMaster - Bind port range - yarn.app.mapreduce.am.job.client.port-range
+      description: >-
+        ApplicationMaster Ephemeral HTTPS ports are opened by each ApplicationMaster. Note that this only restricts the port range used for mapreduce jobs.
+        See [mapred-default.xml](https://hadoop.apache.org/docs/r3.1.1/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml)
+      port: "{{ mapred_am_bind_portrange }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    # YARN Tez apps
+    - name: tez_am_task_portrange
+      short: Tez ApplicationMaster - Task bind port range - tez.am.task.am.port-range
+      port: "{{ tez_am_task_portrange }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: tez_am_client_portrange
+      short: Tez ApplicationMaster - Client bind port range - tez.am.client.am.port-range
+      port: "{{ tez_am_client_portrange }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # YARN Spark apps
+    - name: spark_shuffle_service_port
+      short: Spark External Shuffle Service - Bind port - spark.shuffle.service.port
+      port: "{{ spark_shuffle_service_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: spark_driver_bind_portrange
+      short: Spark Driver - Bind port range - spark.driver.port
+      port: "{{ spark_driver_bind_port }}-{{ spark_driver_bind_port + spark_port_max_retries }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: spark_blockmanager_bind_portrange
+      short: Spark Block Manager - Bind port range - spark.blockManager.port
+      port: "{{ spark_blockmanager_bind_port }}-{{ spark_blockmanager_bind_port + spark_port_max_retries }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: spark_ui_bind_portrange
+      short: Spark UI - Bind port range - spark.ui.port
+      port: "{{ spark_ui_bind_port }}-{{ spark_ui_bind_port + spark_port_max_retries }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # YARN Spark3 apps
+    - name: spark3_shuffle_service_port
+      short: Spark3 External Shuffle Service - Bind port - spark.shuffle.service.port
+      port: "{{ spark3_shuffle_service_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: spark3_driver_bind_portrange
+      short: Spark3 Driver - Bind port range - spark.driver.port
+      port: "{{ spark3_driver_bind_port }}-{{ spark3_driver_bind_port + spark3_port_max_retries }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: spark3_blockmanager_bind_portrange
+      short: Spark3 Block Manager - Bind port range - spark.blockManager.port
+      port: "{{ spark3_blockmanager_bind_port }}-{{ spark3_blockmanager_bind_port + spark3_port_max_retries }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: spark3_ui_bind_portrange
+      short: Spark3 UI - Bind port range - spark.ui.port
+      port: "{{ spark3_ui_bind_port }}-{{ spark3_ui_bind_port + spark3_port_max_retries }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_yarn_nm_http_port
+      short: YARN NodeManager - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_yarn_nm_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  yarn_ats:
+    - name: yarn_ats_rpc_port
+      short: YARN AppTimelineServer - RPC port - yarn.timeline-service.address
+      port: "{{ yarn_ats_rpc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: yarn_ats_https_port
+      short: YARN AppTimelineServer - HTTPS port - yarn.timeline-service.webapp.https.address
+      port: "{{ yarn_ats_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_yarn_ats_http_port
+      short: YARN AppTimelineServer - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_yarn_ats_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # MapReduce
+  mapred_jhs:
+    - name: mapred_jhs_rpc_port
+      short: MapReduce JobHistoryServer - RPC port - mapreduce.jobhistory.address
+      port: "{{ mapred_jhs_rpc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: mapred_jhs_admin_port
+      short: MapReduce JobHistoryServer - Admin port - mapreduce.jobhistory.admin.address
+      port: "{{ mapred_jhs_admin_port }}"
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: mapred_jhs_https_port
+      short: MapReduce JobHistoryServer - HTTPS port - mapreduce.jobhistory.webapp.https.address
+      port: "{{ mapred_jhs_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_mapred_jhs_http_port
+      short: MapReduce JobHistoryServer - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_mapred_jhs_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # Hive
+  hive_s2:
+    - name: hive_hiveserver2_thrift_port
+      short: Hive Server2 - Thrift binary port - hive.server2.thrift.port
+      port: "{{ hive_hiveserver2_thrift_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: hive_hiveserver2_thrift_http_port
+      short: Hive Server2 - Thrift HTTP port - hive.server2.thrift.http.port
+      port: "{{ hive_hiveserver2_thrift_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: hive_hiveserver2_webui_port
+      short: Hive Server2 - Web UI port - hive.server2.webui.port
+      description: >-
+        Port the the web UI to provides configuration, logging, metrics and active session information.
+        See [Hive configuration properties](https://cwiki.apache.org/confluence/display/Hive/Configuration+Properties)
+      port: "{{ hive_hiveserver2_webui_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: "{% if hive_hiveserver2_webui_port > 0 %}present{% else %}absent{% endif %}"
+    # Prometheus exporter
+    - name: exporter_hive_hs2_http_port
+      short: Hive Server2 - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hive_hs2_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  hive_ms:
+    - name: hive_metastore_listener_port
+      short: Hive Metastore - Listener port - metastore.thrift.uris
+      port: "{{ hive_metastore_listener_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_hive_hms_http_port
+      short: Hive Metastore - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hive_hms_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # HBase
+  hbase_master:
+    - name: hbase_master_rpc_port
+      short: HBase Master - RPC port - hbase.master.port
+      port: "{{ hbase_master_rpc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: hbase_master_info_port
+      short: HBase Master - Info port - hbase.master.info.port
+      port: "{{ hbase_master_info_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_hbase_hm_http_port
+      short: HBase Master - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hbase_hm_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  hbase_rs:
+    - name: hbase_rs_rpc_port
+      short: HBase RegionServer - RPC port - hbase.regionserver.port
+      port: "{{ hbase_rs_rpc_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: hbase_rs_info_port
+      short: HBase RegionServer - Info port - hbase.regionserver.info.port
+      port: "{{ hbase_rs_info_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_hbase_hrs_http_port
+      short: HBase RegionServer - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hbase_hrs_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  hbase_rest:
+    - name: hbase_rest_client_port
+      short: HBase REST - Client port - hbase.rest.port
+      port: "{{ hbase_rest_client_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: hbase_rest_info_port
+      short: HBase REST - Info port - hbase.rest.info.port
+      port: "{{ hbase_rest_info_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_hbase_hr_http_port
+      short: HBase REST - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hbase_hr_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # Phoenix
+  phoenix_queryserver_daemon:
+    - name: phoenix_queryserver_http_port
+      short: Phoenix QueryServer - Listen port - phoenix.queryserver.http.port
+      port: "{{ phoenix_queryserver_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_hbase_pqs_http_port
+      short: Phoenix QueryServer - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_hbase_pqs_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # Spark
+  spark_hs:
+    - name: spark_hs_http_port
+      short: Spark History Server - HTTP port - spark.history.ui.port
+      port: "{{ spark_hs_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: spark_hs_https_port
+      short: Spark History Server - HTTPS port - spark.ssl.historyServer.port
+      port: "{{ spark_hs_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_spark_hs_http_port
+      short: Spark History Server - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_spark_hs_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  spark3_hs:
+    - name: spark3_hs_http_port
+      short: Spark3 History Server - HTTP port - spark.history.ui.port
+      port: "{{ spark3_hs_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: spark3_hs_https_port
+      short: Spark3 History Server - HTTPS port - spark.ssl.historyServer.port
+      port: "{{ spark3_hs_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_spark3_hs_http_port
+      short: Spark3 History Server - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_spark3_hs_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # Knox
+  knox:
+    - name: knox_gateway_http_port
+      short: Knox Gateway - HTTP port - gateway.port
+      port: "{{ knox_gateway_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_knox_gateway_http_port
+      short: Knox Gateway - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_knox_gateway_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
