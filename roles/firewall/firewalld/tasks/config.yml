@@ -22,7 +22,6 @@
       loop: "{{ firewalld_zones | map(attribute='groups') | flatten }}"
       loop_control:
         label: "{{ firewalld_files_prefix }}{{ item }}"
-      notify: "Reload firewalld"
 
     - name: Template firewalld services
       template:
@@ -40,7 +39,6 @@
       loop: "{{ host_firewalld_rules }}"
       loop_control:
         label: "{{ firewalld_files_prefix }}{{ item.name }}"
-      notify: "Reload firewalld"
 
     - name: Template firewalld zones
       template:
@@ -59,5 +57,4 @@
       loop: "{{ firewalld_zones }}"
       loop_control:
         label: "{{ firewalld_files_prefix }}{{ item.name }}"
-      notify: "Reload firewalld"
   when: firewall_tdp_managed
