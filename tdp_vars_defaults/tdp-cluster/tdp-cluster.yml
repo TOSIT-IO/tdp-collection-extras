@@ -1,0 +1,5 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+exporter_kafka_broker_http_port: 18202
