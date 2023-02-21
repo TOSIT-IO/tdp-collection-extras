@@ -3,7 +3,8 @@
 
 ---
 - name: firewall_generic_config
-  depends_on: []
+  depends_on:
+    - tdp-cluster_config
 
 - name: firewall_generic_start
   depends_on:
