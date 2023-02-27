@@ -1,11 +1,11 @@
 ---
-- ansible.builtin.import_tasks: airflow.yaml
+- import_tasks: airflow.yaml
 
-- ansible.builtin.import_tasks: webserver.yaml
+- import_tasks: webserver.yaml
   when: "'airflow_webserver' in group_names"
 
-- ansible.builtin.import_tasks: scheduler.yaml
+- import_tasks: scheduler.yaml
   when: "'airflow_webserver' in group_names"
 
-- ansible.builtin.import_tasks: executor.yaml
+- import_tasks: executor.yaml
   when: "'airflow_executor' in group_names"

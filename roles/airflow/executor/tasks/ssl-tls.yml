@@ -1,0 +1,25 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Copy TLS keys and ca certs to airflow folder
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: root
+    mode: "{{ item.mode }}"
+    remote_src: true
+  loop:
+    - src: "{{ certificates_public_key }}"
+      dest: "{{ airflow_public_key }}"
+      owner: root
+      mode: "0644"
+    - src: "{{ certificates_private_key }}"
+      dest: "{{ airflow_private_key }}"
+      owner: "{{ airflow_user }}"
+      mode: "0440"
+    - src: "{{ certificates_ca }}"
+      dest: "{{ ca_certificate_file }}"
+      owner: root
+      mode: "0644"

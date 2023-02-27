@@ -1,0 +1,63 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+# Airflow Version
+airflow_version: 2.2.5
+
+# Airflow installation directory
+airflow_root_dir: /opt/tdp/airflow
+airflow_install_dir: "{{ airflow_root_dir }}/airflow"
+# hue_root_dir: /opt/tdp
+# hue_install_dir: "{{ hue_root_dir }}/hue"
+# hue_pid_dir: /var/run/hue
+# hue_log_dir: /var/log/hue
+# hue_root_conf_dir: /etc/hue
+# hue_conf_dir: "{{ hue_root_conf_dir }}/conf"
+airflow_root_conf_dir: /etc/airflow
+airflow_certs_folder: "{{ airflow_root_conf_dir }}/certs"
+hadoop_conf_dir: /etc/hadoop/conf
+
+# Airflow users and group
+airflow_user: airflow
+airflow_group: airflow
+
+# Airflow pid directories
+airflow_pid_dir: /run/airflow
+
+# Airflow database
+airflow_db_user: airflow
+airflow_db_pass: airflow
+airflow_db_host: master-03
+airflow_db_port: 5432
+airflow_db_name: airflow
+aitflow_sql_alchemy_conn: "postgresql+psycopg2://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
+
+# Airflow admin user
+airflow_admin_user: admin
+airflow_admin_pass: admin123
+
+# Airflow log dir
+airflow_log_dir: /var/log/airflow
+
+# Airflow config
+airflow_executor: CeleryExecutor
+airflow_result_backend: "db+postgresql://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
+airflow_broker_url: "redis://edge-01:6379/0"
+
+#SSL configuration
+certificates_path: /etc/ssl/certs
+certificates_cert_filename: "{{ ansible_fqdn }}"
+certificates_ca_filename: "tdp_ca"
+certificates_public_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.pem"
+certificates_private_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.key"
+certificates_ca: "{{ certificates_path }}/{{ certificates_ca_filename }}.crt" 
+airflow_public_key: "{{ airflow_certs_folder }}/{{ certificates_cert_filename }}.pem"
+airflow_private_key: "{{ airflow_certs_folder }}/{{ certificates_cert_filename }}.key"
+ca_certificate_file: "{{ airflow_certs_folder }}/{{ certificates_ca_filename }}.crt"
+
+ssl_certificate: "{{ airflow_public_key }}"
+ssl_private_key: "{{ airflow_private_key }}"
+
+# Redis configuration
+redis_bind_address: 0.0.0.0

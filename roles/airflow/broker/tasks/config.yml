@@ -1,10 +1,4 @@
 ---
-- name: Pip install flower 
-  ansible.builtin.pip:
-    name: "flower"
-    executable: pip3
-    extra_args: --constraint /tmp/constraints-3.6.txt
-
 - name: Template Airflow worker service file
   ansible.builtin.template:
     src: airflow-worker.service.j2
@@ -14,3 +8,9 @@
   ansible.builtin.template:
     src: airflow-flower.service.j2
     dest: /usr/lib/systemd/system/airflow-flower.service
+
+- name: Set Redis bind address
+  lineinfile:
+    path: /etc/redis.conf
+    regexp: '^bind'
+    line: 'bind {{ redis_bind_address }}'

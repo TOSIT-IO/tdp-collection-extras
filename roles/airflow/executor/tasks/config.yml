@@ -1,0 +1,5 @@
+---
+- name: Template Airflow worker service file
+  template:
+    src: airflow-worker.service.j2
+    dest: /usr/lib/systemd/system/airflow-worker.service

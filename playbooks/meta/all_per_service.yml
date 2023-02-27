@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- ansible.builtin.import_playbook: firewall.yml
-- ansible.builtin.import_playbook: jupyterhub.yml
-- ansible.builtin.import_playbook: livy.yml
-- ansible.builtin.import_playbook: livy-spark3.yml
-- ansible.builtin.import_playbook: zookeeper-kafka.yml
-- ansible.builtin.import_playbook: kafka.yml
+- import_playbook: jupyterhub.yml
+- import_playbook: livy.yml
+- import_playbook: livy-spark3.yml
+- import_playbook: zookeeper-kafka.yml
+- import_playbook: kafka.yml
+- import_playbook: airflow.yml

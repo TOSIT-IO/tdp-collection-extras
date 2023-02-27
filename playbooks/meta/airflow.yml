@@ -1,0 +1,23 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- import_playbook: ../airflow_install.yml
+- import_playbook: ../airflow_ssl-tls_install.yml
+- import_playbook: ../airflow_webserver_install.yml
+- import_playbook: ../airflow_scheduler_install.yml
+- import_playbook: ../airflow_executor_install.yml
+- import_playbook: ../airflow_broker_install.yml
+- import_playbook: ../airflow_flower_install.yml
+# airflow_install
+- import_playbook: ../airflow_webserver_config.yml
+- import_playbook: ../airflow_scheduler_config.yml
+- import_playbook: ../airflow_executor_config.yml
+- import_playbook: ../airflow_broker_config.yml
+- import_playbook: ../airflow_flower_config.yml
+- import_playbook: ../airflow_config.yml
+# airflow_config
+# - import_playbook: ../airflow_server_start.yml
+# airflow_server_init
+# airflow_start
+# airflow_init

@@ -66,3 +66,13 @@
 - ansible.builtin.import_playbook: ../kafka_broker_start.yml
 # kafka_start
 # kafka_init
+- import_playbook: ../airflow_install.yml
+- import_playbook: ../airflow_webserver_install.yml
+- import_playbook: ../airflow_scheduler_install.yml
+- import_playbook: ../airflow_executor_install.yml
+# airflow_install
+- import_playbook: ../airflow_config.yml
+- import_playbook: ../airflow_webserver_config.yml
+- import_playbook: ../airflow_scheduler_config.yml
+- import_playbook: ../airflow_executor_config.yml
+# airflow_config

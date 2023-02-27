@@ -1,0 +1,152 @@
+---
+- name: Add Airflow group
+  group:
+    name: "{{ airflow_group }}"
+
+- name: Add Airflow users
+  user:
+    name: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+
+- name: Ensures {{ airflow_root_dir }} exists
+  file:
+    path: "{{ airflow_root_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "755"
+
+- name: Ensures {{ airflow_root_dir }}/airflow-{{ airflow_version }} exists
+  file:
+    path: "{{ airflow_root_dir }}/airflow-{{ airflow_version }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "755"
+
+- name: Ensures log directory
+  file:
+    path: '{{ airflow_log_dir }}'
+    state: directory
+    group: '{{ airflow_group }}'
+    owner: '{{ airflow_user }}'
+
+- name: Create directory for pid
+  file:
+    path: '{{ airflow_pid_dir }}'
+    state: directory
+    group: '{{ airflow_group }}'
+    owner: '{{ airflow_user }}'
+    mode: "750"
+
+- name: Template airflow tmpfiles.d
+  template:
+    src: tmpfiles-airflow-webserver.conf.j2
+    dest: /etc/tmpfiles.d/airflow-webserver.conf
+
+- name: Create symbolic link to Airflow installation
+  file:
+    src: "{{ airflow_root_dir }}/airflow-{{ airflow_version }}"
+    dest: "{{ airflow_install_dir }}"
+    state: link
+
+- name: Template Constraint file
+  template:
+    src: constraints-3.6.txt.j2
+    dest: /tmp/constraints-3.6.txt
+
+- name: Create configuration directory
+  file:
+    path: "{{ airflow_root_conf_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "755"
+
+- name: Create certificates directory
+  file:
+    path: "{{ airflow_certs_folder }}"
+    state: directory
+    group: root
+    owner: root
+    mode: "0755"
+
+# - name: Pip install psycopg2 
+#   pip:
+#     name: "psycopg2-binary"
+#     executable: pip3
+#     extra_args: --constraint /tmp/constraints-3.6.txt
+- name: Install packages
+  yum:
+    name:
+      - gcc-c++
+      - python-devel.x86_64
+      - python3-devel.x86_64
+      - cyrus-sasl-devel.x86_64
+      - krb5-devel
+    state: present
+
+# - name: Install packages
+#   pip:
+#     name:
+#       - pyspnego[kerberos]
+#       - gssapi>=1.5.0
+#       - krb5>=0.3.0
+#     executable: pip3
+#     state: present
+
+- name: Pip install airflow[kerberos]
+  pip:
+    name: "apache-airflow[kerberos]=={{ airflow_version }}"
+    executable: pip3
+    extra_args: --constraint /tmp/constraints-3.6.txt
+    state: present
+
+
+- name: Pip install apache-hive provider
+  pip:
+    name: "apache-airflow-providers-apache-hive"
+    executable: pip3
+    extra_args: --constraint /tmp/constraints-3.6.txt
+
+# - name: Pip install celery 
+#   pip:
+#     name: "celery"
+#     executable: pip3
+#     extra_args: --constraint /tmp/constraints-3.6.txt
+
+# - name: Pip install redis
+#   pip:
+#     name: "redis"
+#     executable: pip3
+#     extra_args: --constraint /tmp/constraints-3.6.txt
+
+- name: Template airflow.cfg file
+  template:
+    src: airflow.cfg.j2
+    dest: "{{ airflow_install_dir }}/airflow.cfg"
+
+# Dags: move this to a separate task later
+- name: Create dag directory in /opt/tdp/airflow/airflow
+  ansible.builtin.file:
+    path: "{{ airflow_install_dir }}/dags"
+    state: directory
+    mode: '0755'
+    owner: airflow
+    group: airflow
+
+- name: Template the hive_dag.py.j2 file inside the dag directory
+  ansible.builtin.template:
+    src: hive_dag.py.j2
+    dest: "{{ airflow_install_dir }}/dags/hive_dag.py"
+    owner: airflow
+    group: airflow
+    mode: '0644'
+
+- name: Template the hive_dag.py.j2 file inside the dag directory
+  ansible.builtin.template:
+    src: hive_server_dag.py.j2
+    dest: "{{ airflow_install_dir }}/dags/hive_server_dag.py"
+    owner: airflow
+    group: airflow
+    mode: '0644'

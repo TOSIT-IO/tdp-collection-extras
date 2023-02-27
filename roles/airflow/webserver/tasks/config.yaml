@@ -1,12 +1,12 @@
 ---
 - name: Airflow Database Init
-  ansible.builtin.shell: airflow db init
+  shell: /usr/local/bin/airflow db init
   environment:
     AIRFLOW_HOME: "{{ airflow_install_dir }}"
 
 - name: Create Airflow admin user
-  ansible.builtin.shell: |
-    airflow users create \
+  shell: |
+    /usr/local/bin/airflow users create \
       --username {{ airflow_admin_user }} \
       --password {{ airflow_admin_pass }} \
       --role Admin \

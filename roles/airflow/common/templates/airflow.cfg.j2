@@ -126,14 +126,14 @@ fernet_key =
 donot_pickle = True
 
 # How long before timing out a python file import
-dagbag_import_timeout = 30.0
+dagbag_import_timeout = 120.0
 
 # Should a traceback be shown in the UI for dagbag import errors,
 # instead of just the exception message
 dagbag_import_error_tracebacks = True
 
 # If tracebacks are shown, how many entries from the traceback should be shown
-dagbag_import_error_traceback_depth = 2
+dagbag_import_error_traceback_depth = 3
 
 # How long before timing out a DagFileProcessor, which processes a dag file
 dag_file_processor_timeout = 50
@@ -465,11 +465,11 @@ web_server_port = 8080
 
 # Paths to the SSL certificate and key for the web server. When both are
 # provided SSL will be enabled. This does not change the web server port.
-web_server_ssl_cert = /etc/ssl/certs/{{ ansible_fqdn }}.pem
+web_server_ssl_cert = {{ airflow_public_key }}
 
 # Paths to the SSL certificate and key for the web server. When both are
 # provided SSL will be enabled. This does not change the web server port.
-web_server_ssl_key = /etc/ssl/certs/{{ ansible_fqdn }}.key
+web_server_ssl_key = {{ airflow_private_key }}
 
 # Number of seconds the webserver waits before killing gunicorn master that doesn't respond
 web_server_master_timeout = 120
@@ -744,8 +744,8 @@ sync_parallelism = 0
 # Import path for celery configuration options
 celery_config_options = airflow.config_templates.default_celery.DEFAULT_CELERY_CONFIG
 ssl_active = False
-ssl_key =
-ssl_cert =
+ssl_key = {{ airflow_private_key }}
+ssl_cert = {{ airflow_public_key }}
 ssl_cacert =
 
 # Celery Pool implementation.
