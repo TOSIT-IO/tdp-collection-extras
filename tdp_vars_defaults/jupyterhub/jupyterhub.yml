@@ -6,7 +6,7 @@
 jupyterhub_release: jupyterhub-2.3.1-TDP-0.1.0
 jupyterhub_dist_file: "{{ jupyterhub_release }}.tar.gz"
 
-jupyterhub_upload_directory: "/tmp"
+jupyterhub_upload_directory: "{{ binaries_upload_dir }}"
 
 jupyterhub_python_executable: "python3.6"
 

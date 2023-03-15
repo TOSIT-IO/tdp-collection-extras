@@ -8,7 +8,7 @@
 - name: Upload {{ livy_dist_file }}
   copy:
     src: "files/{{ livy_dist_file }}"
-    dest: /tmp
+    dest: "{{ binaries_upload_dir }}"
     group: root
     owner: root
     mode: "644"
@@ -24,7 +24,7 @@
 
 - name: Extract Livy
   unarchive:
-    src: "/tmp/{{ livy_dist_file }}"
+    src: "{{ binaries_upload_dir }}/{{ livy_dist_file }}"
     dest: "{{ livy_root_dir }}"
     group: root
     owner: root
