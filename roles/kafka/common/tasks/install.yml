@@ -16,7 +16,7 @@
 - name: "Upload {{ kafka_dist_file }}"
   copy:
     src: "files/{{ kafka_dist_file }}"
-    dest: /tmp
+    dest: "{{ binaries_upload_dir }}"
   diff: no
 
 - name: "Ensure {{ kafka_root_dir }} exists"
@@ -26,7 +26,7 @@
 
 - name: "Extract {{ kafka_dist_file }}"
   unarchive:
-    src: "/tmp/{{ kafka_dist_file }}"
+    src: "{{ binaries_upload_dir }}/{{ kafka_dist_file }}"
     dest: "{{ kafka_root_dir }}"
     group: root
     owner: root
