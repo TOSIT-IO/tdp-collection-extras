@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
+- import_playbook: firewall.yml
 - import_playbook: jupyterhub.yml
 - import_playbook: livy.yml
 - import_playbook: livy-spark3.yml

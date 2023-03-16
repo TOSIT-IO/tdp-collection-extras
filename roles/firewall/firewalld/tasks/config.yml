@@ -1,0 +1,60 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- block:
+    - name: Generate host_firewalld_rules var
+      set_fact:
+        host_firewalld_rules: |
+          {{ group_names | intersect(firewalld_rules.keys()) | map('extract', firewalld_rules) | flatten }}
+
+    - name: Template firewalld ipsets from Ansible groups
+      template:
+        src: firewalld-ipset.xml.j2
+        dest: "/etc/firewalld/ipsets/{{ firewalld_files_prefix }}{{ item }}.xml"
+        lstrip_blocks: yes
+        owner: root
+        group: root
+        mode: "600"
+      vars:
+        short: "{{ item }} Ansible group"
+        hosts: "{{ groups[item] }}"
+      loop: "{{ firewalld_zones | map(attribute='groups') | flatten }}"
+      loop_control:
+        label: "{{ firewalld_files_prefix }}{{ item }}"
+
+    - name: Template firewalld services
+      template:
+        src: firewalld-service.xml.j2
+        dest: "/etc/firewalld/services/{{ firewalld_files_prefix }}{{ item.name }}.xml"
+        lstrip_blocks: yes
+        owner: root
+        group: root
+        mode: "600"
+      vars:
+        short: "{{ item.short }}"
+        port: "{{ item.port }}"
+        protocol: "{{ item.protocol }}"
+      when: item.state == 'present'
+      loop: "{{ host_firewalld_rules }}"
+      loop_control:
+        label: "{{ firewalld_files_prefix }}{{ item.name }}"
+
+    - name: Template firewalld zones
+      template:
+        src: firewalld-zone.xml.j2
+        dest: "/etc/firewalld/zones/{{ firewalld_files_prefix }}{{ item.name }}.xml"
+        lstrip_blocks: yes
+        owner: root
+        group: root
+        mode: "600"
+      vars:
+        short: "{{ item.short }}"
+        ipsets: "{{ item.groups }}"
+        addresses: "{{ item.addresses }}"
+        services: |
+          {{ host_firewalld_rules | json_query("[?contains(zones, '" + item.name + "')]") }}
+      loop: "{{ firewalld_zones }}"
+      loop_control:
+        label: "{{ firewalld_files_prefix }}{{ item.name }}"
+  when: firewall_tdp_managed
