@@ -116,7 +116,7 @@ beeswax:
   hive_discovery_hs2: "true"
   hive_discovery_hiveserver2_znode: "/hiveserver2"
   hive_metastore_host: "{{ groups['hive_ms'][0] | tosit.tdp.access_fqdn(hostvars) }}"
-  hive_metastore_port: "{{ hive_metastore_thrift_port }}"
+  hive_metastore_port: "{{ hive_metastore_listener_port }}"
   hive_conf_dir: "{{ hue_conf_dir }}"
   thrift_version: "11"
   use_sasl: "true"
