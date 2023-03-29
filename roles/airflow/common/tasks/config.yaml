@@ -1,0 +1,47 @@
+---
+- name: Change ownership and permissions of Airflow logs and SSL keys
+  become: yes
+  become_user: root
+  file:
+    path: "{{ item.path }}"
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+    mode: "{{ item.mode }}"
+    recurse: yes
+  with_items:
+    - { path: '{{ airflow_root_conf_dir }}', mode: '0755' }
+    - { path: '{{ airflow_log_dir }}', mode: '0755' }
+    - { path: '{{ airflow_dag_dir }}', mode: '0755' }
+    - { path: '{{ airflow_child_process_log_dir }}', mode: '0755' }
+    - { path: '{{ airflow_plugins_dir }}', mode: '0755' }
+
+- name: Copy airflow.cfg file
+  template:
+    src: "{{ airflow_conf_template }}.j2"
+    dest: "{{ airflow_install_dir }}/airflow.cfg"
+
+- name: Copy webserver_config.py file
+  template:
+    src: "{{ webserver_conf_template }}.j2"
+    dest: "{{ airflow_install_dir }}/webserver_config.py"
+
+- name: Template profile.d
+  template:
+    src: airflow-profile.d.j2
+    dest: "/etc/profile.d/airflow.sh"
+
+- name: Reload profile
+  shell: source /etc/profile.d/airflow.sh
+
+- name: Airflow environment variables file
+  template:
+    src: airflow-env.j2
+    dest: "{{ airflow_env_file }}"
+    mode: 0644
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+
+- name: Airflow kerberos service
+  template:
+    src: airflow-kerberos.service.j2
+    dest: /usr/lib/systemd/system/airflow-kerberos.service

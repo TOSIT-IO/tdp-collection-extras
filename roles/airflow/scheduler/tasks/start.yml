@@ -1,0 +1,7 @@
+---
+- name: Start airflow scheduler service
+  systemd:
+    name: airflow-scheduler
+    state: started
+    enabled: true
+    daemon_reload: true

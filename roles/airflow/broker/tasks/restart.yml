@@ -1,0 +1,14 @@
+---
+- name: Restart redis service
+  systemd:
+    name: redis
+    state: restarted
+    enabled: true
+    daemon_reload: true
+
+- name: restart airflow flower service
+  systemd:
+    name: airflow-flower
+    state: restarted
+    enabled: true
+    daemon_reload: true

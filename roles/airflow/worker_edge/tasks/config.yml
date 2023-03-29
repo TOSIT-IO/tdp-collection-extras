@@ -1,0 +1,17 @@
+---
+- name: Template Airflow worker service file
+  template:
+    src: airflow-worker-edge.service.j2
+    dest: /usr/lib/systemd/system/airflow-worker.service
+
+- name: Create symbolic link to /usr/bin
+  file:
+    src: "{{ airflow_install_dir }}/bin/airflow"
+    dest: "/usr/bin/airflow"
+    state: link
+
+- name: Change default beeline
+  become: yes
+  become_user: root
+  shell: mv {{ airflow_install_dir }}/bin/beeline{,.airflow.bkp}
+  ignore_errors: true

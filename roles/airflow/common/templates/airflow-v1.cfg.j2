@@ -1,7 +1,35 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# This is the template for Airflow's default configuration. When Airflow is
+# imported, it looks for a configuration file at $AIRFLOW_HOME/airflow.cfg. If
+# it doesn't exist, Airflow uses this template to generate it by replacing
+# variables in curly braces with their global values from configuration.py.
+
+# Users should not modify this file; they should customize the generated
+# airflow.cfg instead.
+
+
+# ----------------------- TEMPLATE BEGINS HERE -----------------------
 [core]
 # The folder where your airflow pipelines live, most likely a
 # subfolder in a code repository. This path must be absolute.
-dags_folder = {{ airflow_install_dir }}/dags
+dags_folder = {{ airflow_dag_dir }}
 
 # Hostname by providing a path to a callable, which will resolve the hostname.
 # The format is "package.function".
@@ -27,7 +55,7 @@ executor = {{ airflow_executor }}
 # SqlAlchemy supports many different database engines.
 # More information here:
 # http://airflow.apache.org/docs/apache-airflow/stable/howto/set-up-database.html#database-uri
-sql_alchemy_conn = {{ aitflow_sql_alchemy_conn }}
+sql_alchemy_conn = {{ airflow_sql_alchemy_conn }}
 
 # The encoding for the databases
 sql_engine_encoding = utf-8
@@ -104,7 +132,7 @@ max_active_runs_per_dag = 16
 # Whether to load the DAG examples that ship with Airflow. It's good to
 # get started, but you probably want to set this to ``False`` in a production
 # environment
-load_examples = True
+load_examples = False
 
 # Whether to load the default connections that ship with Airflow. It's good to
 # get started, but you probably want to set this to ``False`` in a production
@@ -112,7 +140,7 @@ load_examples = True
 load_default_connections = True
 
 # Path to the folder containing Airflow plugins
-plugins_folder = {{ airflow_install_dir }}/plugins
+plugins_folder = {{ airflow_plugins_dir }}
 
 # Should tasks be executed via forking of the parent process ("False",
 # the speedier option) or by spawning a new python process ("True" slow,
@@ -126,14 +154,14 @@ fernet_key =
 donot_pickle = True
 
 # How long before timing out a python file import
-dagbag_import_timeout = 120.0
+dagbag_import_timeout = 30.0
 
 # Should a traceback be shown in the UI for dagbag import errors,
 # instead of just the exception message
 dagbag_import_error_tracebacks = True
 
 # If tracebacks are shown, how many entries from the traceback should be shown
-dagbag_import_error_traceback_depth = 3
+dagbag_import_error_traceback_depth = 2
 
 # How long before timing out a DagFileProcessor, which processes a dag file
 dag_file_processor_timeout = 50
@@ -352,7 +380,7 @@ api_client = airflow.api.client.local_client
 # If you set web_server_url_prefix, do NOT forget to append it here, ex:
 # ``endpoint_url = http://localhost:8080/myroot``
 # So api will look like: ``http://localhost:8080/myroot/api/experimental/...``
-endpoint_url = http://localhost:8080
+endpoint_url = http://localhost:{{ airflow_web_server_port }}
 
 [debug]
 # Used only with ``DebugExecutor``. If set to ``True`` DAG will fail with first
@@ -449,9 +477,9 @@ default_hive_mapred_queue =
 # The base url of your website as airflow cannot guess what domain or
 # cname you are using. This is used in automated emails that
 # airflow sends to point links to the right web server
-base_url = http://localhost:8080
+base_url = http://localhost:{{ airflow_web_server_port }}
 
-# Default timezone to display all dates in the UI, can be UTC, system, or
+# Default timezone to display all dates in the UI, can be UTC, system8080, or
 # any IANA timezone string (e.g. Europe/Amsterdam). If left empty the
 # default value of core/default_timezone will be used
 # Example: default_ui_timezone = America/New_York
@@ -461,7 +489,7 @@ default_ui_timezone = UTC
 web_server_host = 0.0.0.0
 
 # The port on which to run the web server
-web_server_port = 8080
+web_server_port = {{ airflow_web_server_port }}
 
 # Paths to the SSL certificate and key for the web server. When both are
 # provided SSL will be enabled. This does not change the web server port.
@@ -843,7 +871,7 @@ scheduler_health_check_threshold = 30
 
 # How often (in seconds) should the scheduler check for orphaned tasks and SchedulerJobs
 orphaned_tasks_check_interval = 300.0
-child_process_log_directory = {{ airflow_log_dir }}/scheduler
+child_process_log_directory = {{ airflow_child_process_log_dir }}
 
 # Local task jobs periodically heartbeat to the DB. If the job has
 # not heartbeat in this many seconds, the scheduler will mark the
@@ -916,10 +944,10 @@ trigger_timeout_check_interval = 15
 default_capacity = 1000
 
 [kerberos]
-ccache = /tmp/airflow_krb5_ccache
-keytab = /etc/security/keytabs/airflow.keytab
-reinit_frequency = 3600
-principal = airflow/_HOST@REALM.TDP
+ccache = {{ airflow_kerberos.ccache }}
+principal = {{ airflow_kerberos.principal }}
+reinit_frequency = {{ airflow_kerberos.reinit_frequency }}
+keytab = /etc/security/keytabs/{{ airflow_kerberos.keytab }}
 
 # Allow to disable ticket forwardability.
 forwardable = True

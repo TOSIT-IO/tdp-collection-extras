@@ -1,0 +1,8 @@
+---
+- name: Stop airflow scheduler service
+  systemd:
+    name: airflow-scheduler
+    state: stopped
+    enabled: true
+    daemon_reload: true
+

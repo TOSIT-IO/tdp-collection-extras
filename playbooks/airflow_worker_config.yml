@@ -1,0 +1,22 @@
+---
+- name: "Config Airflow worker"
+  hosts: airflow_worker
+  strategy: linear
+  tasks:
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: airflow_worker
+    - import_role:
+        name: tosit.tdp_extra.airflow.worker
+        tasks_from: config
+    - meta: clear_facts # noqa unnamed-task
+
+- name: "Config Airflow worker edge"
+  hosts: airflow_worker_edge
+  strategy: linear
+  tasks:
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: airflow_worker_edge
+    - import_role:
+        name: tosit.tdp_extra.airflow.worker_edge
+        tasks_from: config
+    - meta: clear_facts # noqa unnamed-task

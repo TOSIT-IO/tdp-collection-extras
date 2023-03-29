@@ -1,0 +1,16 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+---
+- name: Start airflow worker service
+  systemd:
+    name: airflow-worker
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: Start airflow kerberos service
+  systemd:
+    name: airflow-kerberos
+    state: started
+    enabled: true
+    daemon_reload: true

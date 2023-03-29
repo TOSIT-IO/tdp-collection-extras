@@ -1,0 +1,17 @@
+---
+- name: Upload airflow DAGs templates
+  template:
+    src: "{{ item }}"
+    dest: "{{ airflow_dag_dir }}/{{ item | basename | splitext | first }}"
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+  with_fileglob: "{{role_path}}/templates/dags/*.j2"
+  ignore_errors: true
+
+- name: Restart airflow scheduler service
+  systemd:
+    name: airflow-scheduler
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  ignore_errors: true

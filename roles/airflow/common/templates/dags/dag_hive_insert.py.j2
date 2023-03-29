@@ -1,0 +1,52 @@
+from airflow import DAG
+from airflow.providers.apache.hive.operators.hive import HiveOperator
+from airflow.utils.dates import days_ago
+
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': days_ago(1),
+}
+
+dag = DAG(
+    'hive_insert_dag',
+    default_args=default_args,
+    description='A simple Hive DAG',
+    schedule_interval=None,
+)
+
+create_database = HiveOperator(
+    task_id='create_database',
+    hql="CREATE DATABASE IF NOT EXISTS tdp_user_dag_insert_test LOCATION '/user/tdp_user/warehouse/tdp_user_dag_insert_test.db'",
+    hive_cli_conn_id='hiveserver2_tdp',
+    dag=dag,
+)
+
+create_table = HiveOperator(
+    task_id='create_table',
+    hql=f'''CREATE TABLE IF NOT EXISTS tdp_user_dag_insert_test.table_insert_test (
+            id INT,
+            name STRING
+        )
+        STORED AS PARQUET
+    ''',
+    hive_cli_conn_id='hiveserver2_tdp',
+    dag=dag,
+)
+
+insert_data = HiveOperator(
+    task_id='insert_data',
+    hql=f'''INSERT INTO tdp_user_dag_insert_test.table_insert_test (id, name) VALUES (1, 'John Doe')''',
+    hive_cli_conn_id='hiveserver2_tdp',
+    dag=dag,
+)
+
+hive_query = "SELECT * FROM tdp_user_dag_insert_test.table_insert_test LIMIT 3"
+select_data = HiveOperator(
+    task_id='select_data',
+    hql=hive_query,
+    hive_cli_conn_id='hiveserver2_tdp',
+    dag=dag,
+)
+
+create_database >> create_table >> insert_data >> select_data

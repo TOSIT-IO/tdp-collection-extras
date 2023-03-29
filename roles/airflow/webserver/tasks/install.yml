@@ -1,11 +1,5 @@
 ---
-- name: Ensure common airflow installation tasks are performed
-  import_role:
-    name: tosit.tdp_extra.airflow.common
-    tasks_from: install
-    
-- name: Pip install psycopg2 
-  pip:
-    name: "psycopg2-binary"
-    executable: pip3
-    extra_args: --constraint /tmp/constraints-3.6.txt
+# - name: Ensure common airflow installation tasks are performed
+#   import_role:
+#     name: tosit.tdp_extra.airflow.common
+#     tasks_from: install

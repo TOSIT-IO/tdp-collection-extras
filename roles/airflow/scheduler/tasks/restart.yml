@@ -1,0 +1,8 @@
+---
+- name: Restart airflow scheduler service
+  systemd:
+    name: airflow-scheduler
+    state: restarted
+    enabled: true
+    daemon_reload: true
+

@@ -1,5 +1,0 @@
----
-- name: Template Airflow flower service file
-  template:
-    src: airflow-flower.service.j2
-    dest: /usr/lib/systemd/system/airflow-flower.service

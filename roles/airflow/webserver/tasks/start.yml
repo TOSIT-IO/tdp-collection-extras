@@ -1,0 +1,9 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+---
+- name: Start airflow webserver service
+  systemd:
+    name: airflow-webserver
+    state: started
+    enabled: true
+    daemon_reload: true

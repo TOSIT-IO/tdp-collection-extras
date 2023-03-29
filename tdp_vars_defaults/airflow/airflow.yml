@@ -3,27 +3,63 @@
 
 ---
 # Airflow Version
+airflow_app_name: airflow
 airflow_version: 2.2.5
 
-# Airflow installation directory
-airflow_root_dir: /opt/tdp/airflow
+# Airflow directory
+airflow_root_dir: /opt/tdp
 airflow_install_dir: "{{ airflow_root_dir }}/airflow"
-# hue_root_dir: /opt/tdp
-# hue_install_dir: "{{ hue_root_dir }}/hue"
-# hue_pid_dir: /var/run/hue
-# hue_log_dir: /var/log/hue
-# hue_root_conf_dir: /etc/hue
-# hue_conf_dir: "{{ hue_root_conf_dir }}/conf"
-airflow_root_conf_dir: /etc/airflow
-airflow_certs_folder: "{{ airflow_root_conf_dir }}/certs"
-hadoop_conf_dir: /etc/hadoop/conf
+airflow_conf_dir: "{{ airflow_install_dir }}/config"
+airflow_certs_dir: "{{ airflow_conf_dir }}/certs"
+airflow_dag_dir: "{{ airflow_install_dir }}/dags"
+airflow_env_file: /etc/sysconfig/airflow
+airflow_log_dir: /var/log/airflow
+airflow_child_process_log_dir: "{{ airflow_log_dir }}/scheduler"
+airflow_plugins_dir: "{{ airflow_install_dir }}/plugins"
+airflow_pid_dir: /run/airflow
+
+# Airflow Executable:
+airflow_executable: "{{ airflow_install_dir }}/bin/airflow"
 
 # Airflow users and group
 airflow_user: airflow
 airflow_group: airflow
 
-# Airflow pid directories
-airflow_pid_dir: /run/airflow
+# Airflow python
+# Airflow version > 2.2.5 requires python >= 3.7.
+airflow_python: python3.6
+airflow_constraints_file: constraints-3.6.txt
+
+# Required packages
+airflow_required_packages:
+  - gcc-c++
+  - libffi-devel
+  - mariadb-devel
+  - python-devel.x86_64
+  - python3-devel.x86_64
+  - cyrus-sasl-devel.x86_64
+  - krb5-devel
+  - bzip2-devel 
+  - sqlite-devel
+  - xz-devel
+
+# Python dependencies
+airflow_required_python_packages:
+  - psycopg2-binary
+
+airflow_extra_packages:
+  - flower
+  - redis
+  - kerberos
+  - celery
+  - apache-airflow-providers-apache-hdfs
+  - apache-airflow-providers-apache-hive
+  - apache-airflow-providers-apache-spark
+
+# airflow conf template. 
+# For old versions of airflow use airflow-v1.cfg 
+airflow_conf_template: airflow-v1.cfg
+webserver_conf_template: webserver_config.py
 
 # Airflow database
 airflow_db_user: airflow
@@ -31,19 +67,17 @@ airflow_db_pass: airflow
 airflow_db_host: master-03
 airflow_db_port: 5432
 airflow_db_name: airflow
-aitflow_sql_alchemy_conn: "postgresql+psycopg2://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
+airflow_sql_alchemy_conn: "postgresql+psycopg2://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
 
 # Airflow admin user
 airflow_admin_user: admin
 airflow_admin_pass: admin123
 
-# Airflow log dir
-airflow_log_dir: /var/log/airflow
-
 # Airflow config
+airflow_web_server_port: 8280
 airflow_executor: CeleryExecutor
 airflow_result_backend: "db+postgresql://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
-airflow_broker_url: "redis://edge-01:6379/0"
+airflow_broker_url: "redis://master-01:6379/0"
 
 #SSL configuration
 certificates_path: /etc/ssl/certs
@@ -52,12 +86,98 @@ certificates_ca_filename: "tdp_ca"
 certificates_public_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.pem"
 certificates_private_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.key"
 certificates_ca: "{{ certificates_path }}/{{ certificates_ca_filename }}.crt" 
-airflow_public_key: "{{ airflow_certs_folder }}/{{ certificates_cert_filename }}.pem"
-airflow_private_key: "{{ airflow_certs_folder }}/{{ certificates_cert_filename }}.key"
-ca_certificate_file: "{{ airflow_certs_folder }}/{{ certificates_ca_filename }}.crt"
+airflow_public_key: "{{ airflow_certs_dir }}/{{ certificates_cert_filename }}.pem"
+airflow_private_key: "{{ airflow_certs_dir }}/{{ certificates_cert_filename }}.key"
+ca_certificate_file: "{{ airflow_certs_dir }}/{{ certificates_ca_filename }}.crt"
 
 ssl_certificate: "{{ airflow_public_key }}"
 ssl_private_key: "{{ airflow_private_key }}"
 
 # Redis configuration
 redis_bind_address: 0.0.0.0
+
+airflow_admin:
+  - name: Admin
+    username: admin
+    password: admin123
+    role: Admin
+    firstname: admin
+    lastname: admin
+    email: admin@tdp
+
+airflow_users:
+  - name: tdp_user
+    username: tdp_user
+    password: tdp_user123
+    role: User
+    firstname: tdp_user
+    lastname: tdp_user
+    email: tdp_user@tdp
+
+# Airflow connections params
+airflow_hive:
+  conn_id: hiveserver2_tdp
+  conn_type: hive_cli
+  conn_schema: default
+  host: master-03.tdp
+  port: 10001
+  use_beeline: "true"
+  proxy_user: "tdp_user"
+  principal: "hive/master-03.tdp@REALM.TDP;transportMode=http;httpPath=cliservice;ssl=true;sslTrustStore=/etc/ssl/certs/truststore.jks;trustStorePassword=Truststore123!"
+
+airflow_spark:
+  conn_id: spark_tdp
+  conn_type: spark
+  conn_host: yarn
+
+airflow_webhdfs:
+  conn_id: webhdfs_tdp
+  conn_type: hdfs
+  conn_host: "master-02.tdp,master-01.tdp"
+  conn_port: 9871
+  use_ssl: "true"
+
+# Airflow connections
+airflow_connections_reset: true
+airflow_connections:
+  - conn_id: "{{ airflow_hive.conn_id }}"
+    conn-type: "{{ airflow_hive.conn_type }}"
+    conn-host: "{{ airflow_hive.host }}"
+    conn-schema: "{{ airflow_hive.conn_schema }}"
+    conn-port: "{{ airflow_hive.port }}"
+    conn-extra: >-
+      '{
+        "use_beeline": "{{ airflow_hive.use_beeline }}",
+        "principal": "{{ airflow_hive.principal }}",
+        "proxy_user": "{{ airflow_hive.proxy_user }}"
+      }'
+  - conn_id: "{{ airflow_spark.conn_id }}"
+    conn-type: "{{ airflow_spark.conn_type }}"
+    conn-host: "{{ airflow_spark.conn_host }}"
+  - conn_id: "{{ airflow_webhdfs.conn_id }}"
+    conn-type: "{{ airflow_webhdfs.conn_type }}"
+    conn-host: "{{ airflow_webhdfs.conn_host }}"
+    conn-port: "{{ airflow_webhdfs.conn_port }}"
+    conn-extra: >-
+      '{
+        "use_ssl": "{{ airflow_webhdfs.use_ssl }}"
+      }'
+
+# Airflow hadoop env variables
+airflow_hadoop_env:
+  JAVA_HOME: /usr/lib/jvm/jre-1.8.0-openjdk
+  HADOOP_HOME: /opt/tdp/hadoop
+  HADOOP_CONF_DIR: /etc/hadoop/conf
+  SPARK_HOME: /opt/tdp/spark3
+  SPARK_CONF_DIR: /etc/spark3/conf
+  HADOOP_USER_NAME: airflow
+
+# Kerberos
+krb_create_principals_keytabs: yes
+airflow_kerberos:
+  ccache: /tmp/airflow_krb5_ccache
+  keytab: airflow.service.keytab
+  principal: airflow/_HOST@REALM.TDP
+  kinit_path: kinit
+  reinit_frequency: 3600
+

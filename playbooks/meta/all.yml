@@ -67,12 +67,19 @@
 # kafka_start
 # kafka_init
 - import_playbook: ../airflow_install.yml
-- import_playbook: ../airflow_webserver_install.yml
+- import_playbook: ../airflow_ssl-tls_install.yml
+- import_playbook: ../airflow_kerberos_install.yml
 - import_playbook: ../airflow_scheduler_install.yml
-- import_playbook: ../airflow_executor_install.yml
-# airflow_install
+- import_playbook: ../airflow_webserver_install.yml
+- import_playbook: ../airflow_worker_install.yml
+- import_playbook: ../airflow_broker_install.yml
 - import_playbook: ../airflow_config.yml
-- import_playbook: ../airflow_webserver_config.yml
 - import_playbook: ../airflow_scheduler_config.yml
-- import_playbook: ../airflow_executor_config.yml
-# airflow_config
+- import_playbook: ../airflow_webserver_config.yml
+- import_playbook: ../airflow_broker_config.yml
+- import_playbook: ../airflow_worker_config.yml
+- import_playbook: ../airflow_broker_start.yml
+- import_playbook: ../airflow_webserver_start.yml
+- import_playbook: ../airflow_init.yml
+- import_playbook: ../airflow_scheduler_start.yml
+- import_playbook: ../airflow_worker_start.yml

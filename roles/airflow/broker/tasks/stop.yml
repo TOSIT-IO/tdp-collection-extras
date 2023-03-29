@@ -1,0 +1,14 @@
+---
+- name: Stop redis service
+  systemd:
+    name: redis
+    state: stopped
+    enabled: true
+    daemon_reload: true
+
+- name: stop airflow flower service
+  systemd:
+    name: airflow-flower
+    state: stopped
+    enabled: true
+    daemon_reload: true
