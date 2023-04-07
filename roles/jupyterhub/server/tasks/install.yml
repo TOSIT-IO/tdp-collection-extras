@@ -17,7 +17,7 @@
 
 - name: Upload {{ jupyterhub_dist_file }}
   copy:
-    src: files/{{ jupyterhub_dist_file }}
+    src: "{{ binaries_local_dir }}/{{ jupyterhub_dist_file }}"
     dest: "{{ jupyterhub_upload_directory }}"
     owner: root
     group: root
