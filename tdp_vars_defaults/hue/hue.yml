@@ -25,7 +25,6 @@ hadoop_conf_dir: /etc/hadoop/conf
 db_hue_user: hue
 db_hue_password: hue
 db_hue_name: hue
-postgresql_server_port: 5432
 
 # Kerberos
 realm: TDP.LOCAL
@@ -68,7 +67,7 @@ ldapauth:
 database:
   engine: "postgresql_psycopg2"
   host: "{{ groups['postgresql'][0] | tosit.tdp.access_fqdn(hostvars) }}"
-  port: "{{ postgresql_port }}"
+  port: "{{ postgresql_server_port }}"
   user: "{{ db_hue_user }}"
   password: "{{ db_hue_password }}"
   name: "{{ db_hue_name }}"
