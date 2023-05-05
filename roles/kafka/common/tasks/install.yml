@@ -15,7 +15,7 @@
 
 - name: "Upload {{ kafka_dist_file }}"
   copy:
-    src: "files/{{ kafka_dist_file }}"
+    src: "{{ binaries_local_dir }}/{{ kafka_dist_file }}"
     dest: "{{ binaries_upload_dir }}"
   diff: no
 

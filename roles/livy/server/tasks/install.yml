@@ -7,7 +7,7 @@
 
 - name: Upload {{ livy_dist_file }}
   copy:
-    src: "files/{{ livy_dist_file }}"
+    src: "{{ binaries_local_dir }}/{{ livy_dist_file }}"
     dest: "{{ binaries_upload_dir }}"
     group: root
     owner: root
