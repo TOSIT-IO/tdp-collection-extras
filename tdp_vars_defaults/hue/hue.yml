@@ -9,7 +9,7 @@ hadoop_group: hadoop
 
 # Hue version
 hue_release: hue-release-4.10.0-TDP-0.1.0
-hue_dist_file: "{{ hue_release }}.tar.gz"
+hue_dist_file: "{% if (ansible_distribution_major_version | int) > 7 %}{{ hue_release }}-python36.tar.gz{% else %}{{ hue_release }}.tar.gz{% endif %}"
 
 # Hue configuration directories
 hue_root_dir: /opt/tdp
