@@ -14,10 +14,30 @@
 # limitations under the License.
 #
 # The default Livy logging configuration.
-log4j.rootCategory=DEBUG, console
-log4j.appender.console=org.apache.log4j.ConsoleAppender
-log4j.appender.console.target=System.err
-log4j.appender.console.layout=org.apache.log4j.PatternLayout
-log4j.appender.console.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n
+log4j.rootCategory={{ livy_root_logger_level }},{{ livy_root_logger }}
+
+#
+# Log INFO level and above messages to the console
+#
+log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+log4j.appender.CONSOLE.Threshold=INFO
+log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
+log4j.appender.CONSOLE.layout.ConversionPattern=%d{ISO8601} [myid:%X{myid}] - %-5p [%t:%C{1}@%L] - %m%n
+
+# Daily Rolling File Appender
+log4j.appender.DRFA=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.DRFA.File={{ livy_log_dir }}/{{ livy_log_file }}
+log4j.appender.DRFA.DatePattern={{ livy_log_drfa_date_pattern }}
+log4j.appender.DRFA.layout=org.apache.log4j.PatternLayout
+log4j.appender.DRFA.layout.ConversionPattern={{ livy_log_layout_pattern }}
+
+
+# Rolling File Appender 
+log4j.appender.RFA=org.apache.log4j.RollingFileAppender
+log4j.appender.RFA.File={{ livy_log_dir }}/{{ livy_log_file }}
+log4j.appender.RFA.MaxFileSize={{ livy_log_rfa_maxfilesize }}
+log4j.appender.RFA.MaxBackupIndex={{ livy_log_rfa_maxbackupindex }}
+log4j.appender.RFA.layout=org.apache.log4j.PatternLayout
+log4j.appender.RFA.layout.ConversionPattern={{ livy_log_layout_pattern }}
 
 log4j.logger.org.eclipse.jetty=WARN
