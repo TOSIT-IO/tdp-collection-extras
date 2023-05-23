@@ -4,7 +4,7 @@
 ---
 # Airflow Version
 airflow_app_name: airflow
-airflow_version: 2.2.5
+airflow_version: 2.6.1
 
 # Airflow directory
 airflow_root_dir: /opt/tdp
@@ -27,8 +27,8 @@ airflow_group: airflow
 
 # Airflow python
 # Airflow version > 2.2.5 requires python >= 3.7.
-airflow_python: python3.6
-airflow_constraints_file: constraints-3.6.txt
+airflow_python: /usr/local/bin/python3.9
+airflow_constraints_file: constraints-3.9.txt
 
 # Required packages
 airflow_required_packages:
@@ -42,10 +42,13 @@ airflow_required_packages:
   - bzip2-devel 
   - sqlite-devel
   - xz-devel
+  - openldap-devel 
 
 # Python dependencies
 airflow_required_python_packages:
   - psycopg2-binary
+  - setuptools
+  - python-ldap
 
 airflow_extra_packages:
   - flower
@@ -58,8 +61,11 @@ airflow_extra_packages:
 
 # airflow conf template. 
 # For old versions of airflow use airflow-v1.cfg 
-airflow_conf_template: airflow-v1.cfg
-webserver_conf_template: webserver_config.py
+airflow_conf_template: airflow-v2.cfg
+webserver_conf_template: webserver_config_ldap.py
+
+# Read more: https://airflow.apache.org/docs/apache-airflow/1.10.10/security.html?highlight=impersonation#impersonation
+airflow_impersonation: true
 
 # Airflow database
 airflow_db_user: airflow
@@ -96,23 +102,23 @@ ssl_private_key: "{{ airflow_private_key }}"
 # Redis configuration
 redis_bind_address: 0.0.0.0
 
-airflow_admin:
-  - name: Admin
-    username: admin
-    password: admin123
-    role: Admin
-    firstname: admin
-    lastname: admin
-    email: admin@tdp
+# airflow_admin:
+#   - name: Admin
+#     username: admin
+#     password: admin123
+#     role: Admin
+#     firstname: admin
+#     lastname: admin
+#     email: admin@tdp
 
-airflow_users:
-  - name: tdp_user
-    username: tdp_user
-    password: tdp_user123
-    role: User
-    firstname: tdp_user
-    lastname: tdp_user
-    email: tdp_user@tdp
+# airflow_users:
+#   - name: tdp_user
+#     username: tdp_user
+#     password: tdp_user123
+#     role: User
+#     firstname: tdp_user
+#     lastname: tdp_user
+#     email: tdp_user@tdp
 
 # Airflow connections params
 airflow_hive:
@@ -181,3 +187,19 @@ airflow_kerberos:
   kinit_path: kinit
   reinit_frequency: 3600
 
+# Ldap
+airflow_ldap:
+  server: "ldap://{{ groups['kdc'][0] }}.{{ domain }}"
+  search_base: "ou=users,c=io"
+  uid_field: "uid"
+  bind_user: "cn=Manager,ou=tdp,o=tosit,c=io"
+  bind_password: "secret"
+  group_field: "memberof,ismemberof"
+  role_admin: "Admin"
+  user_registration: True
+  user_registration_role: "User"
+  user_registration_firstname_field: "uid"
+  user_registration_lastname_field: "uid"
+  user_registration_mail_field: "uid"
+  roles_sync_at_login: True
+  use_tls: False

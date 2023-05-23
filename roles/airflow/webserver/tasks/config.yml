@@ -1,21 +1,26 @@
 ---
+- name: Template webserver_config.py file
+  template:
+    src: webserver_config.py.j2
+    dest: "{{ airflow_install_dir }}/webserver_config.py"
+  
 - name: Airflow Database Init
   shell: "{{ airflow_executable }} db init"
   environment:
     AIRFLOW_HOME: "{{ airflow_install_dir }}"
 
-- name: Admin and users
-  shell: |
-    "{{ airflow_executable }}" users create \
-      --username {{ item.username }} \
-      --password {{ item.password }} \
-      --role {{ item.role }} \
-      --firstname {{ item.firstname }} \
-      --lastname {{ item.lastname }} \
-      --email {{ item.email }}
-  with_items: "{{ airflow_admin + (airflow_users if airflow_users is defined else []) }}"
-  environment:
-    AIRFLOW_HOME: "{{ airflow_install_dir }}"
+# - name: Add airflow admin and users
+#   shell: |
+#     "{{ airflow_executable }}" users create \
+#       --username {{ item.username }} \
+#       --password {{ item.password }} \
+#       --role {{ item.role }} \
+#       --firstname {{ item.firstname }} \
+#       --lastname {{ item.lastname }} \
+#       --email {{ item.email }}
+#   with_items: "{{ airflow_admin + (airflow_users if airflow_users is defined else []) }}"
+#   environment:
+#     AIRFLOW_HOME: "{{ airflow_install_dir }}"
 
 - name: Template webserver_config.py file
   template:
