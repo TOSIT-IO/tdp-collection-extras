@@ -70,7 +70,7 @@ airflow_impersonation: true
 # Airflow database
 airflow_db_user: airflow
 airflow_db_pass: airflow
-airflow_db_host: master-03
+airflow_db_host: "{{ groups['postgresql'][0] }}"
 airflow_db_port: 5432
 airflow_db_name: airflow
 airflow_sql_alchemy_conn: "postgresql+psycopg2://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
@@ -81,9 +81,10 @@ airflow_admin_pass: admin123
 
 # Airflow config
 airflow_web_server_port: 8280
+airflow_flower_port: 8281
 airflow_executor: CeleryExecutor
 airflow_result_backend: "db+postgresql://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
-airflow_broker_url: "redis://master-01:6379/0"
+airflow_broker_url: "redis://{{ groups['airflow_webserver'][0] }}:6379/0"
 
 #SSL configuration
 certificates_path: /etc/ssl/certs
@@ -129,7 +130,7 @@ airflow_hive:
   port: 10001
   use_beeline: "true"
   proxy_user: "tdp_user"
-  principal: "hive/master-03.tdp@REALM.TDP;transportMode=http;httpPath=cliservice;ssl=true;sslTrustStore=/etc/ssl/certs/truststore.jks;trustStorePassword=Truststore123!"
+  principal: "hive/{{ groups['hive_s2'][1] | tosit.tdp.access_fqdn(hostvars) }}@{{ realm }};transportMode=http;httpPath=cliservice;ssl=true;sslTrustStore=/etc/ssl/certs/truststore.jks;trustStorePassword=Truststore123!"
 
 airflow_spark:
   conn_id: spark_tdp
@@ -139,7 +140,7 @@ airflow_spark:
 airflow_webhdfs:
   conn_id: webhdfs_tdp
   conn_type: hdfs
-  conn_host: "master-02.tdp,master-01.tdp"
+  conn_host: "{{ groups['hdfs_nn'][1] }},{{ groups['hdfs_nn'][1] }}"
   conn_port: 9871
   use_ssl: "true"
 

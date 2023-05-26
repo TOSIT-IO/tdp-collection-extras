@@ -33,6 +33,10 @@
 - name: Reload profile
   shell: source /etc/profile.d/airflow.sh
 
+- name: Get the system PATH
+  shell: echo $PATH
+  register: system_path
+
 - name: Airflow environment variables file
   template:
     src: airflow-env.j2

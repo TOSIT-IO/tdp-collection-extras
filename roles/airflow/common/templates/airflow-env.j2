@@ -23,7 +23,7 @@
 AIRFLOW_CONFIG={{ airflow_install_dir }}/airflow.cfg
 AIRFLOW_HOME={{ airflow_install_dir }}
 
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ airflow_install_dir }}/bin
+PATH={{ system_path }}:{{ airflow_install_dir }}/bin
 
 # http_proxy=
 # https_proxy=
