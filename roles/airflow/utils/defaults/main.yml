@@ -1,0 +1,98 @@
+---
+# Airflow cluster policies
+airflow_policies_dir: "{{ airflow_install_dir }}/config"
+
+# Airflow connections params
+airflow_hive:
+  conn_id: hive_cli_tdp
+  conn_type: hive_cli
+  conn_schema: default
+  host: "{{ groups['hive_s2'][1] | tosit.tdp.access_fqdn(hostvars) }}"
+  port: "{{ hive_hiveserver2_thrift_http_port }}"
+  use_beeline: "true"
+  proxy_user: "owner"
+  principal: "hive/{{ groups['hive_s2'][1] | tosit.tdp.access_fqdn(hostvars) }}@{{ realm }};transportMode=http;httpPath=cliservice;ssl=true;sslTrustStore=/etc/ssl/certs/truststore.jks;trustStorePassword=Truststore123!"
+
+airflow_spark:
+  conn_id: spark3_tdp
+  conn_type: spark
+  conn_host: yarn
+  spark_binary: spark3-submit
+
+airflow_webhdfs:
+  conn_id: webhdfs_tdp
+  conn_type: hdfs
+  conn_host: "{{ groups['hdfs_nn'][0] | tosit.tdp.access_fqdn(hostvars) }},{{ groups['hdfs_nn'][1] | tosit.tdp.access_fqdn(hostvars) }}"
+  conn_port: "{{ hdfs_nn_https_port }}"
+  use_ssl: "true"
+  verify: "{{ ca_certificate_file }}"
+
+# Airflow connections
+airflow_connections_reset: true
+airflow_connections:
+  - conn_id: "{{ airflow_hive.conn_id }}"
+    conn-type: "{{ airflow_hive.conn_type }}"
+    conn-host: "{{ airflow_hive.host }}"
+    conn-schema: "{{ airflow_hive.conn_schema }}"
+    conn-port: "{{ airflow_hive.port }}"
+    conn-extra: >-
+      '{
+        "use_beeline": "{{ airflow_hive.use_beeline }}",
+        "principal": "{{ airflow_hive.principal }}",
+        "proxy_user": "{{ airflow_hive.proxy_user }}"
+      }'
+  - conn_id: "{{ airflow_spark.conn_id }}"
+    conn-type: "{{ airflow_spark.conn_type }}"
+    conn-host: "{{ airflow_spark.conn_host }}"
+    conn-extra: >-
+      '{
+        "spark-binary": "{{ airflow_spark.spark_binary }}"
+      }'
+  - conn_id: "{{ airflow_webhdfs.conn_id }}"
+    conn-type: "{{ airflow_webhdfs.conn_type }}"
+    conn-host: "{{ airflow_webhdfs.conn_host }}"
+    conn-port: "{{ airflow_webhdfs.conn_port }}"
+    conn-extra: >-
+      '{
+        "use_ssl": "{{ airflow_webhdfs.use_ssl }}",
+        "verify": "{{ airflow_webhdfs.verify }}"
+      }'
+
+# Access Control
+airflow_extra_roles:
+   - tdp
+   - tdp_user
+   - smoke_user
+
+airflow_roles_mapping:
+  - id: 1101 # group_field value
+    role: 
+      - "tdp"
+      - "tdp_user"
+  - id: 1102
+    role: 
+      - "Admin"
+      - "tdp"
+      - "smoke_user"
+
+airflow_roles_base_permissions:
+  - { resource: "Audit Logs", actions: ["can_read", "menu_access"] }
+  - { resource: "Browse", actions: ["can_read", "menu_access"] }
+  - { resource: "DAG Code", actions: ["can_read"] }
+  - { resource: "DAG Dependencies", actions: ["can_read", "menu_access"] }
+  - { resource: "DAG Runs", actions: ["can_create", "can_delete", "can_edit", "can_read", "menu_access"] }
+  - { resource: "DAG Warnings", actions: ["can_read"] }
+  - { resource: "DAGs", actions: ["menu_access"] }
+  - { resource: "Datasets", actions: ["can_read", "menu_access"] }
+  - { resource: "Docs", actions: ["menu_access"] }
+  - { resource: "Documentation", actions: ["menu_access"] }
+  - { resource: "ImportError", actions: ["can_read"] }
+  - { resource: "Jobs", actions: ["can_read", "menu_access"] }
+  - { resource: "My Password", actions: ["can_edit", "can_read"] }
+  - { resource: "My Profile", actions: ["can_edit", "can_read"] }
+  - { resource: "Plugins", actions: ["can_read", "menu_access"] }
+  - { resource: "SLA Misses", actions: ["can_read", "menu_access"] }
+  - { resource: "Task Instances", actions: ["can_create", "can_delete", "can_edit", "can_read", "menu_access"] }
+  - { resource: "Task Logs", actions: ["can_read"] }
+  - { resource: "Website", actions: ["can_read"] }
+  - { resource: "XComs", actions: ["can_read"] }

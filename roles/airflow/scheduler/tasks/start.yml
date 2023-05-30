@@ -3,5 +3,4 @@
   systemd:
     name: airflow-scheduler
     state: started
-    enabled: true
-    daemon_reload: true
+    enabled: "{{ airflow_start_on_boot }}"

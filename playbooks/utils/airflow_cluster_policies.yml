@@ -1,0 +1,13 @@
+---
+- name: "Airflow cluster policies"
+  hosts: airflow_scheduler
+  strategy: linear
+  tasks:
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: airflow_scheduler
+    - name: "Airflow cluster policies"
+      import_role:
+        name: tosit.tdp_extra.airflow.utils
+        tasks_from: cluster_policies
+    - meta: clear_facts # noqa unnamed-task
+

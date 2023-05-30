@@ -1,0 +1,15 @@
+---
+- name: Airflow | Delete connections
+  command: "{{ airflow_executable }} connections delete {{ item.conn_id }}"
+  with_items: "{{ airflow_connections }}"
+  when: airflow_connections_reset
+  ignore_errors: true
+
+- name: Airflow | Add connections
+  shell: >
+    "{{ airflow_executable }}" connections add {{ item.conn_id }}
+    {%- for key, value in item.items() if key != 'conn_id' %}
+    --{{ key }} {{ value }}
+    {%- endfor %}
+  with_items: "{{ airflow_connections }}"
+  ignore_errors: true

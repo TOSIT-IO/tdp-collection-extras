@@ -1,0 +1,71 @@
+"""
+Database "tdp_user" must be created manually : 
+CREATE DATABASE IF NOT EXISTS tdp_user LOCATION '/user/tdp_user/warehouse/tdp_user.db';
+"""
+
+from airflow import DAG
+from airflow.providers.apache.hive.operators.hive import HiveOperator
+from airflow.providers.apache.hive.hooks.hive import HiveServer2Hook
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.python_operator import PythonOperator
+from airflow.utils.dates import days_ago
+from datetime import datetime, timedelta
+import subprocess
+
+default_args = {
+    'owner': 'tdp_user',
+    'depends_on_past': False,
+    'start_date': days_ago(1),
+    'run_as_owner': True,
+    'queue': 'edge'
+}
+
+dag = DAG(
+    'tdp_user-hiveoperator-example',
+    default_args=default_args,
+    description='A simple tutorial DAG',
+    schedule_interval=None,
+    access_control={
+       "tdp": {"can_dag_read"},
+       "tdp_user": {"can_dag_read", "can_dag_edit", "can_delete"},
+        }
+)
+
+
+create_table = HiveOperator(
+    task_id='create_table',
+    hql='''USE tdp_user;
+            CREATE TABLE IF NOT EXISTS table1 (
+            col1 INT COMMENT 'Integer Column',
+            col2 STRING COMMENT 'String Column'
+            );''',
+    hive_cli_conn_id='hive_cli_tdp',
+    schema='tdp_user',
+    dag=dag,
+)
+
+show_tables = HiveOperator(
+    task_id='show_tables',
+    hql="USE tdp_user; SHOW TABLES;",
+    hive_cli_conn_id='hive_cli_tdp',
+    schema='tdp_user',
+    dag=dag,
+)
+
+insert_to_table = HiveOperator(
+    task_id='insert_to_table',
+    hql="USE tdp_user; INSERT INTO TABLE table1 VALUES (1, 'one'), (2, 'two');",
+    hive_cli_conn_id='hive_cli_tdp',
+    schema='tdp_user',
+    dag=dag,
+)
+
+select_data = HiveOperator(
+    task_id='select_data',
+    hql="SELECT * FROM table1;",
+    hive_cli_conn_id='hive_cli_tdp',
+    schema='tdp_user',
+    dag=dag,
+)
+
+create_table >> show_tables >> insert_to_table >> select_data

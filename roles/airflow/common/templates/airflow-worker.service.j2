@@ -22,12 +22,11 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-RuntimeDirectory=airflow-worker
 EnvironmentFile={{ airflow_env_file }}
 User={{ airflow_user }}
 Group={{ airflow_group }}
 Type=simple
-ExecStart={{ airflow_executable }} celery worker --pid {{ airflow_pid_dir }}-worker/worker.pid
+ExecStart={{ airflow_executable }} celery worker --pid {{ airflow_pid_dir }}/airflow-worker.pid
 Restart=on-failure
 RestartSec=10s
 

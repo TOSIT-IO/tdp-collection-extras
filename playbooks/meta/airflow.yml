@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
+# Install airflow
 - import_playbook: ../airflow_install.yml
 - import_playbook: ../airflow_ssl-tls_install.yml
 - import_playbook: ../airflow_kerberos_install.yml
@@ -9,16 +10,19 @@
 - import_playbook: ../airflow_webserver_install.yml
 - import_playbook: ../airflow_worker_install.yml
 - import_playbook: ../airflow_broker_install.yml
-# airflow_install
+
+# Config airflow
 - import_playbook: ../airflow_config.yml
 - import_playbook: ../airflow_scheduler_config.yml
 - import_playbook: ../airflow_webserver_config.yml
 - import_playbook: ../airflow_broker_config.yml
 - import_playbook: ../airflow_worker_config.yml
 
-# Restart airflow services
+# Init airflow
+- import_playbook: ../airflow_scheduler_init.yml
+
+# Start airflow services
 - import_playbook: ../airflow_broker_start.yml
 - import_playbook: ../airflow_webserver_start.yml
-- import_playbook: ../airflow_init.yml
 - import_playbook: ../airflow_scheduler_start.yml
 - import_playbook: ../airflow_worker_start.yml

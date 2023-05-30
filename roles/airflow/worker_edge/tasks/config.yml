@@ -4,6 +4,15 @@
     src: airflow-worker-edge.service.j2
     dest: /usr/lib/systemd/system/airflow-worker.service
 
+- name: Add airflow to sudoers file # For impersonation
+  become: yes
+  lineinfile:
+    path: /etc/sudoers
+    line: 'airflow ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+    backup: yes
+  when: airflow_impersonation
+
 - name: Change default beeline
   become: yes
   become_user: root

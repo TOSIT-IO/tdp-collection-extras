@@ -3,9 +3,3 @@
   template:
     src: airflow-worker.service.j2
     dest: /usr/lib/systemd/system/airflow-worker.service
-
-- name: Change default beeline
-  become: yes
-  become_user: root
-  shell: mv {{ airflow_install_dir }}/bin/beeline{,.airflow.bkp}
-  ignore_errors: true

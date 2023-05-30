@@ -12,75 +12,46 @@
     user: "{{ airflow_user }}"
     group: "{{ airflow_group }}"
 
-- name: Ensures {{ airflow_root_dir }}/airflow-{{ airflow_version }} exists
+- name: Ensures {{ airflow_root_dir }} exists
   file:
-    path: "{{ airflow_root_dir }}/airflow-{{ airflow_version }}"
+    path: "{{ airflow_root_dir }}}"
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
 
-- name: Create symbolic link to Airflow installation
+- name: Upload {{ airflow_dist_file }}
+  copy:
+    src: files/{{ airflow_dist_file }}
+    dest: /tmp
+    owner: root
+    group: root
+    mode: "0644"
+  diff: false
+
+- name: Extract {{ airflow_dist_file }}
+  unarchive:
+    src: "/tmp/{{ airflow_dist_file }}"
+    dest: "{{ airflow_root_dir }}"
+    owner: root
+    group: root
+    remote_src: true
+    creates: "{{ airflow_root_dir }}/{{ airflow_release }}"
+
+- name: Install airflow 
+  become: true
+  pip:
+    requirements: "{{ airflow_root_dir }}/{{ airflow_release }}/requirements.txt"
+    extra_args: "--no-index --find-links=file://{{ airflow_root_dir }}/{{ airflow_release }}/dependencies"
+    umask: "0022"
+    virtualenv: "{{ airflow_root_dir }}/{{ airflow_release }}"
+    virtualenv_python: "{{ airflow_python_executable }}"
+
+- name: Create symbolic link to airflow installation
   file:
-    src: "{{ airflow_root_dir }}/airflow-{{ airflow_version }}"
+    src: "{{ airflow_root_dir }}/{{ airflow_release }}"
     dest: "{{ airflow_install_dir }}"
     state: link
-
-- name: Template Constraint file
-  template:
-    src: "{{ airflow_constraints_file }}.j2"
-    dest: "/tmp/{{ airflow_constraints_file }}"
-
-- name: Install Required packages
-  yum:
-    pkg: "{{ airflow_required_packages }}"
-    state: present
-  when: airflow_required_packages is defined
-
-- name: Install virtualenv in {{ airflow_python }}
-  become: true
-  shell: "{{ airflow_python }} -m pip install virtualenv"
-
-- name: Check if exists virtualenv
-  stat:
-    path: "{{ airflow_install_dir }}/bin"
-  register: virtualenv
-
-- name: Create a virtualenv
-  shell: "virtualenv --system-site-packages -p {{ airflow_python }} {{ airflow_install_dir }}"
-  when: not virtualenv.stat.exists
-  environment:
-    PATH: "$PATH:/usr/local/bin"
-
-- name: upgrade virtualenv pip
-  pip:
-    name: pip
-    extra_args: --upgrade
-    virtualenv: "{{ airflow_install_dir }}"
-    virtualenv_python: "{{ airflow_python }}"
-
-- name: Install Python dependencies
-  pip:
-    name: "{{ airflow_required_python_packages }}"
-    virtualenv: "{{ airflow_install_dir }}"
-    virtualenv_python: "{{ airflow_python }}"
-    extra_args: --constraint /tmp/{{ airflow_constraints_file }}
-  when: airflow_required_python_packages is defined
-
-- name: Pip install airflow {{ airflow_version }}
-  pip:
-    name: "apache-airflow=={{ airflow_version }}"
-    virtualenv: "{{ airflow_install_dir }}"
-    virtualenv_python: "{{ airflow_python }}"
-    extra_args: --constraint /tmp/{{ airflow_constraints_file }}
-
-- name: Pip install airflow extra packages
-  pip:
-    name: "{{ airflow_extra_packages }}"
-    virtualenv: "{{ airflow_install_dir }}"
-    virtualenv_python: "{{ airflow_python }}"
-    extra_args: --constraint /tmp/{{ airflow_constraints_file }}
-  when: airflow_extra_packages is defined
 
 - name: Render /usr/bin/airflow command
   template:
@@ -101,9 +72,19 @@
     mode: "{{ item.mode }}"
     recurse: yes
   with_items:
+    - { path: '{{ airflow_root_conf_dir }}', mode: '0755' }
     - { path: '{{ airflow_conf_dir }}', mode: '0755' }
+    - { path: '{{ airflow_pid_dir }}', mode: '0755' }
     - { path: '{{ airflow_certs_dir }}', mode: '0755' }
     - { path: '{{ airflow_log_dir }}', mode: '0775' }
     - { path: '{{ airflow_child_process_log_dir }}', mode: '0775' }
     - { path: '{{ airflow_dag_dir }}', mode: '0755' }
     - { path: '{{ airflow_plugins_dir }}', mode: '0755' }
+
+- name: Template airflow tmpfiles.d
+  template:
+    src: tmpfiles-airflow.conf.j2
+    dest: /etc/tmpfiles.d/airflow.conf
+    owner: root
+    group: root
+    mode: "644"

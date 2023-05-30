@@ -46,11 +46,8 @@ AUTH_LDAP_BIND_PASSWORD = "{{ airflow_ldap.bind_password }}"  # the special bind
 AUTH_LDAP_GROUP_FIELD = "{{ airflow_ldap.group_field }}"
 AUTH_ROLES_SYNC_AT_LOGIN = {{ airflow_ldap.roles_sync_at_login }}
 
-# a mapping from LDAP DN to a list of FAB roles
-# AUTH_ROLES_MAPPING = {
-#     "cn=fab_users,{{ airflow_ldap.search_base }}": ["User"],
-#     "cn=fab_admins,{{ airflow_ldap.search_base }}": ["Admin"],
-# }
+# force users to re-auth after Xmin of inactivity (to keep roles in sync)
+PERMANENT_SESSION_LIFETIME = {{ airflow_ldap.permanent_session_lifetime }} 
 
 # LDAPS
 AUTH_LDAP_USE_TLS = {{ airflow_ldap.use_tls }}

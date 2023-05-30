@@ -3,12 +3,4 @@
   systemd:
     name: airflow-worker
     state: restarted
-    enabled: true
-    daemon_reload: true
-
-- name: Restart airflow kerberos service
-  systemd:
-    name: airflow-kerberos
-    state: restarted
-    enabled: true
-    daemon_reload: true
+    enabled: "{{ airflow_start_on_boot }}"

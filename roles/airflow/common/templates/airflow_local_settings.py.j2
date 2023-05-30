@@ -20,68 +20,115 @@ from typing import Callable, List
 from airflow.configuration import conf
 from airflow.exceptions import AirflowClusterPolicyViolation
 from airflow.models.baseoperator import BaseOperator
-
-# from flask import current_app, g
-# from airflow.www.security import AirflowSecurityManager, ApplessAirflowSecurityManager
-# from airflow.api.auth.backend.basic_auth import auth_current_user
-# from airflow.www.fab_security.sqla.manager import SecurityManager
+from airflow.models import DAG
+import inspect
+import re
 
 
-def get_current_user() -> str:
+def get_current_user(task) -> str:
     # TODO: function to retreive the current_user from airflow webserver
-    username = "tdp_user"
+    username = task.owner
 
     return username
 
-# [START example_cluster_policy_rule]
+# [START dag policy]
 
-def task_must_valid_run_as_user(task: BaseOperator):
-    current_user_username = get_current_user()
-    if task.run_as_user and task.run_as_user.lower() != current_user_username:
-        raise AirflowClusterPolicyViolation(
-            f"""Task must have a valid run_as_user. Current value: {task.run_as_user}"""
-        )
+queues = {"tdp_user": "edge", 
+         "smoke_user": "edge"}
 
-def redirect_edge_tasks(task: BaseOperator):
-    # To redirect all HiveOperator and SparkSubmitOperator tasks to the edge worker
-    if task.task_type in ("HiveOperator", "SparkSubmitOperator"):
-        task.queue = "edge"
 
-def task_must_have_owners(task: BaseOperator):
-    if not task.owner or task.owner.lower() == conf.get('operators',
+
+def validate_dag_name(dag: DAG):
+    for task in dag.tasks:
+        if not dag.dag_id.startswith(task.owner):
+            raise AirflowClusterPolicyViolation(
+                                f"The DAG ID must start with the name of the owner. Current value: {dag.dag_id}"
+                            )
+
+def validate_dag_owner(dag: DAG):
+    for task in dag.tasks:
+        if not task.owner or task.owner.lower() == conf.get('operators',
                                                         'default_owner'):
-        raise AirflowClusterPolicyViolation(
-            f"""Task must have a valid owner. Current value: {task.owner}"""
-        )
+            raise AirflowClusterPolicyViolation(
+                f"""DAG {dag.dag_id} must have a valid owner. Current value: {task.owner}"""
+            )
 
-# [END example_cluster_policy_rule]
+def validate_run_as_user(dag: DAG):
+    for task in dag.tasks:
+        if task.run_as_user and task.run_as_user != task.owner:
+            raise AirflowClusterPolicyViolation(
+                f"""run_as_user must be same as DAG owner. Current owner: {task.owner} | current run_as_user: {task.run_as_user}"""
+            )
 
+def validate_run_as_user_queue(dag: DAG):
+    
+    for task in dag.tasks:
+        if task.run_as_user:
+            if task.queue not in queues[task.run_as_user]:
+                raise AirflowClusterPolicyViolation(
+                    f"DAG {dag.dag_id} with impersonation cannot submit tasks to the queue: {task.queue}"
+                )
+        if hasattr(task, 'run_as_owner'):
+            if task.run_as_owner:
+                if task.queue not in queues[task.run_as_user]:
+                    raise AirflowClusterPolicyViolation(
+                        f"DAG {dag.dag_id} with impersonation cannot submit tasks to the queue: {task.queue}"
+                    )
 
-# [START example_list_of_cluster_policy_rules]
-TASK_RULES: List[Callable[[BaseOperator], None]] = [
-    redirect_edge_tasks,
-    task_must_have_owners,
-    task_must_valid_run_as_user,
+def validate_run_as_user_access_control(dag: DAG):
+    for task in dag.tasks:
+        if task.run_as_user:
+            dag_edit_roles = [key for key, value in dag.access_control.items() if "can_edit" in value or "can_dag_edit" in value]
+            if any(role != task.owner for role in dag_edit_roles):
+                raise AirflowClusterPolicyViolation(
+                    f"DAGs with impersonation must be edited only by the DAG owner. Current owner : {task.owner} | can_edit users: {dag_edit_roles}"
+                )
+
+        if hasattr(task, 'run_as_owner'):
+            if task.run_as_owner:
+                dag_edit_roles = [key for key, value in dag.access_control.items() if "can_edit" in value or "can_dag_edit" in value]
+                if any(role != task.owner for role in dag_edit_roles):
+                    raise AirflowClusterPolicyViolation(
+                        f"DAGs with impersonation must be edited only by the DAG owner. Current owner : {task.owner} | can_edit users: {dag_edit_roles}"
+                    )
+
+def validate_spark_proxy_user(dag: DAG):
+    for task in dag.tasks:
+        if hasattr(task, '_proxy_user'):
+            if task._proxy_user and task._proxy_user != task.owner:
+                raise AirflowClusterPolicyViolation(
+                    f"proxy_user must be the same as DAG owner. Current owner: {task.owner} | current proxy_user: {task._proxy_user}"
+                )
+
+def validate_WebHDFSHook_proxy_user(dag: DAG):
+    # TODO : validate proxy_user in WebHDFSHook hook
+    pass
+
+DAG_RULES: List[Callable[[DAG], None]] = [
+    validate_dag_name,
+    validate_dag_owner,
+    validate_run_as_user,
+    validate_run_as_user_queue,
+    validate_run_as_user_access_control,
+    validate_spark_proxy_user,
+    validate_WebHDFSHook_proxy_user,
+
 ]
 
-
-def _check_task_rules(current_task: BaseOperator):
-    """Check task rules for given task."""
+def _check_dag_rules(current_dag: DAG):
+    """Check dag rules for given task."""
     notices = []
-    for rule in TASK_RULES:
+    for rule in DAG_RULES:
         try:
-            rule(current_task)
+            rule(current_dag)
         except AirflowClusterPolicyViolation as ex:
             notices.append(str(ex))
     if notices:
         notices_list = " * " + "\n * ".join(notices)
         raise AirflowClusterPolicyViolation(
-            f"DAG policy violation (DAG ID: {current_task.dag_id}, Path: {current_task.dag.filepath}):\n"
+            f"DAG policy violation (DAG ID: {current_dag.dag_id}, Path: {current_dag.filepath}):\n"
             f"Notices:\n"
             f"{notices_list}")
 
-
-def task_policy(task: BaseOperator):
-    """Ensure Tasks have non-default owners."""
-    _check_task_rules(task)
-# [END example_list_of_cluster_policy_rules]
+def dag_policy(dag: DAG):
+    _check_dag_rules(dag)

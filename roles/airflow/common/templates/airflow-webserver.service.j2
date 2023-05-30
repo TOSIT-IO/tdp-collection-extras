@@ -22,12 +22,11 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-RuntimeDirectory=airflow-webserver
 EnvironmentFile={{ airflow_env_file }}
 User={{ airflow_user }}
 Group={{ airflow_group }}
 Type=simple
-ExecStart={{ airflow_executable }} webserver --pid {{ airflow_pid_dir }}-webserver/webserver.pid
+ExecStart={{ airflow_executable }} webserver --pid {{ airflow_pid_dir }}/airflow-webserver.pid
 Restart=on-failure
 RestartSec=5s
 PrivateTmp=true

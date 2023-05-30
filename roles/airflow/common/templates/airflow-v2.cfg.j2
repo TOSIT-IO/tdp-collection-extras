@@ -142,7 +142,7 @@ allowed_deserialization_classes = airflow\..*
 
 # When a task is killed forcefully, this is the amount of time in seconds that
 # it has to cleanup after it is sent a SIGTERM, before it is SIGKILLED
-killed_task_cleanup_time = 60
+killed_task_cleanup_time = 604800
 
 # Whether to override params with dag_run.conf. If you pass some key-value pairs
 # through ``airflow dags backfill -c`` or
@@ -1032,12 +1032,12 @@ tls_key =
 # Task instances listen for external kill signal (when you clear tasks
 # from the CLI or the UI), this defines the frequency at which they should
 # listen (in seconds).
-job_heartbeat_sec = 5
+job_heartbeat_sec = 120
 
 # The scheduler constantly tries to trigger new tasks (look at the
 # scheduler section in the docs for more information). This defines
 # how often the scheduler should run (in seconds).
-scheduler_heartbeat_sec = 5
+scheduler_heartbeat_sec = 120
 
 # The number of times to try to schedule each DAG file
 # -1 indicates unlimited number
@@ -1051,7 +1051,7 @@ scheduler_idle_sleep_time = 1
 # Number of seconds after which a DAG file is parsed. The DAG file is parsed every
 # ``min_file_process_interval`` number of seconds. Updates to DAGs are reflected after
 # this interval. Keeping this number low will increase CPU usage.
-min_file_process_interval = 30
+min_file_process_interval = 5
 
 # How often (in seconds) to check for stale DAGs (DAGs which are no longer present in
 # the expected files) which should be deactivated, as well as datasets that are no longer
@@ -1059,7 +1059,7 @@ min_file_process_interval = 30
 parsing_cleanup_interval = 60
 
 # How often (in seconds) to scan the DAGs directory for new files. Default to 5 minutes.
-dag_dir_list_interval = 300
+dag_dir_list_interval = 10
 
 # How often should stats be printed to the logs. Setting to 0 will disable printing stats
 print_stats_interval = 30
@@ -1070,7 +1070,7 @@ pool_metrics_interval = 5.0
 # If the last scheduler heartbeat happened more than scheduler_health_check_threshold
 # ago (in seconds), scheduler is considered unhealthy.
 # This is used by the health check in the "/health" endpoint
-scheduler_health_check_threshold = 30
+scheduler_health_check_threshold = 120
 
 # When you start a scheduler, airflow starts a tiny web server
 # subprocess to serve a health check if this is set to True
@@ -1129,7 +1129,7 @@ max_dagruns_per_loop_to_schedule = 20
 # Should the Task supervisor process perform a "mini scheduler" to attempt to schedule more tasks of the
 # same DAG. Leaving this on will mean tasks in the same DAG execute quicker, but might starve out other
 # dags in some circumstances
-schedule_after_task_execution = True
+schedule_after_task_execution = False
 
 # The scheduler can run multiple processes in parallel to parse dags.
 # This defines how many processes will run.

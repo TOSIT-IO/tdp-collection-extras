@@ -5,12 +5,10 @@
   systemd:
     name: airflow-worker
     state: stopped
-    enabled: true
-    daemon_reload: true
+    enabled: "{{ airflow_start_on_boot }}"
 
 - name: Stop airflow kerberos service
   systemd:
     name: airflow-kerberos
     state: stopped
-    enabled: true
-    daemon_reload: true
+    enabled: "{{ airflow_start_on_boot }}"

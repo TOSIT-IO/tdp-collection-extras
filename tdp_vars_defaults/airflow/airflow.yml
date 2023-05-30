@@ -3,23 +3,26 @@
 
 ---
 # Airflow Version
-airflow_app_name: airflow
-airflow_version: 2.6.1
+airflow_release: airflow-2.6.2-TDP-1.0.0
+airflow_dist_file: "{{ airflow_release }}.tar.gz"
 
 # Airflow directory
 airflow_root_dir: /opt/tdp
 airflow_install_dir: "{{ airflow_root_dir }}/airflow"
-airflow_conf_dir: "{{ airflow_install_dir }}/config"
-airflow_certs_dir: "{{ airflow_conf_dir }}/certs"
+airflow_root_conf_dir: /etc/airflow
+airflow_conf_dir: "{{ airflow_root_conf_dir }}/conf"
+airflow_certs_dir: "{{ airflow_root_conf_dir }}/certs"
 airflow_dag_dir: "{{ airflow_install_dir }}/dags"
-airflow_env_file: /etc/sysconfig/airflow
+airflow_env_file: "{{airflow_conf_dir }}/airflow-env.sh"
 airflow_log_dir: /var/log/airflow
 airflow_child_process_log_dir: "{{ airflow_log_dir }}/scheduler"
 airflow_plugins_dir: "{{ airflow_install_dir }}/plugins"
-airflow_pid_dir: /run/airflow
+airflow_pid_dir: /var/run/airflow
 
 # Airflow Executable:
 airflow_executable: /usr/bin/airflow
+
+airflow_start_on_boot: true
 
 # Airflow users and group
 airflow_user: airflow
@@ -27,44 +30,13 @@ airflow_group: airflow
 
 # Airflow python
 # Airflow version > 2.2.5 requires python >= 3.7.
-airflow_python: /usr/local/bin/python3.9
+airflow_python_executable: /usr/local/bin/python3.9
 airflow_constraints_file: constraints-3.9.txt
-
-# Required packages
-airflow_required_packages:
-  - gcc-c++
-  - libffi-devel
-  - mariadb-devel
-  - python-devel.x86_64
-  - python3-devel.x86_64
-  - cyrus-sasl-devel.x86_64
-  - krb5-devel
-  - bzip2-devel 
-  - sqlite-devel
-  - xz-devel
-  - openldap-devel 
-
-# Python dependencies
-airflow_required_python_packages:
-  - psycopg2-binary
-  - setuptools
-  - python-ldap
-
-airflow_extra_packages:
-  - flower
-  - redis
-  - kerberos
-  - celery
-  - apache-airflow-providers-apache-hdfs
-  - apache-airflow-providers-apache-hive
-  - apache-airflow-providers-apache-spark
 
 # airflow conf template. 
 # For old versions of airflow use airflow-v1.cfg 
 airflow_conf_template: airflow-v2.cfg
-webserver_conf_template: webserver_config_ldap.py
 
-# Read more: https://airflow.apache.org/docs/apache-airflow/1.10.10/security.html?highlight=impersonation#impersonation
 airflow_impersonation: true
 
 # Airflow database
@@ -74,9 +46,6 @@ airflow_db_host: "{{ groups['postgresql'][0] }}"
 airflow_db_port: 5432
 airflow_db_name: airflow
 airflow_sql_alchemy_conn: "postgresql+psycopg2://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
-
-flower_basic_auth_user: admin
-flower_basic_auth_password: admin123
 
 # Airflow config
 airflow_web_server_port: 8280
@@ -101,55 +70,8 @@ ssl_private_key: "{{ airflow_private_key }}"
 
 # Redis configuration
 redis_bind_address: 0.0.0.0
-
-# Airflow connections params
-airflow_hive:
-  conn_id: hiveserver2_tdp
-  conn_type: hive_cli
-  conn_schema: default
-  host: "{{ groups['hive_s2'][1] | tosit.tdp.access_fqdn(hostvars) }}"
-  port: "{{ hive_hiveserver2_thrift_http_port }}"
-  use_beeline: "true"
-  proxy_user: "owner"
-  principal: "hive/{{ groups['hive_s2'][1] | tosit.tdp.access_fqdn(hostvars) }}@{{ realm }};transportMode=http;httpPath=cliservice;ssl=true;sslTrustStore=/etc/ssl/certs/truststore.jks;trustStorePassword=Truststore123!"
-
-airflow_spark:
-  conn_id: spark_tdp
-  conn_type: spark
-  conn_host: yarn
-
-airflow_webhdfs:
-  conn_id: webhdfs_tdp
-  conn_type: hdfs
-  conn_host: "{{ groups['hdfs_nn'][1] }},{{ groups['hdfs_nn'][1] }}"
-  conn_port: "{{ hdfs_nn_https_port }}"
-  use_ssl: "true"
-
-# Airflow connections
-airflow_connections_reset: true
-airflow_connections:
-  - conn_id: "{{ airflow_hive.conn_id }}"
-    conn-type: "{{ airflow_hive.conn_type }}"
-    conn-host: "{{ airflow_hive.host }}"
-    conn-schema: "{{ airflow_hive.conn_schema }}"
-    conn-port: "{{ airflow_hive.port }}"
-    conn-extra: >-
-      '{
-        "use_beeline": "{{ airflow_hive.use_beeline }}",
-        "principal": "{{ airflow_hive.principal }}",
-        "proxy_user": "{{ airflow_hive.proxy_user }}"
-      }'
-  - conn_id: "{{ airflow_spark.conn_id }}"
-    conn-type: "{{ airflow_spark.conn_type }}"
-    conn-host: "{{ airflow_spark.conn_host }}"
-  - conn_id: "{{ airflow_webhdfs.conn_id }}"
-    conn-type: "{{ airflow_webhdfs.conn_type }}"
-    conn-host: "{{ airflow_webhdfs.conn_host }}"
-    conn-port: "{{ airflow_webhdfs.conn_port }}"
-    conn-extra: >-
-      '{
-        "use_ssl": "{{ airflow_webhdfs.use_ssl }}"
-      }'
+flower_basic_auth_user: admin
+flower_basic_auth_password: admin123
 
 # Airflow hadoop env variables
 airflow_hadoop_env:
@@ -171,17 +93,18 @@ airflow_kerberos:
 
 # Ldap
 airflow_ldap:
-  server: "ldap://{{ groups['kdc'][0] }}.{{ domain }}"
-  search_base: "ou=users,c=io"
-  uid_field: "uid"
-  bind_user: "cn=Manager,ou=tdp,o=tosit,c=io"
-  bind_password: "secret"
-  group_field: "memberof,ismemberof"
+  server: "{{ ldap.address }}"
+  search_base: "{{ ldap.user_search_base }}"
+  uid_field: "{{ ldap.user_name_attribute }}"
+  bind_user: "{{ ldap.bind_dn }}"
+  bind_password: "{{ ldap.password }}"
+  group_field: "gidNumber"
   role_admin: "Admin"
   user_registration: True
-  user_registration_role: "User"
-  user_registration_firstname_field: "uid"
-  user_registration_lastname_field: "uid"
-  user_registration_mail_field: "uid"
+  user_registration_role: "Public"
+  user_registration_firstname_field: "cn"
+  user_registration_lastname_field: "sn"
+  user_registration_mail_field: "cn"
   roles_sync_at_login: True
+  permanent_session_lifetime: 1800
   use_tls: False

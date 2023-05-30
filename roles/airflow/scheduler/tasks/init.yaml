@@ -1,0 +1,3 @@
+---
+- name: Airflow Database Init
+  shell: "{{ airflow_executable }} db init"

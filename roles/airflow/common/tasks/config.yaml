@@ -17,22 +17,17 @@
     src: webserver_config.py.j2
     dest: "{{ airflow_install_dir }}/webserver_config.py"
 
+- name: Create symbolic link to webserver_config.py
+  file:
+    src: "{{ airflow_install_dir }}/webserver_config.py"
+    dest: "{{ airflow_conf_dir }}/webserver_config.py"
+    state: link
+
 - name: Add users to the airflow group # For impersonation
   become: yes
   user:
     name: "{{ item.user }}"
     groups: "{{ airflow_group }}"
     append: yes
-  with_items: "{{ users }}"
+  with_items: "{{ ldap_users }}"
   when: airflow_impersonation
-  ignore_errors: true
-
-- name: Add airflow to sudoers file # For impersonation
-  become: yes
-  lineinfile:
-    path: /etc/sudoers
-    line: 'airflow ALL=(ALL) NOPASSWD: ALL'
-    validate: 'visudo -cf %s'
-    backup: yes
-  when: airflow_impersonation
-  ignore_errors: true

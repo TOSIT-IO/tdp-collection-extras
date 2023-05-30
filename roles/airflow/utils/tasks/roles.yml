@@ -1,0 +1,22 @@
+---
+- name: Add roles mapping to webserver_config.py
+  ansible.builtin.lineinfile:
+    path: "{{ airflow_install_dir }}/webserver_config.py"
+    line: |
+      roles_mapping = {{ airflow_roles_mapping }}
+      AUTH_ROLES_MAPPING = {str(mapping["id"]): mapping["role"] for mapping in roles_mapping}
+    insertafter: EOF
+
+- name: Airflow | Create roles
+  command: "{{ airflow_executable }} roles create {{ item }}"
+  with_items: "{{ airflow_extra_roles }}"
+
+- name: Airflow | Assign permissions to roles
+  command: "{{ airflow_executable }} roles add-perms {{ airflow_extra_roles|join(' ') }} -r '{{ item.resource }}' -a {{ item.actions|join(' ') }}"
+  with_items: "{{ airflow_roles_base_permissions }}"
+
+- name: restart airflow webserver service
+  systemd:
+    name: airflow-webserver
+    state: restarted
+    enabled: "{{ airflow_start_on_boot }}"

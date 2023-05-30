@@ -834,7 +834,7 @@ tls_key =
 # Task instances listen for external kill signal (when you clear tasks
 # from the CLI or the UI), this defines the frequency at which they should
 # listen (in seconds).
-job_heartbeat_sec = 5
+job_heartbeat_sec = 20
 
 # The scheduler constantly tries to trigger new tasks (look at the
 # scheduler section in the docs for more information). This defines
@@ -853,10 +853,10 @@ scheduler_idle_sleep_time = 1
 # Number of seconds after which a DAG file is parsed. The DAG file is parsed every
 # ``min_file_process_interval`` number of seconds. Updates to DAGs are reflected after
 # this interval. Keeping this number low will increase CPU usage.
-min_file_process_interval = 30
+min_file_process_interval = 5
 
 # How often (in seconds) to scan the DAGs directory for new files. Default to 5 minutes.
-dag_dir_list_interval = 300
+dag_dir_list_interval = 10
 
 # How often should stats be printed to the logs. Setting to 0 will disable printing stats
 print_stats_interval = 30
@@ -908,7 +908,7 @@ max_dagruns_per_loop_to_schedule = 20
 # Should the Task supervisor process perform a "mini scheduler" to attempt to schedule more tasks of the
 # same DAG. Leaving this on will mean tasks in the same DAG execute quicker, but might starve out other
 # dags in some circumstances
-schedule_after_task_execution = True
+schedule_after_task_execution = False
 
 # The scheduler can run multiple processes in parallel to parse dags.
 # This defines how many processes will run.

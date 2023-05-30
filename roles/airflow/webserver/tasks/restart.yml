@@ -5,5 +5,4 @@
   systemd:
     name: airflow-webserver
     state: restarted
-    enabled: true
-    daemon_reload: true
+    enabled: "{{ airflow_start_on_boot }}"

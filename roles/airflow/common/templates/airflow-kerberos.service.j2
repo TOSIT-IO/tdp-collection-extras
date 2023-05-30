@@ -27,7 +27,7 @@ EnvironmentFile={{ airflow_env_file }}
 User={{ airflow_user }}
 Group={{ airflow_group }}
 Type=simple
-ExecStart={{ airflow_executable }} kerberos --pid {{ airflow_pid_dir }}-kerberos/kerberos.pid
+ExecStart={{ airflow_executable }} kerberos --pid {{ airflow_pid_dir }}/airflow-kerberos.pid
 Restart=on-failure
 RestartSec=5s
 

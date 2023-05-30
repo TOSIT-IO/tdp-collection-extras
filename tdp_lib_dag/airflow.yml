@@ -54,33 +54,51 @@
     - airflow_webserver_install
     - airflow_config
 
+# Airflow init
+- name: airflow_init
+  noop: yes
+  depends_on: 
+    - airflow_install
+    - airflow_config
+    - airflow_scheduler_config
+    - airflow_broker_config
+    - airflow_webserver_config
+    - airflow_worker_config
+    - airflow_start
+
+- name: airflow_scheduler_init
+  depends_on: 
+    - airflow_install
+    - airflow_config
+    - airflow_scheduler_config
+    - airflow_broker_config
+    - airflow_webserver_config
+    - airflow_worker_config
+    - airflow_start
+
 # Airflow start
 - name: airflow_start
   noop: yes
   depends_on: 
-      - airflow_install
-      - airflow_ssl-tls_install
-      - airflow_kerberos_install
+    - airflow_config
 
 - name: airflow_webserver_start
   depends_on:
     - airflow_webserver_config
+    - airflow_scheduler_init
 
 - name: airflow_broker_start
   depends_on:
     - airflow_broker_config
+    - airflow_scheduler_init
 
 - name: airflow_worker_start
   depends_on:
     - airflow_worker_config
     - airflow_broker_start
+    - airflow_scheduler_init
 
 - name: airflow_scheduler_start
   depends_on:
     - airflow_scheduler_config
-
-# Airflow init
-- name: airflow_init
-  depends_on: 
-    - airflow_install
-    - airflow_config
+    - airflow_init
