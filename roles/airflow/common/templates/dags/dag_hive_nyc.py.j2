@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import subprocess
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'tdp_user',
     'depends_on_past': False,
     'start_date': days_ago(1),
     'retries': 1,

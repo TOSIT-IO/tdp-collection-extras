@@ -3,15 +3,3 @@
   ansible.builtin.template:
     src: airflow-scheduler.service.j2
     dest: /usr/lib/systemd/system/airflow-scheduler.service
-
-- name: Scheduler logs
-  become: yes
-  become_user: root
-  file:
-    path: "{{ item.path }}"
-    owner: "{{ airflow_user }}"
-    group: "{{ airflow_group }}"
-    mode: "{{ item.mode }}"
-    recurse: yes
-  with_items:
-    - { path: '{{ airflow_child_process_log_dir }}', mode: '755' }

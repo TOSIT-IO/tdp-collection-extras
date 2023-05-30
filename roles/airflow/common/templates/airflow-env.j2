@@ -20,10 +20,8 @@
 # configuration of the systemd unit files.
 #
 
-AIRFLOW_CONFIG={{ airflow_install_dir }}/airflow.cfg
+AIRFLOW_CONFIG={{ airflow_conf_dir }}/airflow.cfg
 AIRFLOW_HOME={{ airflow_install_dir }}
-
-PATH={{ system_path }}:{{ airflow_install_dir }}/bin
 
 # http_proxy=
 # https_proxy=
@@ -33,7 +31,7 @@ PATH={{ system_path }}:{{ airflow_install_dir }}/bin
 # NO_PROXY=
 
 # Kerberos
-KRB5CCNAME={{ airflow_kerberos.ccache }}
+# KRB5CCNAME={{ airflow_kerberos.ccache }}
 
 # Hadoop vars
 {% for name, value in airflow_hadoop_env.items() %}

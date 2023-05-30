@@ -27,3 +27,8 @@
     group: "{{ airflow_group }}"
     mode: "0600"
   when: not krb_create_principals_keytabs
+
+- name: Template airflow kerberos service
+  template:
+    src: airflow-kerberos.service.j2
+    dest: /usr/lib/systemd/system/airflow-kerberos.service

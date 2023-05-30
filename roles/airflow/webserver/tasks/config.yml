@@ -1,31 +1,11 @@
 ---
-- name: Template webserver_config.py file
+- name: Template airflow_local_settings.py file
   template:
-    src: webserver_config.py.j2
-    dest: "{{ airflow_install_dir }}/webserver_config.py"
+    src: airflow_local_settings.py.j2
+    dest: "{{ airflow_conf_dir }}/airflow_local_settings.py"
   
 - name: Airflow Database Init
   shell: "{{ airflow_executable }} db init"
-  environment:
-    AIRFLOW_HOME: "{{ airflow_install_dir }}"
-
-# - name: Add airflow admin and users
-#   shell: |
-#     "{{ airflow_executable }}" users create \
-#       --username {{ item.username }} \
-#       --password {{ item.password }} \
-#       --role {{ item.role }} \
-#       --firstname {{ item.firstname }} \
-#       --lastname {{ item.lastname }} \
-#       --email {{ item.email }}
-#   with_items: "{{ airflow_admin + (airflow_users if airflow_users is defined else []) }}"
-#   environment:
-#     AIRFLOW_HOME: "{{ airflow_install_dir }}"
-
-- name: Template webserver_config.py file
-  template:
-    src: webserver_config.py.j2
-    dest: "{{ airflow_install_dir }}/webserver_config.py"
 
 - name: Template Airflow webserver service file
   template:
@@ -35,8 +15,6 @@
 - name: Airflow | Delete connections
   command: "{{ airflow_executable }} connections delete {{ item.conn_id }}"
   with_items: "{{ airflow_connections }}"
-  environment:
-    AIRFLOW_HOME: "{{ airflow_install_dir }}"
   when: airflow_connections_reset
   ignore_errors: true
 
@@ -47,8 +25,6 @@
     --{{ key }} {{ value }}
     {%- endfor %}
   with_items: "{{ airflow_connections }}"
-  environment:
-    AIRFLOW_HOME: "{{ airflow_install_dir }}"
   ignore_errors: true
 
 - name: Template Airflow flower service file

@@ -19,7 +19,7 @@ airflow_plugins_dir: "{{ airflow_install_dir }}/plugins"
 airflow_pid_dir: /run/airflow
 
 # Airflow Executable:
-airflow_executable: "{{ airflow_install_dir }}/bin/airflow"
+airflow_executable: /usr/bin/airflow
 
 # Airflow users and group
 airflow_user: airflow
@@ -75,9 +75,8 @@ airflow_db_port: 5432
 airflow_db_name: airflow
 airflow_sql_alchemy_conn: "postgresql+psycopg2://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
 
-# Airflow admin user
-airflow_admin_user: admin
-airflow_admin_pass: admin123
+flower_basic_auth_user: admin
+flower_basic_auth_password: admin123
 
 # Airflow config
 airflow_web_server_port: 8280
@@ -103,33 +102,15 @@ ssl_private_key: "{{ airflow_private_key }}"
 # Redis configuration
 redis_bind_address: 0.0.0.0
 
-# airflow_admin:
-#   - name: Admin
-#     username: admin
-#     password: admin123
-#     role: Admin
-#     firstname: admin
-#     lastname: admin
-#     email: admin@tdp
-
-# airflow_users:
-#   - name: tdp_user
-#     username: tdp_user
-#     password: tdp_user123
-#     role: User
-#     firstname: tdp_user
-#     lastname: tdp_user
-#     email: tdp_user@tdp
-
 # Airflow connections params
 airflow_hive:
   conn_id: hiveserver2_tdp
   conn_type: hive_cli
   conn_schema: default
-  host: master-03.tdp
-  port: 10001
+  host: "{{ groups['hive_s2'][1] | tosit.tdp.access_fqdn(hostvars) }}"
+  port: "{{ hive_hiveserver2_thrift_http_port }}"
   use_beeline: "true"
-  proxy_user: "tdp_user"
+  proxy_user: "owner"
   principal: "hive/{{ groups['hive_s2'][1] | tosit.tdp.access_fqdn(hostvars) }}@{{ realm }};transportMode=http;httpPath=cliservice;ssl=true;sslTrustStore=/etc/ssl/certs/truststore.jks;trustStorePassword=Truststore123!"
 
 airflow_spark:
@@ -141,7 +122,7 @@ airflow_webhdfs:
   conn_id: webhdfs_tdp
   conn_type: hdfs
   conn_host: "{{ groups['hdfs_nn'][1] }},{{ groups['hdfs_nn'][1] }}"
-  conn_port: 9871
+  conn_port: "{{ hdfs_nn_https_port }}"
   use_ssl: "true"
 
 # Airflow connections

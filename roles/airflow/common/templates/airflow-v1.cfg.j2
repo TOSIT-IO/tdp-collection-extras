@@ -763,7 +763,7 @@ flower_port = {{ airflow_flower_port }}
 # Securing Flower with Basic Authentication
 # Accepts user:password pairs separated by a comma
 # Example: flower_basic_auth = user1:password1,user2:password2
-flower_basic_auth =
+flower_basic_auth = {{ flower_basic_auth_user }}:{{ flower_basic_auth_password }}
 
 # How many processes CeleryExecutor uses to sync task state.
 # 0 means to use max(1, number of cores - 1) processes.

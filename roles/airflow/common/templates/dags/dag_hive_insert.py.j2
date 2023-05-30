@@ -3,7 +3,7 @@ from airflow.providers.apache.hive.operators.hive import HiveOperator
 from airflow.utils.dates import days_ago
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'tdp_user',
     'depends_on_past': False,
     'start_date': days_ago(1),
 }

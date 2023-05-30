@@ -12,24 +12,13 @@
     user: "{{ airflow_user }}"
     group: "{{ airflow_group }}"
 
-- name: Airfloww | Ensures airflow install, certificates and configuration directories
+- name: Ensures {{ airflow_root_dir }}/airflow-{{ airflow_version }} exists
   file:
-    path: "{{ item }}"
+    path: "{{ airflow_root_dir }}/airflow-{{ airflow_version }}"
     state: directory
     owner: root
     group: root
     mode: 0755
-  with_items:
-    - "{{ airflow_root_dir }}/airflow-{{ airflow_version }}"
-    - "{{ airflow_certs_dir }}"
-    - "{{ airflow_root_conf_dir }}"
-
-- name: Ensures log directory
-  file:
-    path: '{{ airflow_log_dir }}'
-    state: directory
-    owner: '{{ airflow_user }}'
-    group: '{{ airflow_group }}'
 
 - name: Create symbolic link to Airflow installation
   file:
@@ -92,3 +81,29 @@
     virtualenv_python: "{{ airflow_python }}"
     extra_args: --constraint /tmp/{{ airflow_constraints_file }}
   when: airflow_extra_packages is defined
+
+- name: Render /usr/bin/airflow command
+  template:
+    src: airflow-command.j2
+    dest: "/usr/bin/airflow"
+    owner: root
+    group: root
+    mode: "755"
+
+- name: Ensures airflow configuration, log, dags and plugins directories
+  become: yes
+  become_user: root
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+    mode: "{{ item.mode }}"
+    recurse: yes
+  with_items:
+    - { path: '{{ airflow_conf_dir }}', mode: '0755' }
+    - { path: '{{ airflow_certs_dir }}', mode: '0755' }
+    - { path: '{{ airflow_log_dir }}', mode: '0775' }
+    - { path: '{{ airflow_child_process_log_dir }}', mode: '0775' }
+    - { path: '{{ airflow_dag_dir }}', mode: '0755' }
+    - { path: '{{ airflow_plugins_dir }}', mode: '0755' }
