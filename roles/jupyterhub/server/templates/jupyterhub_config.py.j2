@@ -144,3 +144,18 @@ def pre_spawn_hook(spawner):
 {% for key, value in jupyterhub_properties.get('yarnspawner', {}).items() +%}
 c.YarnSpawner.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
 {% endfor %}
+
+import logging
+import traitlets.log
+{% if jupyterhub_root_logger == "RFA" %}
+h = logging.handlers.RotatingFileHandler("{{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}", backupCount={{ jupyterhub_log_rfa_maxbackupindex }}, maxBytes={{ jupyterhub_log_rfa_maxfilesize_mb }} * 1024)
+h.setLevel(logging.{{ jupyterhub_root_logger_level }} )
+{% elif jupyterhub_root_logger == "DRFA" %}
+h = logging.handlers.TimedRotatingFileHandler("{{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}", when='{{ jupyterhub_log_drfa_date_pattern }}', interval=1, backupCount={{ jupyterhub_log_drfa_maxbackupindex }})
+h.setLevel(logging.{{ jupyterhub_root_logger_level }} )
+{% endif %}
+formatter = logging.Formatter("{{ jupyterhub_log_layout_pattern }}")
+h.setFormatter(formatter)
+root_log = traitlets.log.get_logger()
+root_log.addHandler(h)
+
