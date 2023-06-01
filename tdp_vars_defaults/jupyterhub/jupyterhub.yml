@@ -31,9 +31,6 @@ certificates_private_key: "{{ certificates_path }}/{{ certificates_cert_filename
 jupyterhub_public_key: "{{ jupyterhub_server_certs_folder }}/{{ certificates_cert_filename }}.pem"
 jupyterhub_private_key: "{{ jupyterhub_server_certs_folder }}/{{ certificates_cert_filename }}.key"
 
-# Jupyterhub logging directory
-jupyterhub_log_dir: /var/log/jupyterhub
-
 # Jupyterhub working directory
 jupyterhub_working_dir: /var/lib/jupyterhub
 
@@ -111,3 +108,22 @@ jupyterhub_start_on_boot: no
 
 # Service restart policies
 jupyterhub_restart: "no"
+
+# Jupyterhub logging configuration
+# Root logger level should be: [FATAL| ERROR| WARN| INFO| DEBUG| TRACE]
+jupyterhub_log_dir: /var/log/jupyterhub
+jupyterhub_log_file: "jupyterhub_server_{{ ansible_fqdn }}.log"
+jupyterhub_root_logger_level: DEBUG
+# Root logger should be: [RFA | DRFA]  
+jupyterhub_root_logger: RFA
+# Common appenders config
+jupyterhub_log_layout_pattern: "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
+# DRFA appenders config
+# Check this link for more values https://docs.python.org/3/library/logging.handlers.html#timedrotatingfilehandler
+jupyterhub_log_drfa_date_pattern: "D"
+jupyterhub_log_drfa_maxbackupindex: 30
+# RFA appenders config
+# Unit : MB
+jupyterhub_log_rfa_maxfilesize_mb: 256
+jupyterhub_log_rfa_maxbackupindex: 10
+
