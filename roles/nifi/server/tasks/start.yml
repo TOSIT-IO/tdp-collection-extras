@@ -1,0 +1,10 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+
+- name: Start nifi server
+  service:
+    name: nifi
+    state: started
+    enabled: "{{ nifi_start_on_boot }}"

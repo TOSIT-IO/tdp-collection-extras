@@ -1,0 +1,17 @@
+[Unit]
+Description=NIFI node
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User={{ nifi_user }}
+Group={{ nifi_group }}
+Type=forking
+;EnvironmentFile={{ nifi_install_dir }}bin/nifi-env.sh
+ExecStart={{ nifi_install_dir }}/bin/nifi.sh start --wait-for-init 120
+ExecStop={{ nifi_install_dir }}/bin/nifi.sh stop
+SuccessExitStatus=TERM
+Restart={{ nifi_restart }}
+
+[Install]
+WantedBy=multi-user.target

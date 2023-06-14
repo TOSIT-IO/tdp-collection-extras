@@ -1,0 +1,37 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: install
+
+- name: Template zookeeper-jaas.conf
+  template:
+    src: zookeeper-jaas.conf.j2
+    dest: "{{ nifi_conf_dir }}/zookeeper-jaas.conf"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_group }}"
+    mode: "640"
+
+- import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: create_principal_keytab
+  vars:
+    principal: "nifi/{{ ansible_fqdn }}"
+    keytab: "nifi.service.keytab"
+    user: "{{ nifi_user }}"
+    group: "{{ nifi_group }}"
+    mode: "600"
+  when: krb_create_principals_keytabs
+
+- import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: check_secure_keytab
+  vars:
+    principal: "nifi/{{ ansible_fqdn }}"
+    keytab: "nifi.service.keytab"
+    user: "{{ nifi_user }}"
+    group: "{{ nifi_group }}"
+    mode: "600"
+  when: not krb_create_principals_keytabs

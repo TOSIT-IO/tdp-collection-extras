@@ -1,0 +1,45 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+
+
+- name: Template authorizers.xml
+  template:
+    src: authorizers.xml.j2
+    dest: "{{ nifi_conf_dir }}/authorizers.xml"
+    owner: root
+    group: root
+    mode: "644"
+
+- name: Template bootstrap.conf
+  template:
+    src: bootstrap.conf.j2
+    dest: "{{ nifi_conf_dir }}/bootstrap.conf"
+    owner: root
+    group: root
+    mode: "644"
+
+- name: Template login-identity-providers.xml
+  template:
+    src: login-identity-providers.xml.j2
+    dest: "{{ nifi_conf_dir }}/login-identity-providers.xml"
+    owner: root
+    group: root
+    mode: "644"
+
+- name: Template nifi.properties
+  template:
+    src: nifi.properties.j2
+    dest: "{{ nifi_conf_dir }}/nifi.properties"
+    owner: root
+    group: root
+    mode: "644"
+
+- name: Template state-management.xml
+  template:
+    src: nifi.properties.j2
+    dest: "{{ nifi_conf_dir }}/state-management.xml"
+    owner: root
+    group: root
+    mode: "644"  

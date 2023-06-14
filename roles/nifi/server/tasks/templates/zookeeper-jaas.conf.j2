@@ -1,0 +1,8 @@
+Client {
+  com.sun.security.auth.module.Krb5LoginModule required
+  useKeyTab=true
+  storeKey=true
+  useTicketCache=false
+  keyTab="/etc/security/keytabs/nifi.service.keytab"  
+  principal="nifi/{{ ansible_fqdn }}@{{ realm }}";
+};

@@ -1,0 +1,66 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+
+- include_role:
+    name: tosit.tdp.utils.group
+  vars:
+    group: "{{ nifi_group }}"
+
+- include_role:
+    name: tosit.tdp.utils.user
+  vars:
+    user: "{{ nifi_user }}"
+    group: "{{ nifi_group }}"
+
+- name: "Upload {{ nifi_dist_file }}"
+  copy:
+    src: "files/{{ nifi_dist_file }}"
+    dest: "{{ binaries_upload_dir }}"
+  diff: no
+
+- name: "Ensure {{ nifi_root_dir }} exists"
+  file:
+    path: "{{ nifi_root_dir }}"
+    state: directory
+
+- name: Create configuration directory
+  file:
+    path: "{{ nifi_conf_dir }}"
+    state: directory
+    group: "{{ nifi_group }}"
+    owner: "{{ nifi_user }}"
+    mode: "755"
+
+- name: "Extract {{ nifi_dist_file }}"
+  unarchive:
+    src: "{{ binaries_upload_dir }}/{{ nifi_dist_file }}"
+    dest: "{{ nifi_root_dir }}"
+    group: root
+    owner: root
+    mode: "755"
+    remote_src: yes
+    creates: "{{ nifi_root_dir }}/{{ nifi_release }}"
+
+- name: Create symbolic link to nifi installation
+  file:
+    src: "{{ nifi_root_dir }}/{{ nifi_release }}"
+    dest: "{{ nifi_install_dir }}"
+    state: link
+
+- name: Create log directory
+  file:
+    path: "{{ nifi_log_dir }}"
+    state: directory
+    group: "{{ nifi_group }}"
+    owner: "{{ nifi_user }}"
+    mode: "750"
+
+- name: Template nifi service file
+  template:
+    src: nifi.service.j2
+    dest: /usr/lib/systemd/system/nifi.service
+    owner: root
+    group: root
+    mode: "644"
