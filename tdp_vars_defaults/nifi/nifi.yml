@@ -1,0 +1,37 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+
+nifi_release: nifi-1.20.0
+nifi_dist_file: "{{ nifi_release }}.zip"
+
+nifi_root_dir: /opt/tdp
+nifi_install_dir: "{{ nifi_root_dir }}/nifi"
+nifi_conf_dir: "{{ nifi_install_dir }}/conf"
+
+nifi_log_dir: /var/log/nifi
+
+nifi_user: nifi
+nifi_group: hadoop
+
+nifi_restart : "no"
+nifi_start_on_boot: "no"
+
+krb_create_principals_keytabs: true
+
+zookeeper_client_quorum: |-
+  {{ groups['zk'] |
+     map('tosit.tdp.access_fqdn', hostvars) |
+     map('regex_replace', '^(.*)$', '\1:' + (zookeeper_server_client_port | string)) |
+     list | join(',') }}
+
+nifi_nodes_identies:
+  base: ou=servers,c=io
+  name : "Initial User Identity"
+  value: "nifi-node"
+
+
+
+
+   
