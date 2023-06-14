@@ -25,14 +25,6 @@
     path: "{{ nifi_root_dir }}"
     state: directory
 
-- name: Create configuration directory
-  file:
-    path: "{{ nifi_conf_dir }}"
-    state: directory
-    group: "{{ nifi_group }}"
-    owner: "{{ nifi_user }}"
-    mode: "755"
-
 - name: "Extract {{ nifi_dist_file }}"
   unarchive:
     src: "{{ binaries_upload_dir }}/{{ nifi_dist_file }}"
@@ -49,9 +41,25 @@
     dest: "{{ nifi_install_dir }}"
     state: link
 
+- name: Create configuration directory
+  file:
+    path: "{{ nifi_conf_dir }}"
+    state: directory
+    group: "{{ nifi_group }}"
+    owner: "{{ nifi_user }}"
+    mode: "755"
+
 - name: Create log directory
   file:
     path: "{{ nifi_log_dir }}"
+    state: directory
+    group: "{{ nifi_group }}"
+    owner: "{{ nifi_user }}"
+    mode: "750"
+
+- name: Create pid directory
+  file:
+    path: "{{ nifi_install_dir }}/run"
     state: directory
     group: "{{ nifi_group }}"
     owner: "{{ nifi_user }}"
@@ -64,3 +72,4 @@
     owner: root
     group: root
     mode: "644"
+  

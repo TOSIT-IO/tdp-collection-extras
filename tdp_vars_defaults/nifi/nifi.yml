@@ -10,7 +10,7 @@ nifi_root_dir: /opt/tdp
 nifi_install_dir: "{{ nifi_root_dir }}/nifi"
 nifi_conf_dir: "{{ nifi_install_dir }}/conf"
 
-nifi_log_dir: /var/log/nifi
+nifi_log_dir: "{{ nifi_install_dir }}/log"
 
 nifi_user: nifi
 nifi_group: hadoop
