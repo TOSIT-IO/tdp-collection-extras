@@ -38,7 +38,7 @@
 
 - name: Template state-management.xml
   template:
-    src: nifi.properties.j2
+    src: state-management.xml.j2
     dest: "{{ nifi_conf_dir }}/state-management.xml"
     owner: root
     group: root
