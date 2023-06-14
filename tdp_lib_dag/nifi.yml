@@ -1,0 +1,31 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: nifi_server_install
+  depends_on: []
+
+- name: nifi_kerberos_install
+  depends_on:
+    - nifi_server_install
+
+# - name: nifi_ssl-tls_install
+#   depends_on:
+#     - nifi_server_install
+
+- name: nifi_server_config
+  depends_on:
+    - nifi_kerberos_install
+    #- nifi_ssl-tls_install
+
+- name: nifi_server_start
+  depends_on:
+    - nifi_server_config
+    - zookeeper_init
+    - hdfs_init
+    
+- name: nifi_server_init
+  noop: yes
+  depends_on:
+    - nifi_server_start
+
