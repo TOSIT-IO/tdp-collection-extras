@@ -8,9 +8,18 @@ nifi_dist_file: "{{ nifi_release }}.zip"
 
 nifi_root_dir: /opt/tdp
 nifi_install_dir: "{{ nifi_root_dir }}/nifi"
+
 nifi_conf_dir: "{{ nifi_install_dir }}/conf"
 
 nifi_log_dir: "{{ nifi_install_dir }}/log"
+
+nifi_generated_dirs:
+  - work
+  - database_repository
+  - state
+  - flowfile_repository
+  - provenance_repository
+  - content_repository
 
 nifi_user: nifi
 nifi_group: hadoop
