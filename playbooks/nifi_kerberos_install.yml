@@ -1,0 +1,15 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Kerberos nifi server install
+  hosts: nifi
+  strategy: linear
+  tasks:
+    - tosit.tdp.resolve:
+        node_name: nifi_kerberos
+    - import_role:
+        name: tosit.tdp_extra.nifi.server
+        tasks_from: kerberos
+    - meta: clear_facts
+
