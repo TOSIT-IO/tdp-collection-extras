@@ -15,7 +15,6 @@ hue_dist_file: "{% if (ansible_distribution_major_version | int) > 7 %}{{ hue_re
 hue_root_dir: /opt/tdp
 hue_install_dir: "{{ hue_root_dir }}/hue"
 hue_pid_dir: /var/run/hue
-hue_log_dir: /var/log/hue
 hue_root_conf_dir: /etc/hue
 hue_conf_dir: "{{ hue_root_conf_dir }}/conf"
 hue_certs_folder: "{{ hue_root_conf_dir }}/certs"
@@ -146,3 +145,25 @@ hue_start_on_boot: no
 
 # Service restart policies
 hue_restart: "no"
+
+# Hue logging configuration
+# Root logger level should be: [FATAL| ERROR| WARN| INFO| DEBUG| TRACE]
+hue_log_dir: /var/log/hue
+hue_log_file: "hue_server_%PROC_NAME%_{{ ansible_fqdn }}.log"
+hue_log_error_file: "hue_server_error_{{ ansible_fqdn }}.log"
+hue_log_access_file: "hue_server_access_{{ ansible_fqdn }}.log"
+hue_loggers_level: INFO
+# Root logger should be: [RFA | DRFA]  
+hue_root_logger: RFA
+# Common appenders config
+hue_log_layout_pattern: "[%(asctime)s] %(module)-12s %(levelname)-8s %(message)s"
+hue_access_log_layout_pattern: "[%(asctime)s] %(levelname)-8s %(message)s"
+hue_log_date_format: "%d/%b/%Y %H:%M:%S %z"
+# DRFA appenders config
+# Check this link for more values https://docs.python.org/3/library/logging.handlers.html#timedrotatingfilehandler
+hue_log_drfa_date_pattern: "D"
+hue_log_drfa_maxbackupindex: 30
+# RFA appenders config
+# Unit : MB
+hue_log_rfa_maxfilesize_mb: 256
+hue_log_rfa_maxbackupindex: 10
