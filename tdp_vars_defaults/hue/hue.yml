@@ -161,7 +161,7 @@ hue_access_log_layout_pattern: "[%(asctime)s] %(levelname)-8s %(message)s"
 hue_log_date_format: "%d/%b/%Y %H:%M:%S %z"
 # DRFA appenders config
 # Check this link for more values https://docs.python.org/3/library/logging.handlers.html#timedrotatingfilehandler
-hue_log_drfa_date_pattern: "D"
+hue_log_drfa_date_pattern: 'M'
 hue_log_drfa_maxbackupindex: 30
 # RFA appenders config
 # Unit : MB
