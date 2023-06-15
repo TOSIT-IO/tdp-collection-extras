@@ -6,10 +6,15 @@
 # I.e. 25MB for each set of logs.
 ##########################################
 [handler_logfile]
-level={{ hue_loggers_level }}
+{% if hue_root_logger == "RFA" %}
 class=handlers.RotatingFileHandler
-formatter=default
 args=('%LOG_DIR%/{{ hue_log_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1000 }}, {{ hue_log_rfa_maxbackupindex }})
+{% elif hue_root_logger == "DRFA" %}
+class=handlers.TimedRotatingFileHandler
+args=('%LOG_DIR%/{{ hue_log_file }}' , '{{ hue_log_drfa_date_pattern  }}' , 1, {{ hue_log_drfa_maxbackupindex }})
+{% endif %}
+level={{ hue_loggers_level }}
+formatter=default
 
 ##########################################
 # Please do not change the settings below
@@ -49,18 +54,28 @@ qualname=boto
 # The logrotation limit is set at 5MB per file for a total of 5 copies.
 # I.e. 25MB for each set of logs.
 [handler_accesslog]
+{% if hue_root_logger == "RFA" %}
 class=handlers.RotatingFileHandler
-level=DEBUG
+args=('%LOG_DIR%/{{ hue_log_access_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1000 }}, {{ hue_log_rfa_maxbackupindex }})
+{% elif hue_root_logger == "DRFA" %}
+class=handlers.TimedRotatingFileHandler
+args=('%LOG_DIR%/{{ hue_log_access_file }}', '{{ hue_log_drfa_date_pattern  }}' , 1, {{ hue_log_drfa_maxbackupindex }})
+{% endif %}
+level={{ hue_loggers_level }}
 propagate=True
 formatter=access
-args=('%LOG_DIR%/{{ hue_log_access_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1000 }}, {{ hue_log_rfa_maxbackupindex }})
 
 # All errors go into error.log
 [handler_errorlog]
+{% if hue_root_logger == "RFA" %}
 class=handlers.RotatingFileHandler
-level=ERROR
-formatter=default
 args=('%LOG_DIR%/{{ hue_log_error_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1000 }}, {{ hue_log_rfa_maxbackupindex }})
+{% elif hue_root_logger == "DRFA" %}
+class=handlers.TimedRotatingFileHandler
+args=('%LOG_DIR%/{{ hue_log_error_file }}', '{{ hue_log_drfa_date_pattern  }}', 1, {{ hue_log_drfa_maxbackupindex }})
+{% endif %}
+level={{ hue_loggers_level }}
+formatter=default
 
 [formatter_default]
 class=desktop.log.formatter.Formatter
