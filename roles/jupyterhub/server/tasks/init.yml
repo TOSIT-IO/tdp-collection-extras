@@ -15,7 +15,7 @@
     {{ hadoop_install_dir }}/bin/hdfs
     --config {{ hadoop_client_conf_dir }}
     dfs
-    -put {{ jupyterhub_install_dir }}/share/yarn_environment.tar.gz {{ jupyterhub_properties['yarnspawner']['localize_files']['environment']['source'] }}
+    -put {{ jupyterhub_install_dir }}/share/yarn_environment.tar.gz {{ jupyterhub_hdfs_venvs_dir }}
   become: true
   become_user: "{{ jupyterhub_user }}"
   register: hdfs_put_venv

@@ -17,7 +17,7 @@
   become: true
   become_user: "{{ hdfs_user }}"
   loop:
-    - path: /jupyterhub/virtualenvs
+    - path: "{{ jupyterhub_hdfs_venvs_dir }}"
       state: directory
       owner: "{{ jupyterhub_user }}"
       group: "{{ jupyterhub_group }}"

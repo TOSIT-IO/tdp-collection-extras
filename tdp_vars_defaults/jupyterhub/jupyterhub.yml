@@ -37,6 +37,9 @@ jupyterhub_log_dir: /var/log/jupyterhub
 # Jupyterhub working directory
 jupyterhub_working_dir: /var/lib/jupyterhub
 
+# Jupyterhub HDFS venvs dir
+jupyterhub_hdfs_venvs_dir: /jupyterhub/virtualenvs
+
 # Jupyterhub configuration
 jupyterhub_port: 8000
 
@@ -80,14 +83,13 @@ jupyterhub_properties:
     default_url: /lab
     # environment:
     keytab: /etc/security/keytabs/jupyterhub.service.keytab
-    localize_files:
-      environment:
-        source: hdfs:///jupyterhub/virtualenvs/yarn_environment.tar.gz
     mem_limit: 8G
     cpu_limit: 2
     options_form: |-
       f:"""<label for="queue">Queue name:&nbsp;</label>
       <input name="queue" type="text" value="default" required /><br />
+      <label for="venv">Venv Name:&nbsp;</label>
+      <input name="venv" type="text" value="yarn_environment" required /><br />      
       <label for="cpu">Instance Cpu:&nbsp;</label>
       <input name="cpu" type="number" min="1" step="1" value="1" required /><br />
       <label for="memory">Instance Memory:&nbsp;</label>
