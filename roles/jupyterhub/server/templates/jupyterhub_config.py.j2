@@ -106,6 +106,7 @@ def pre_spawn_hook(spawner):
     # spawner.user_options holds the value parsed from the form
     # values are always list of strings
     queue = spawner.user_options.get("queue", ["default"])[0]
+    venv = spawner.user_options.get("venv", ["yarn_environment"])[0]
     cpu_limit = spawner.user_options.get("cpu", ["1"])[0]
     mem_limit = spawner.user_options.get("memory", ["2G"])[0]
     mem_limit = int(mem_limit) if mem_limit.isnumeric() else mem_limit
@@ -126,6 +127,7 @@ def pre_spawn_hook(spawner):
     spawner.cpu_limit = cpu_limit
     spawner.mem_limit = mem_limit
     spawner.queue = queue
+    spawner.localize_files = { 'environment': { 'source': ("hdfs://{{ jupyterhub_hdfs_venvs_dir }}/" + venv +".tar.gz") } }
 
 {% for key, value in jupyterhub_properties.get('yarnspawner', {}).items() +%}
 c.YarnSpawner.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
