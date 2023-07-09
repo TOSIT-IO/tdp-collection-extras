@@ -3,7 +3,7 @@
 
 ---
 - name: Start Jupyterhub Server
-  service:
+  ansible.builtin.service:
     name: jupyterhub
     state: started
     enabled: "{{ jupyterhub_start_on_boot }}"

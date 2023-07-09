@@ -7,7 +7,7 @@
   tasks:
     - tosit.tdp.resolve:
         node_name: zookeeper-kafka_client
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp.zookeeper.client
         tasks_from: config
-    - meta: clear_facts
+    - ansible.builtin.meta: clear_facts

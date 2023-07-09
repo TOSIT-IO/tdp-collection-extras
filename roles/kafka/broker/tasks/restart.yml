@@ -3,7 +3,7 @@
 
 ---
 - name: Restart Kafka Broker
-  service:
+  ansible.builtin.service:
     name: kafka-broker
     state: restarted
     enabled: "{{ kafka_start_on_boot }}"

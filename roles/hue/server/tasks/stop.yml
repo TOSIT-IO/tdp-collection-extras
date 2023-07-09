@@ -3,7 +3,7 @@
 
 ---
 - name: Stop Hue server
-  service:
+  ansible.builtin.service:
     name: hue
     state: stopped
     enabled: "{{ hue_start_on_boot }}"

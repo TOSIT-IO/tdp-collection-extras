@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- import_role:
+- ansible.builtin.import_role:
     name: tosit.tdp_extra.kafka.common
     tasks_from: install
 
 - name: Create configuration directory
-  file:
+  ansible.builtin.file:
     path: "{{ kafka_broker_conf_dir }}"
     state: directory
     group: "{{ kafka_group }}"
@@ -15,7 +15,7 @@
     mode: "755"
 
 - name: Create data directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     group: "{{ kafka_group }}"
@@ -24,7 +24,7 @@
   loop: "{{ kafka_data_dirs.split(',')  }}"
 
 - name: Template Kafka Broker service file
-  template:
+  ansible.builtin.template:
     src: kafka-broker.service.j2
     dest: /usr/lib/systemd/system/kafka-broker.service
     owner: root

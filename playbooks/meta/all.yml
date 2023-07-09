@@ -2,67 +2,67 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- import_playbook: ../firewall_generic_config.yml
-- import_playbook: ../firewall_generic_start.yml
+- ansible.builtin.import_playbook: ../firewall_generic_config.yml
+- ansible.builtin.import_playbook: ../firewall_generic_start.yml
 # firewall_install
 # firewall_config
 # firewall_start
 # firewall_init
-- import_playbook: ../jupyterhub_server_install.yml
+- ansible.builtin.import_playbook: ../jupyterhub_server_install.yml
 # jupyterhub_install
-- import_playbook: ../jupyterhub_kerberos_install.yml
-- import_playbook: ../jupyterhub_ssl-tls_install.yml
-- import_playbook: ../jupyterhub_server_config.yml
+- ansible.builtin.import_playbook: ../jupyterhub_kerberos_install.yml
+- ansible.builtin.import_playbook: ../jupyterhub_ssl-tls_install.yml
+- ansible.builtin.import_playbook: ../jupyterhub_server_config.yml
 # jupyterhub_config
-- import_playbook: ../jupyterhub_server_start.yml
+- ansible.builtin.import_playbook: ../jupyterhub_server_start.yml
 # jupyterhub_start
-- import_playbook: ../kafka_broker_install.yml
-- import_playbook: ../kafka_client_install.yml
-- import_playbook: ../kafka_jmx-exporter_config.yml
-- import_playbook: ../kafka_kerberos_install.yml
-- import_playbook: ../kafka_client_config.yml
-- import_playbook: ../kafka_ranger_install.yml
-- import_playbook: ../kafka_ssl-tls_install.yml
+- ansible.builtin.import_playbook: ../kafka_broker_install.yml
+- ansible.builtin.import_playbook: ../kafka_client_install.yml
+- ansible.builtin.import_playbook: ../kafka_jmx-exporter_config.yml
+- ansible.builtin.import_playbook: ../kafka_kerberos_install.yml
+- ansible.builtin.import_playbook: ../kafka_client_config.yml
+- ansible.builtin.import_playbook: ../kafka_ranger_install.yml
+- ansible.builtin.import_playbook: ../kafka_ssl-tls_install.yml
 # kafka_install
-- import_playbook: ../livy-spark3_server_install.yml
-- import_playbook: ../livy-spark3_kerberos_install.yml
-- import_playbook: ../livy-spark3_ssl-tls_install.yml
+- ansible.builtin.import_playbook: ../livy-spark3_server_install.yml
+- ansible.builtin.import_playbook: ../livy-spark3_kerberos_install.yml
+- ansible.builtin.import_playbook: ../livy-spark3_ssl-tls_install.yml
 # livy-spark3_install
-- import_playbook: ../livy-spark3_server_config.yml
+- ansible.builtin.import_playbook: ../livy-spark3_server_config.yml
 # livy-spark3_config
-- import_playbook: ../livy_server_install.yml
-- import_playbook: ../livy_kerberos_install.yml
-- import_playbook: ../livy_ssl-tls_install.yml
+- ansible.builtin.import_playbook: ../livy_server_install.yml
+- ansible.builtin.import_playbook: ../livy_kerberos_install.yml
+- ansible.builtin.import_playbook: ../livy_ssl-tls_install.yml
 # livy_install
-- import_playbook: ../livy_server_config.yml
+- ansible.builtin.import_playbook: ../livy_server_config.yml
 # livy_config
-- import_playbook: ../jupyterhub_server_hdfs-init.yml
-- import_playbook: ../jupyterhub_server_init.yml
+- ansible.builtin.import_playbook: ../jupyterhub_server_hdfs-init.yml
+- ansible.builtin.import_playbook: ../jupyterhub_server_init.yml
 # jupyterhub_init
-- import_playbook: ../livy-spark3_server_start.yml
+- ansible.builtin.import_playbook: ../livy-spark3_server_start.yml
 # livy-spark3_server_init
 # livy-spark3_start
 # livy-spark3_init
-- import_playbook: ../livy_server_start.yml
+- ansible.builtin.import_playbook: ../livy_server_start.yml
 # livy_server_init
 # livy_start
 # livy_init
-- import_playbook: ../zookeeper-kafka_client_install.yml
-- import_playbook: ../zookeeper-kafka_jmx-exporter_config.yml
-- import_playbook: ../zookeeper-kafka_server_install.yml
-- import_playbook: ../zookeeper-kafka_kerberos_install.yml
-- import_playbook: ../zookeeper-kafka_client_config.yml
+- ansible.builtin.import_playbook: ../zookeeper-kafka_client_install.yml
+- ansible.builtin.import_playbook: ../zookeeper-kafka_jmx-exporter_config.yml
+- ansible.builtin.import_playbook: ../zookeeper-kafka_server_install.yml
+- ansible.builtin.import_playbook: ../zookeeper-kafka_kerberos_install.yml
+- ansible.builtin.import_playbook: ../zookeeper-kafka_client_config.yml
 # zookeeper-kafka_install
-- import_playbook: ../zookeeper-kafka_server_config.yml
+- ansible.builtin.import_playbook: ../zookeeper-kafka_server_config.yml
 # zookeeper-kafka_config
-- import_playbook: ../kafka_broker_config.yml
-- import_playbook: ../kafka_ranger_config.yml
+- ansible.builtin.import_playbook: ../kafka_broker_config.yml
+- ansible.builtin.import_playbook: ../kafka_ranger_config.yml
 # kafka_config
-- import_playbook: ../kafka_ranger_init.yml
-- import_playbook: ../zookeeper-kafka_server_start.yml
+- ansible.builtin.import_playbook: ../kafka_ranger_init.yml
+- ansible.builtin.import_playbook: ../zookeeper-kafka_server_start.yml
 # zookeeper-kafka_server_init
 # zookeeper-kafka_start
 # zookeeper-kafka_init
-- import_playbook: ../kafka_broker_start.yml
+- ansible.builtin.import_playbook: ../kafka_broker_start.yml
 # kafka_start
 # kafka_init

@@ -1,11 +1,11 @@
 ---
 - name: Check if livy config exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ livy_server_conf_dir }}/"
   register: livy_config
 
 - name: Backup configuration
-  copy:
+  ansible.builtin.copy:
     src: "{{ livy_server_conf_dir }}/"
     dest: "{{ livy_server_conf_dir }}.{{ ansible_date_time.epoch }}"
     group: "{{ hadoop_group }}"
@@ -15,7 +15,7 @@
   when: livy_config.stat.exists
 
 - name: Ensure livy config dir exists
-  file:
+  ansible.builtin.file:
     path: "{{ livy_server_conf_dir }}/"
     state: directory
     group: root
@@ -23,7 +23,7 @@
     mode: "755"
 
 - name: Template livy-env.sh
-  template:
+  ansible.builtin.template:
     src: livy-env.sh.j2
     dest: "{{ livy_server_conf_dir }}/livy-env.sh"
     owner: root
@@ -31,7 +31,7 @@
     mode: "644"
 
 - name: Template livy-client.conf
-  template:
+  ansible.builtin.template:
     src: livy-client.conf.j2
     dest: "{{ livy_server_conf_dir }}/livy-client.conf"
     owner: root
@@ -39,7 +39,7 @@
     mode: "644"
 
 - name: Template livy.conf
-  template:
+  ansible.builtin.template:
     src: livy.conf.j2
     dest: "{{ livy_server_conf_dir }}/livy.conf"
     owner: root
@@ -47,7 +47,7 @@
     mode: "644"
 
 - name: Template log4j.properties
-  template:
+  ansible.builtin.template:
     src: log4j.properties.j2
     dest: "{{ livy_server_conf_dir }}/log4j.properties"
     owner: root

@@ -3,7 +3,7 @@
 
 ---
 - name: Restart Hue server
-  service:
+  ansible.builtin.service:
     name: hue
     state: restarted
     enabled: "{{ hue_start_on_boot }}"

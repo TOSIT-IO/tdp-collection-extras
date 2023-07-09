@@ -4,14 +4,14 @@
 ---
 - name: Kinit for jupyterhub
   run_once: true
-  command: kinit -kt /etc/security/keytabs/jupyterhub.service.keytab {{ jupyterhub_principal }}
+  ansible.builtin.command: kinit -kt /etc/security/keytabs/jupyterhub.service.keytab {{ jupyterhub_principal }}
   become: true
   become_user: "{{ jupyterhub_user }}"
   changed_when: false
 
 - name: Put yarn venv to HDFS
   run_once: true
-  command: >-
+  ansible.builtin.command: >-
     {{ hadoop_install_dir }}/bin/hdfs
     --config {{ hadoop_client_conf_dir }}
     dfs

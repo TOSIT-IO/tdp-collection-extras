@@ -1,6 +1,6 @@
 ---
 - name: Start livy-server
-  service:
+  ansible.builtin.service:
     name: "livy-server-{{ spark_version }}"
     state: started
     enabled: "{{ livy_start_on_boot }}"

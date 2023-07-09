@@ -3,12 +3,12 @@
 
 ---
 - name: Ensure configuration directory
-  file:
+  ansible.builtin.file:
     path: "{{ jmx_exporter_conf_dir }}"
     state: directory
 
 - name: Render jmx-exporter config file jmx-exporter.yml
-  copy:
+  ansible.builtin.copy:
     content: "{{ jmx_exporter | to_nice_yaml }}"
     dest: "{{ jmx_exporter_conf_dir }}/kafka.yml"
     group: root

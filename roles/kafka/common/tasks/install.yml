@@ -2,30 +2,30 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- include_role:
+- ansible.builtin.include_role:
     name: tosit.tdp.utils.group
   vars:
     group: "{{ kafka_group }}"
 
-- include_role:
+- ansible.builtin.include_role:
     name: tosit.tdp.utils.user
   vars:
     user: "{{ kafka_user }}"
     group: "{{ kafka_group }}"
 
 - name: "Upload {{ kafka_dist_file }}"
-  copy:
+  ansible.builtin.copy:
     src: "{{ binaries_local_dir }}/{{ kafka_dist_file }}"
     dest: "{{ binaries_upload_dir }}"
   diff: no
 
 - name: "Ensure {{ kafka_root_dir }} exists"
-  file:
+  ansible.builtin.file:
     path: "{{ kafka_root_dir }}"
     state: directory
 
 - name: "Extract {{ kafka_dist_file }}"
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ binaries_upload_dir }}/{{ kafka_dist_file }}"
     dest: "{{ kafka_root_dir }}"
     group: root
@@ -35,13 +35,13 @@
     creates: "{{ kafka_root_dir }}/{{ kafka_release }}"
 
 - name: Create symbolic link to Kafka installation
-  file:
+  ansible.builtin.file:
     src: "{{ kafka_root_dir }}/{{ kafka_release }}"
     dest: "{{ kafka_install_dir }}"
     state: link
 
 - name: Create log directory
-  file:
+  ansible.builtin.file:
     path: "{{ kafka_log_dir }}"
     state: directory
     group: "{{ kafka_group }}"

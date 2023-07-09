@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- include_role:
+- ansible.builtin.include_role:
     name: tosit.tdp.utils.ssl_tls
     tasks_from: create_truststore
   vars:

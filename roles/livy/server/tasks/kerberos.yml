@@ -1,10 +1,10 @@
 ---
-- import_role:
+- ansible.builtin.import_role:
     name: tosit.tdp.utils.kerberos
     tasks_from: install
 
 - block:
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp.utils.kerberos
         tasks_from: create_principal_keytab
       vars:
@@ -14,7 +14,7 @@
         group: "{{ hadoop_group }}"
         mode: "600"
 
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp.utils.kerberos
         tasks_from: create_principal_keytab
       vars:
@@ -26,7 +26,7 @@
   when: krb_create_principals_keytabs
 
 - block:
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp.utils.kerberos
         tasks_from: check_secure_keytab
       vars:
@@ -36,7 +36,7 @@
         group: "{{ hadoop_group }}"
         mode: "600"
 
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp.utils.kerberos
         tasks_from: check_secure_keytab
       vars:

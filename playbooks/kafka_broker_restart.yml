@@ -7,7 +7,7 @@
   tasks:
     - tosit.tdp.resolve:
         node_name: kafka_broker
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp_extra.kafka.broker
         tasks_from: restart
-    - meta: clear_facts
+    - ansible.builtin.meta: clear_facts

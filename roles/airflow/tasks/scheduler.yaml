@@ -1,5 +1,5 @@
 ---
 - name: Template Airflow scheduler service file
-  template:
+  ansible.builtin.template:
     src: airflow-scheduler.service.j2
     dest: /usr/lib/systemd/system/airflow-scheduler.service

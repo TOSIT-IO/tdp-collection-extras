@@ -3,7 +3,7 @@
 
 ---
 - name: Backup configuration
-  copy:
+  ansible.builtin.copy:
     src: "{{ kafka_client_conf_dir }}/"
     dest: "{{ kafka_client_conf_dir }}.{{ ansible_date_time.epoch }}"
     owner: root
@@ -14,7 +14,7 @@
     - backup
 
 - name: Template client.properties
-  template:
+  ansible.builtin.template:
     src: client.properties.j2
     dest: "{{ kafka_client_conf_dir }}/client.properties"
     owner: root
@@ -22,7 +22,7 @@
     mode: "644"
 
 - name: Template producer.properties
-  template:
+  ansible.builtin.template:
     src: producer.properties.j2
     dest: "{{ kafka_client_conf_dir }}/producer.properties"
     owner: root
@@ -30,7 +30,7 @@
     mode: "644"
 
 - name: Template consumer.properties
-  template:
+  ansible.builtin.template:
     src: consumer.properties.j2
     dest: "{{ kafka_client_conf_dir }}/consumer.properties"
     owner: root
@@ -38,7 +38,7 @@
     mode: "644"
 
 - name: Template Kafka commands
-  template:
+  ansible.builtin.template:
     src: kafka-command.sh.j2
     dest: "/usr/bin/{{ item }}"
     owner: root
