@@ -3,7 +3,7 @@
 
 ---
 - name: Template hive-site.xml
-  template:
+  ansible.builtin.template:
     src: hive-site.xml.j2
     dest: "{{ hue_conf_dir }}/hive-site.xml"
     owner: root

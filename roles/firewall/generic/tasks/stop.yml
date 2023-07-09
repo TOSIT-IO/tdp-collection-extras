@@ -3,7 +3,7 @@
 
 ---
 - name: "Stop {{ firewall_service }}"
-  service:
+  ansible.builtin.service:
     name: "{{ firewall_service }}"
     state: stopped
     enabled: "{{ firewall_start_on_boot }}"

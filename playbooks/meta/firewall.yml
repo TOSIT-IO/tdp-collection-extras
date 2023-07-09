@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- import_playbook: ../firewall_generic_config.yml
-- import_playbook: ../firewall_generic_start.yml
+- ansible.builtin.import_playbook: ../firewall_generic_config.yml
+- ansible.builtin.import_playbook: ../firewall_generic_start.yml
 # firewall_install
 # firewall_config
 # firewall_start

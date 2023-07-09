@@ -1,12 +1,12 @@
 ---
-- include_role:
+- ansible.builtin.include_role:
     name: tosit.tdp.utils.user
   vars:
     user: "{{ livy_user }}"
     group: "{{ hadoop_group }}"
 
 - name: Upload {{ livy_dist_file }}
-  copy:
+  ansible.builtin.copy:
     src: "{{ binaries_local_dir }}/{{ livy_dist_file }}"
     dest: "{{ binaries_upload_dir }}"
     group: root
@@ -15,7 +15,7 @@
   diff: no
 
 - name: Ensure livy root dir exists
-  file:
+  ansible.builtin.file:
     path: "{{ livy_root_dir }}"
     state: directory
     group: root
@@ -23,7 +23,7 @@
     mode: "755"
 
 - name: Extract Livy
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ binaries_upload_dir }}/{{ livy_dist_file }}"
     dest: "{{ livy_root_dir }}"
     group: root
@@ -32,13 +32,13 @@
     remote_src: yes
 
 - name: Create symbolic link to Livy installation
-  file:
+  ansible.builtin.file:
     dest: "{{ livy_install_dir }}"
     src: "{{ livy_root_dir }}/{{ livy_release }}/"
     state: link
 
 - name: Create directory for pid
-  file:
+  ansible.builtin.file:
     path: "{{ livy_pid_dir }}"
     state: directory
     group: "{{ hadoop_group }}"
@@ -46,7 +46,7 @@
     mode: "750"
 
 - name: Template livy tmpfiles.d
-  template:
+  ansible.builtin.template:
     src: tmpfiles-livy.conf.j2
     dest: "/etc/tmpfiles.d/livy-server-{{ spark_version }}.conf"
     owner: root
@@ -54,7 +54,7 @@
     mode: "644"
 
 - name: Create log directory
-  file:
+  ansible.builtin.file:
     path: "{{ livy_log_dir }}"
     state: directory
     group: "{{ hadoop_group }}"
@@ -63,7 +63,7 @@
     recurse: yes
 
 - name: Template Livy Server service file
-  template:
+  ansible.builtin.template:
     src: livy-server.service.j2
     dest: "/usr/lib/systemd/system/livy-server-{{ spark_version }}.service"
     owner: root

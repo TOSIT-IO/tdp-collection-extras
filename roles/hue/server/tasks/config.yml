@@ -3,7 +3,7 @@
 
 ---
 - name: Backup configuration
-  copy:
+  ansible.builtin.copy:
     src: "{{ hue_conf_dir }}/"
     dest: "{{ hue_conf_dir }}.{{ ansible_date_time.epoch }}"
     owner: root
@@ -14,11 +14,11 @@
     - backup
 
 - name: Get {{ hue_user }} uid
-  shell: id -u hue
+  ansible.builtin.shell: id -u hue
   register: hue_user_id_output
 
 - name: Template hue.ini
-  template:
+  ansible.builtin.template:
     src: hue.ini.j2
     dest: "{{ hue_conf_dir }}/hue.ini"
     owner: root
@@ -29,7 +29,7 @@
     livy_port: "{{ livy_server_port }}"
 
 - name: Template Hue log configuration
-  template:
+  ansible.builtin.template:
     src: log.conf.j2
     dest: "{{ hue_conf_dir }}/log.conf"
     owner: root
@@ -37,7 +37,7 @@
     mode: "0644"
 
 - name: Initiate Hue database
-  command: |
+  ansible.builtin.command: |
     {{ hue_install_dir }}/build/env/bin/hue migrate
   register: hue_database_migrate
   failed_when: hue_database_migrate.rc != 0

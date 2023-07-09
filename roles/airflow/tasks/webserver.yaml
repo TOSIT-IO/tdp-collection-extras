@@ -1,11 +1,11 @@
 ---
 - name: Airflow Database Init
-  shell: airflow db init
+  ansible.builtin.shell: airflow db init
   environment:
     AIRFLOW_HOME: "{{ airflow_install_dir }}"
 
 - name: Create Airflow admin user
-  shell: |
+  ansible.builtin.shell: |
     airflow users create \
       --username {{ airflow_admin_user }} \
       --password {{ airflow_admin_pass }} \
@@ -17,11 +17,11 @@
     AIRFLOW_HOME: "{{ airflow_install_dir }}"
 
 - name: Template webserver_config.py file
-  template:
+  ansible.builtin.template:
     src: webserver_config.py.j2
     dest: "{{ airflow_install_dir }}/webserver_config.py"
 
 - name: Template Airflow webserver service file
-  template:
+  ansible.builtin.template:
     src: airflow-webserver.service.j2
     dest: /usr/lib/systemd/system/airflow-webserver.service

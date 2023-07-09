@@ -8,10 +8,10 @@
   tasks:
     - tosit.tdp.resolve:
         node_name: zookeeper-kafka_kerberos
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp.zookeeper.server
         tasks_from: kerberos
-    - meta: clear_facts
+    - ansible.builtin.meta: clear_facts
 
 - name: Kerberos Zookeeper Client for Kafka install
   hosts: zk_kafka_edge
@@ -19,7 +19,7 @@
   tasks:
     - tosit.tdp.resolve:
         node_name: zookeeper-kafka_kerberos
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp.zookeeper.client
         tasks_from: kerberos
-    - meta: clear_facts
+    - ansible.builtin.meta: clear_facts

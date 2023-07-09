@@ -10,7 +10,7 @@
     - tosit.tdp.resolve: # noqa unnamed-task
         node_name: firewall_generic
     - name: Generate TDP ports list
-      set_fact:
+      ansible.builtin.set_fact:
         tdp_port_list: |
           [
           {%for comp in (firewalld_rules | dict2items) %}
@@ -29,7 +29,7 @@
           {%endfor%}
           ]
     - name: Print TDP ports table
-      debug:
+      ansible.builtin.debug:
         msg: |
           | Service | Component | Port | Default value | Protocol | Linked property | External access | Description |
           | ------- | --------- | ---- | ------------- | -------- | --------------- | --------------- | ----------- |
@@ -38,7 +38,7 @@
           {%endfor%}
       when: format == 'table'
     - name: Print TDP ports list
-      debug:
+      ansible.builtin.debug:
         msg: |
           {%for service in (tdp_port_list | map(attribute='service') | unique | sort) %}
           ## {{ service }}
@@ -58,4 +58,4 @@
           {%endfor%}
           {%endfor%}
       when: format == 'list'
-    - meta: clear_facts # noqa unnamed-task
+    - ansible.builtin.meta: clear_facts # noqa unnamed-task

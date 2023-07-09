@@ -7,17 +7,17 @@
   tasks:
     - tosit.tdp.resolve:
         node_name: kafka_ssl-tls
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp_extra.kafka.broker
         tasks_from: ssl-tls
-    - meta: clear_facts
+    - ansible.builtin.meta: clear_facts
 
 - name: SSL-TLS Kafka Client install
   hosts: kafka_client
   tasks:
     - tosit.tdp.resolve:
         node_name: kafka_ssl-tls
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp_extra.kafka.client
         tasks_from: ssl-tls
-    - meta: clear_facts
+    - ansible.builtin.meta: clear_facts

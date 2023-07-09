@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- import_role:
+- ansible.builtin.import_role:
     name: tosit.tdp.utils.kerberos
     tasks_from: install
 
 - name: Template kafka_client_jaas.conf
-  template:
+  ansible.builtin.template:
     src: kafka_client_jaas.conf.j2
     dest: "{{ kafka_client_conf_dir }}/kafka_client_jaas.conf"
     owner: root
@@ -15,14 +15,14 @@
     mode: "644"
 
 - name: Template kafka_admin_jaas.conf
-  template:
+  ansible.builtin.template:
     src: kafka_admin_jaas.conf.j2
     dest: "{{ kafka_client_conf_dir }}/kafka_admin_jaas.conf"
     owner: root
     group: root
     mode: "644"
 
-- import_role:
+- ansible.builtin.import_role:
     name: tosit.tdp.utils.kerberos
     tasks_from: create_principal_keytab
   vars:
@@ -33,7 +33,7 @@
     mode: "600"
   when: krb_create_principals_keytabs
 
-- import_role:
+- ansible.builtin.import_role:
     name: tosit.tdp.utils.kerberos
     tasks_from: check_secure_keytab
   vars:

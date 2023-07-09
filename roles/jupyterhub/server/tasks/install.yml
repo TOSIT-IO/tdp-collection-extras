@@ -3,20 +3,20 @@
 
 ---
 - name: Ensure jupyterhub user exists
-  include_role:
+  ansible.builtin.include_role:
     name: tosit.tdp.utils.group
   vars:
     group: "{{ jupyterhub_group }}"
 
 - name: Ensure jupyterhub group exists
-  include_role:
+  ansible.builtin.include_role:
     name: tosit.tdp.utils.user
   vars:
     user: "{{ jupyterhub_user }}"
     group: "{{ jupyterhub_group }}"
 
 - name: Upload {{ jupyterhub_dist_file }}
-  copy:
+  ansible.builtin.copy:
     src: "{{ binaries_local_dir }}/{{ jupyterhub_dist_file }}"
     dest: "{{ jupyterhub_upload_directory }}"
     owner: root
@@ -25,7 +25,7 @@
   diff: false
 
 - name: Ensure {{ jupyterhub_root_dir }} exists
-  file:
+  ansible.builtin.file:
     path: "{{ jupyterhub_root_dir }}"
     state: directory
     owner: root
@@ -33,7 +33,7 @@
     mode: "0755"
 
 - name: Extract {{ jupyterhub_dist_file }}
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ jupyterhub_upload_directory }}/{{ jupyterhub_dist_file }}"
     dest: "{{ jupyterhub_root_dir }}"
     owner: root
@@ -42,7 +42,7 @@
     creates: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}"
 
 - name: Install Jupyterhub
-  pip:
+  ansible.builtin.pip:
     requirements: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/requirements.txt"
     extra_args: "--no-index --find-links=file://{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/dependencies"
     umask: "0022"
@@ -50,19 +50,19 @@
     virtualenv_python: "{{ jupyterhub_python_executable }}"
 
 - name: Ensure capabilities on traefik executable
-  capabilities:
+  community.general.capabilities:
     path: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/bin/traefik"
     capability: cap_net_bind_service+ep
     state: present
 
 - name: Create symbolic link to Jupyterhub installation
-  file:
+  ansible.builtin.file:
     src: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}"
     dest: "{{ jupyterhub_install_dir }}"
     state: link
 
 - name: Create configuration directory
-  file:
+  ansible.builtin.file:
     path: "{{ jupyterhub_server_conf_dir }}"
     state: directory
     group: root
@@ -70,7 +70,7 @@
     mode: "0755"
 
 - name: Create certificates directory
-  file:
+  ansible.builtin.file:
     path: "{{ jupyterhub_server_certs_folder }}"
     state: directory
     group: root
@@ -78,7 +78,7 @@
     mode: "0755"
 
 - name: Create log directory
-  file:
+  ansible.builtin.file:
     path: "{{ jupyterhub_log_dir }}"
     state: directory
     group: "{{ jupyterhub_group }}"
@@ -86,7 +86,7 @@
     mode: "0750"
 
 - name: Create working directory
-  file:
+  ansible.builtin.file:
     path: "{{ jupyterhub_working_dir }}"
     state: directory
     group: "{{ jupyterhub_group }}"

@@ -4,12 +4,12 @@
 ---
 - block:
     - name: Generate host_firewalld_rules var
-      set_fact:
+      ansible.builtin.set_fact:
         host_firewalld_rules: |
           {{ group_names | intersect(firewalld_rules.keys()) | map('extract', firewalld_rules) | flatten }}
 
     - name: Template firewalld ipsets from Ansible groups
-      template:
+      ansible.builtin.template:
         src: firewalld-ipset.xml.j2
         dest: "/etc/firewalld/ipsets/{{ firewalld_files_prefix }}{{ item }}.xml"
         lstrip_blocks: yes
@@ -24,7 +24,7 @@
         label: "{{ firewalld_files_prefix }}{{ item }}"
 
     - name: Template firewalld services
-      template:
+      ansible.builtin.template:
         src: firewalld-service.xml.j2
         dest: "/etc/firewalld/services/{{ firewalld_files_prefix }}{{ item.name }}.xml"
         lstrip_blocks: yes
@@ -41,7 +41,7 @@
         label: "{{ firewalld_files_prefix }}{{ item.name }}"
 
     - name: Template firewalld zones
-      template:
+      ansible.builtin.template:
         src: firewalld-zone.xml.j2
         dest: "/etc/firewalld/zones/{{ firewalld_files_prefix }}{{ item.name }}.xml"
         lstrip_blocks: yes

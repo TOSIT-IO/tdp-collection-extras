@@ -3,7 +3,7 @@
 
 ---
 - name: "Configure firewall using {{ firewall_service }}"
-  include_role:
+  ansible.builtin.include_role:
     name: "tosit.tdp_extra.firewall.{{ firewall_service }}"
     tasks_from: config
   when: firewall_tdp_managed

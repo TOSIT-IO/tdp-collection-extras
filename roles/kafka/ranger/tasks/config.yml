@@ -3,7 +3,7 @@
 
 ---
 - name: Template install.properties
-  template:
+  ansible.builtin.template:
     src: install_kafka.properties.j2
     dest: "{{ ranger_kafka_install_dir }}/install.properties"
     owner: root
@@ -14,18 +14,18 @@
 # There is no way to tell the script to use /etc/kafka/conf.broker
 # So we create a symbolic link in installation /opt/kafka/ that points to actual conf
 - name: Backup {{ kafka_install_dir }}/config
-  command: mv {{ kafka_install_dir }}/config {{ kafka_install_dir }}/config.bk
+  ansible.builtin.command: mv {{ kafka_install_dir }}/config {{ kafka_install_dir }}/config.bk
   args:
     creates: "{{ kafka_install_dir }}/config.bk"
 
 - name: Create symbolic link from conf in {{ kafka_install_dir }} to actual Kafka broker conf
-  file:
+  ansible.builtin.file:
     src: "{{ kafka_broker_conf_dir }}"
     dest: "{{ kafka_install_dir }}/config"
     state: link
 
 - name: Run enable-kafka-plugin.sh
-  shell: |
+  ansible.builtin.shell: |
     export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk
     ./enable-kafka-plugin.sh
   args:
@@ -35,14 +35,14 @@
     - "'Exiting plugin installation' in enable_kafka_output.stdout"
 
 - name: Overwrite ranger.plugin.kafka.policy.rest.ssl.config.file
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ kafka_broker_conf_dir }}/ranger-kafka-security.xml"
     regexp: "<value>/etc/kafka/conf/ranger-policymgr-ssl.xml</value>"
     line: "\t\t<value>{{ kafka_broker_conf_dir }}/ranger-policymgr-ssl.xml</value>"
 
 # Needed for writing audits to HDFS
 - name: Set fs.hdfs.impl class to org.apache.hadoop.hdfs.DistributedFileSystem
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: "{{ kafka_broker_conf_dir }}/ranger-kafka-audit.xml"
     insertbefore: "</configuration>"
     marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
@@ -54,7 +54,7 @@
 
 # Workaround to force the plugin to fetch policies on /secure Ranger Admin endpoint
 - name: Template mock core-site.xml for secure Ranger authentication
-  template:
+  ansible.builtin.template:
     src: core-site.xml.j2
     dest: "{{ kafka_broker_conf_dir }}/core-site.xml"
     owner: root

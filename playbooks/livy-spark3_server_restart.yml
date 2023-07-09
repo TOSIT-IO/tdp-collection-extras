@@ -4,7 +4,7 @@
   tasks:
     - tosit.tdp.resolve:
         node_name: livy-spark3_server
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp_extra.livy.server
         tasks_from: restart
-    - meta: clear_facts
+    - ansible.builtin.meta: clear_facts

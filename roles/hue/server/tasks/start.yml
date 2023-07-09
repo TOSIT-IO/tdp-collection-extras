@@ -3,7 +3,7 @@
 
 ---
 - name: Start Hue server
-  service:
+  ansible.builtin.service:
     name: hue
     state: started
     enabled: "{{ hue_start_on_boot }}"

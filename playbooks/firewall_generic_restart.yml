@@ -8,7 +8,7 @@
     - tosit.tdp.resolve: # noqa unnamed-task
         node_name: firewall_generic
     - name: Restart firewall
-      import_role:
+      ansible.builtin.import_role:
         name: tosit.tdp_extra.firewall.generic
         tasks_from: restart
-    - meta: clear_facts # noqa unnamed-task
+    - ansible.builtin.meta: clear_facts # noqa unnamed-task

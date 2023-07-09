@@ -3,7 +3,7 @@
 
 ---
 - name: Restart Jupyterhub Server
-  service:
+  ansible.builtin.service:
     name: jupyterhub
     state: restarted
     enabled: "{{ jupyterhub_start_on_boot }}"

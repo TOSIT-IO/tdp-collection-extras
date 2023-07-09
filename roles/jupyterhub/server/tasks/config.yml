@@ -3,7 +3,7 @@
 
 ---
 - name: Backup configuration
-  copy:
+  ansible.builtin.copy:
     src: "{{ jupyterhub_server_conf_dir }}/"
     dest: "{{ jupyterhub_server_conf_dir }}.{{ ansible_date_time.epoch }}"
     owner: root
@@ -14,7 +14,7 @@
     - backup
 
 - name: Template Jupyterhub service file
-  template:
+  ansible.builtin.template:
     src: jupyterhub.service.j2
     dest: /usr/lib/systemd/system/jupyterhub.service
     owner: root
@@ -23,7 +23,7 @@
   notify: reload systemd
 
 - name: Template jupyterhub_start.sh
-  template:
+  ansible.builtin.template:
     src: jupyterhub_start.sh.j2
     dest: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/bin/jupyterhub_start.sh"
     owner: root
@@ -31,7 +31,7 @@
     mode: "0755"
 
 - name: Template Jupyterhub configuration
-  template:
+  ansible.builtin.template:
     src: jupyterhub_config.py.j2
     dest: "{{ jupyterhub_server_conf_dir }}/jupyterhub_config.py"
     owner: root

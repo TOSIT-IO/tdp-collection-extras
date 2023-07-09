@@ -1,6 +1,6 @@
 ---
 - name: Restart livy-server
-  service:
+  ansible.builtin.service:
     name: "livy-server-{{ spark_version }}"
     state: restarted
     enabled: "{{ livy_start_on_boot }}"

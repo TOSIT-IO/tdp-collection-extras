@@ -3,20 +3,20 @@
 
 ---
 - name: Ensure hadoop group exists
-  include_role:
+  ansible.builtin.include_role:
     name: tosit.tdp.utils.group
   vars:
     group: "{{ hadoop_group }}"
 
 - name: Ensure hue user exists
-  include_role:
+  ansible.builtin.include_role:
     name: tosit.tdp.utils.user
   vars:
     user: "{{ hue_user }}"
     group: "{{ hadoop_group }}"
 
 - name: Upload {{ hue_dist_file }}
-  copy:
+  ansible.builtin.copy:
     src: "{{ binaries_local_dir }}/{{ hue_dist_file }}"
     dest: "{{ binaries_upload_dir }}"
     owner: root
@@ -25,7 +25,7 @@
   diff: false
 
 - name: Ensure {{ hue_root_dir }} exists
-  file:
+  ansible.builtin.file:
     path: "{{ hue_root_dir }}"
     state: directory
     owner: root
@@ -33,7 +33,7 @@
     mode: "755"
 
 - name: Extract {{ hue_dist_file }}
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ binaries_upload_dir }}/{{ hue_dist_file }}"
     dest: "{{ hue_root_dir }}"
     owner: root
@@ -43,7 +43,7 @@
     creates: "{{ hue_root_dir }}/{{ hue_release }}"
 
 - name: Ensure hue installation permissions
-  file:
+  ansible.builtin.file:
     path: "{{ hue_root_dir }}/{{ hue_release }}"
     owner: root
     group: root
@@ -52,13 +52,13 @@
     recurse: true
 
 - name: Create symbolic link to Hue installation
-  file:
+  ansible.builtin.file:
     src: "{{ hue_root_dir }}/{{ hue_release }}"
     dest: "{{ hue_install_dir }}"
     state: link
 
 - name: Create directory for pid
-  file:
+  ansible.builtin.file:
     path: "{{ hue_pid_dir }}"
     state: directory
     group: root
@@ -66,7 +66,7 @@
     mode: "755"
 
 - name: Create configuration directory
-  file:
+  ansible.builtin.file:
     path: "{{ hue_root_conf_dir }}"
     state: directory
     owner: root
@@ -74,13 +74,13 @@
     mode: "755"
 
 - name: Create symbolic link to Hue installation
-  file:
+  ansible.builtin.file:
     src: "{{ hue_root_dir }}/{{ hue_release }}/desktop/conf"
     dest: "{{ hue_conf_dir }}"
     state: link
 
 - name: Create certificates directory
-  file:
+  ansible.builtin.file:
     path: "{{ hue_certs_folder }}"
     state: directory
     group: root
@@ -88,7 +88,7 @@
     mode: "0755"
 
 - name: Create directory for pid
-  file:
+  ansible.builtin.file:
     path: "{{ hue_pid_dir }}"
     state: directory
     group: root
@@ -96,7 +96,7 @@
     mode: "755"
 
 - name: Template Hue tmpfiles.d
-  template:
+  ansible.builtin.template:
     src: tmpfiles-hue.conf.j2
     dest: /etc/tmpfiles.d/hue.conf
     owner: root
@@ -104,7 +104,7 @@
     mode: "644"
 
 - name: Create log directory
-  file:
+  ansible.builtin.file:
     path: "{{ hue_log_dir }}"
     state: directory
     owner: "{{ hue_user }}"
@@ -112,7 +112,7 @@
     mode: "750"
 
 - name: Template Hue stop script
-  template:
+  ansible.builtin.template:
     src: stop-hue-server.sh.j2
     dest: "{{ hue_install_dir }}/build/env/bin/stop-hue-server.sh"
     owner: root
@@ -120,7 +120,7 @@
     mode: "644"
 
 - name: Template Hue service file
-  template:
+  ansible.builtin.template:
     src: hue.service.j2
     dest: /usr/lib/systemd/system/hue.service
     owner: root

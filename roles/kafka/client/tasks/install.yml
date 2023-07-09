@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- import_role:
+- ansible.builtin.import_role:
     name: tosit.tdp_extra.kafka.common
     tasks_from: install
 
 - name: Create configuration directory
-  file:
+  ansible.builtin.file:
     path: "{{ kafka_client_conf_dir }}"
     state: directory
     owner: root

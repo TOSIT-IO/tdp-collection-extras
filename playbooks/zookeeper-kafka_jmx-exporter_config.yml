@@ -7,7 +7,7 @@
   tasks:
     - tosit.tdp.resolve:
         node_name: zookeeper-kafka_server
-    - import_role:
+    - ansible.builtin.import_role:
         name: tosit.tdp.zookeeper.server
         tasks_from: jmx-exporter
-    - meta: clear_facts
+    - ansible.builtin.meta: clear_facts
