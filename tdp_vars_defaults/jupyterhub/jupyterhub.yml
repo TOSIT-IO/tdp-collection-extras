@@ -66,6 +66,17 @@ jupyterhub_properties:
     bind_dn_template: uid={username},ou=users,c=io
     server_address: "{{ groups['ldap'] | first | tosit.tdp.access_fqdn(hostvars) }}"
     post_auth_hook: f:post_auth_hook
+  oauthenticator:
+    client_id: 'client_id'
+    client_secret: 'client_secret'
+    oauth_callback_url: 'https://jupyterhub_public_address/hub/oauth_callback'
+    authorize_url: 'https://keycloak_public_address/realms/tdp/protocol/openid-connect/auth'
+    token_url: 'http://keycloak_private_address:8080/realms/tdp/protocol/openid-connect/token'
+    userdata_url: 'http://keycloak_private_addressl:8080/realms/tdp/protocol/openid-connect/userinfo'
+    login_service: 'Keycloak'
+    username_key: 'preferred_username'
+    userdata_params: {'state': 'state'}
+    scope: ['openid', 'profile']
   traefiktomlproxy:
     should_start: True
     toml_static_config_file: "{{ jupyterhub_working_dir }}/traefik.toml"
