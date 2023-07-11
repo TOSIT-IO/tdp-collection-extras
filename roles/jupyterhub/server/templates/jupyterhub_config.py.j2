@@ -19,6 +19,12 @@
 # JupyterHub(Application) configuration
 #------------------------------------------------------------------------------
 
+{% if jupyterhub_properties.jupyterhub.authenticator_class.endswith("GenericOAuthenticator")  %}
+import os
+os.environ['OAUTH2_AUTHORIZE_URL'] = "{{ jupyterhub_properties.oauthenticator.authorize_url }}"
+os.environ['OAUTH2_TOKEN_URL'] = "{{ jupyterhub_properties.oauthenticator.token_url }}"
+{% endif %}
+
 ## An Application for starting a Multi-User Jupyter Notebook server.
 {% for key, value in jupyterhub_properties.get('jupyterhub', {}).items() +%}
 c.JupyterHub.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
@@ -72,11 +78,17 @@ c.TraefikTomlProxy.{{ key }} = {% if value is string and not value.startswith('f
 # LDAPAuthenticator(Authenticator) configuration
 #------------------------------------------------------------------------------
 # Bug with ldap authenticator where usernames are surround with double quotes
+{% if jupyterhub_properties.jupyterhub.authenticator_class.endswith("LDAPAuthenticator")  %}
 def post_auth_hook(authenticator, handler, authentication):
     return authentication
 {% for key, value in jupyterhub_properties.get('ldapauthenticator', {}).items() +%}
 c.LDAPAuthenticator.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
 {% endfor %}
+{% elif jupyterhub_properties.jupyterhub.authenticator_class.endswith("GenericOAuthenticator")  %}
+{% for key, value in jupyterhub_properties.get('oauthenticator', {}).items() +%}
+c.GenericOAuthenticator.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
+{% endfor %}
+{% endif %}
 
 #------------------------------------------------------------------------------
 # YarnSpawner(Spawner) configuration
