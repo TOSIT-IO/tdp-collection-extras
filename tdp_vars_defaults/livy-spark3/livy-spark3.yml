@@ -57,7 +57,7 @@ livy_conf:
   livy.spark.master: yarn
   livy.spark.deploy-mode: cluster
   livy.repl.enable-hive-context: "true"
-  livy.superusers: "hue,livy"
+  livy.superusers: "knox,hue,livy"
 
 # livy-env.sh
 livy_env:
