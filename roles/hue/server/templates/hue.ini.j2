@@ -992,10 +992,14 @@ show_notebooks=true
   interface={{ interpreters.hive.interface }}
 
 ## Connection error
+{% if groups['phoenix_queryserver_daemon'] is defined and groups['phoenix_queryserver_daemon'] | length > 0 %}
 # [[[phoenix]]]
 # name=HBase Phoenix
 # interface=sqlalchemy
 # options='{"url": "phoenix://{{ groups['phoenix_queryserver_daemon'][0] | tosit.tdp.access_fqdn(hostvars) }}:8765", "tls": true, "connect_args": {"authentication": "SPNEGO", "verify": false }}'
+{% else %}
+# HBase Phoenix not used
+{% endif %}
 
 # [[[hplsql]]]
 #   name=Hplsql
