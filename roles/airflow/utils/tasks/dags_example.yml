@@ -1,6 +1,6 @@
 ---
 - name: Airflow | Upload airflow DAGs templates
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ airflow_dag_dir }}/{{ item | basename | splitext | first }}"
     owner: "{{ airflow_user }}"

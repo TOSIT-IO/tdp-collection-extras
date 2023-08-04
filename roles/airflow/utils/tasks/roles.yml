@@ -8,15 +8,15 @@
     insertafter: EOF
 
 - name: Airflow | Create roles
-  command: "{{ airflow_executable }} roles create {{ item }}"
+  ansible.builtin.command: "{{ airflow_executable }} roles create {{ item }}"
   with_items: "{{ airflow_extra_roles }}"
 
 - name: Airflow | Assign permissions to roles
-  command: "{{ airflow_executable }} roles add-perms {{ airflow_extra_roles|join(' ') }} -r '{{ item.resource }}' -a {{ item.actions|join(' ') }}"
+  ansible.builtin.command: "{{ airflow_executable }} roles add-perms {{ airflow_extra_roles|join(' ') }} -r '{{ item.resource }}' -a {{ item.actions|join(' ') }}"
   with_items: "{{ airflow_roles_base_permissions }}"
 
 - name: restart airflow webserver service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-webserver
     state: restarted
     enabled: "{{ airflow_start_on_boot }}"

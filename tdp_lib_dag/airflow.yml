@@ -12,6 +12,7 @@
     - airflow_install
 
 - name: airflow_broker_install
+  noop: yes
   depends_on:
     - airflow_install
 

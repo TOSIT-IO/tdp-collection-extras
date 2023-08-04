@@ -1,8 +1,8 @@
 ---
 - name: Airflow | Ensures {{ airflow_policies_dir }} exists
-  become: yes
+  become: true
   become_user: root
-  file:
+  ansible.builtin.file:
     path: "{{ airflow_policies_dir }}"
     state: directory
     owner: "{{ airflow_user }}"
@@ -11,18 +11,18 @@
     recurse: yes
 
 - name: Airflow | Template airflow_local_settings.py file
-  template:
+  ansible.builtin.template:
     src: airflow_local_settings.py.j2
     dest: "{{ airflow_policies_dir }}/airflow_local_settings.py"
 
 - name: Airflow | Create symbolic link to airflow_local_settings.py
-  file:
+  ansible.builtin.file:
     src: "{{ airflow_policies_dir }}/airflow_local_settings.py"
     dest: "{{ airflow_conf_dir }}/airflow_local_settings.py"
     state: link
 
 - name: restart airflow scheduler service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-scheduler
     state: restarted
     enabled: "{{ airflow_start_on_boot }}"

@@ -1,13 +1,13 @@
 ---
 - name: Stop redis service
-  systemd:
+  ansible.builtin.systemd:
     name: redis
     state: stopped
     enabled: true
     daemon_reload: true
 
 - name: stop airflow flower service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-flower
     state: stopped
     enabled: true

@@ -2,13 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 ---
 - name: Start airflow worker service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-worker
     state: started
     enabled: "{{ airflow_start_on_boot }}"
 
 - name: Start airflow kerberos service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-kerberos
     state: started
     enabled: "{{ airflow_start_on_boot }}"

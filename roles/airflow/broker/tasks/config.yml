@@ -13,12 +13,12 @@
 =======
 >>>>>>> ae6a7fa (refactor: fix dags deployment with hive/spark)
 - name: Set Redis bind address
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/redis.conf
     regexp: '^bind'
     line: 'bind {{ redis_bind_address }}'
 
 - name: Template Airflow flower service file
-  template:
+  ansible.builtin.template:
     src: airflow-flower.service.j2
     dest: /usr/lib/systemd/system/airflow-flower.service

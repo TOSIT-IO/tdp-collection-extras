@@ -1,11 +1,11 @@
 ---
 - name: Airflow | Ensure kerberos common installation steps are performed
-  import_role:
+  ansible.builtin.import_role:
     name: tosit.tdp.utils.kerberos
     tasks_from: install
 
 - name: Airflow | Ensure airflow airflow's principal and keytab exist
-  import_role:
+  ansible.builtin.import_role:
     name: tosit.tdp.utils.kerberos
     tasks_from: create_principal_keytab
   vars:
@@ -17,7 +17,7 @@
   when: krb_create_principals_keytabs
 
 - name: Airflow | Ensure airflow's keytab is working
-  import_role:
+  ansible.builtin.import_role:
     name: tosit.tdp.utils.kerberos
     tasks_from: check_secure_keytab
   vars:
@@ -29,6 +29,6 @@
   when: not krb_create_principals_keytabs
 
 - name: Template airflow kerberos service
-  template:
+  ansible.builtin.template:
     src: airflow-kerberos.service.j2
     dest: /usr/lib/systemd/system/airflow-kerberos.service

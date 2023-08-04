@@ -7,4 +7,4 @@
 - import_playbook: livy-spark3.yml
 - import_playbook: zookeeper-kafka.yml
 - import_playbook: kafka.yml
-- import_playbook: airflow.yml
+- ansible.builtin.import_playbook: airflow.yml

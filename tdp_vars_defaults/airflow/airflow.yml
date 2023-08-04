@@ -30,7 +30,7 @@ airflow_group: airflow
 
 # Airflow python
 # Airflow version > 2.2.5 requires python >= 3.7.
-airflow_python_executable: /usr/local/bin/python3.9
+airflow_python_executable: /usr/bin/python3.9
 airflow_constraints_file: constraints-3.9.txt
 
 # airflow conf template. 

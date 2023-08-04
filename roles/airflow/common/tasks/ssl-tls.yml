@@ -1,6 +1,6 @@
 ---
 - name: Copy TLS keys and ca certs to airflow folder
-  copy:
+  ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "{{ item.owner }}"

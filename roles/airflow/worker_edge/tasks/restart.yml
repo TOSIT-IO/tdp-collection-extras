@@ -1,12 +1,12 @@
 ---
 - name: Restart airflow worker service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-worker
     state: restarted
     enabled: "{{ airflow_start_on_boot }}"
 
 - name: Restart airflow kerberos service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-kerberos
     state: restarted
     enabled: "{{ airflow_start_on_boot }}"

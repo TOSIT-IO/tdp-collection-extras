@@ -1,13 +1,13 @@
 ---
 - name: Start redis service
-  systemd:
+  ansible.builtin.systemd:
     name: redis
     state: started
     enabled: true
     daemon_reload: true
 
 - name: start airflow flower service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-flower
     state: started
     enabled: true

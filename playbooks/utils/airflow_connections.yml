@@ -6,8 +6,8 @@
     - tosit.tdp.resolve: # noqa unnamed-task
         node_name: airflow_scheduler
     - name: "Add Airflow connections"
-      import_role:
+      ansible.builtin.import_role:
         name: tosit.tdp_extra.airflow.utils
         tasks_from: connections
-    - meta: clear_facts # noqa unnamed-task
+    - ansible.builtin.meta: clear_facts # noqa unnamed-task
 

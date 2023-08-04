@@ -1,12 +1,12 @@
 ---
 - name: Template Airflow worker service file
-  template:
+  ansible.builtin.template:
     src: airflow-worker-edge.service.j2
     dest: /usr/lib/systemd/system/airflow-worker.service
 
 - name: Add airflow to sudoers file # For impersonation
-  become: yes
-  lineinfile:
+  become: true
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     line: 'airflow ALL=(ALL) NOPASSWD: ALL'
     validate: 'visudo -cf %s'
@@ -14,7 +14,7 @@
   when: airflow_impersonation
 
 - name: Change default beeline
-  become: yes
+  become: true
   become_user: root
-  shell: mv {{ airflow_install_dir }}/bin/beeline{,.airflow.bkp}
+  ansible.builtin.shell: mv {{ airflow_install_dir }}/bin/beeline{,.airflow.bkp}
   ignore_errors: true

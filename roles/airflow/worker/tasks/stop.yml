@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ---
 - name: Stop airflow worker service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-worker
     state: stopped
     enabled: "{{ airflow_start_on_boot }}"

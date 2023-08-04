@@ -1,5 +1,5 @@
 ---
 - name: Template Airflow webserver service file
-  template:
+  ansible.builtin.template:
     src: airflow-webserver.service.j2
     dest: /usr/lib/systemd/system/airflow-webserver.service

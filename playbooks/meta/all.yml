@@ -67,28 +67,27 @@
 # kafka_start
 # kafka_init
 # Install airflow
-- import_playbook: ../airflow_install.yml
-- import_playbook: ../airflow_ssl-tls_install.yml
-- import_playbook: ../airflow_kerberos_install.yml
-- import_playbook: ../airflow_scheduler_install.yml
-- import_playbook: ../airflow_webserver_install.yml
-- import_playbook: ../airflow_worker_install.yml
-- import_playbook: ../airflow_broker_install.yml
+- ansible.builtin.import_playbook: ../airflow_install.yml
+- ansible.builtin.import_playbook: ../airflow_ssl-tls_install.yml
+- ansible.builtin.import_playbook: ../airflow_kerberos_install.yml
+- ansible.builtin.import_playbook: ../airflow_scheduler_install.yml
+- ansible.builtin.import_playbook: ../airflow_webserver_install.yml
+- ansible.builtin.import_playbook: ../airflow_worker_install.yml
 
 # Config airflow
-- import_playbook: ../airflow_config.yml
-- import_playbook: ../airflow_scheduler_config.yml
-- import_playbook: ../airflow_webserver_config.yml
-- import_playbook: ../airflow_broker_config.yml
-- import_playbook: ../airflow_worker_config.yml
+- ansible.builtin.import_playbook: ../airflow_config.yml
+- ansible.builtin.import_playbook: ../airflow_scheduler_config.yml
+- ansible.builtin.import_playbook: ../airflow_webserver_config.yml
+- ansible.builtin.import_playbook: ../airflow_broker_config.yml
+- ansible.builtin.import_playbook: ../airflow_worker_config.yml
 
 # Init airflow
-- import_playbook: ../airflow_scheduler_init.yml
+- ansible.builtin.import_playbook: ../airflow_scheduler_init.yml
 # airflow_init
 
 # Start airflow services
-- import_playbook: ../airflow_broker_start.yml
-- import_playbook: ../airflow_webserver_start.yml
-- import_playbook: ../airflow_scheduler_start.yml
-- import_playbook: ../airflow_worker_start.yml
+- ansible.builtin.import_playbook: ../airflow_broker_start.yml
+- ansible.builtin.import_playbook: ../airflow_webserver_start.yml
+- ansible.builtin.import_playbook: ../airflow_scheduler_start.yml
+- ansible.builtin.import_playbook: ../airflow_worker_start.yml
 # airflow_start

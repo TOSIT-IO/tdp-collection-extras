@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ---
 - name: restart airflow webserver service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-webserver
     state: restarted
     enabled: "{{ airflow_start_on_boot }}"

@@ -1,6 +1,6 @@
 ---
 - name: Start airflow scheduler service
-  systemd:
+  ansible.builtin.systemd:
     name: airflow-scheduler
     state: started
     enabled: "{{ airflow_start_on_boot }}"

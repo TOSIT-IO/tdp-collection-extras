@@ -1,27 +1,27 @@
 ---
 - name: Ensure hadoop group exists
-  include_role:
+  ansible.builtin.include_role:
     name: tosit.tdp.utils.group
   vars:
     group: "{{ airflow_group }}"
 
 - name: Ensure airflow user exists
-  include_role:
+  ansible.builtin.include_role:
     name: tosit.tdp.utils.user
   vars:
     user: "{{ airflow_user }}"
     group: "{{ airflow_group }}"
 
 - name: Ensures {{ airflow_root_dir }} exists
-  file:
-    path: "{{ airflow_root_dir }}}"
+  ansible.builtin.file:
+    path: "{{ airflow_root_dir }}"
     state: directory
     owner: root
     group: root
     mode: "0755"
 
 - name: Upload {{ airflow_dist_file }}
-  copy:
+  ansible.builtin.copy:
     src: files/{{ airflow_dist_file }}
     dest: /tmp
     owner: root
@@ -30,7 +30,7 @@
   diff: false
 
 - name: Extract {{ airflow_dist_file }}
-  unarchive:
+  ansible.builtin.unarchive:
     src: "/tmp/{{ airflow_dist_file }}"
     dest: "{{ airflow_root_dir }}"
     owner: root
@@ -40,7 +40,7 @@
 
 - name: Install airflow 
   become: true
-  pip:
+  ansible.builtin.pip:
     requirements: "{{ airflow_root_dir }}/{{ airflow_release }}/requirements.txt"
     extra_args: "--no-index --find-links=file://{{ airflow_root_dir }}/{{ airflow_release }}/dependencies"
     umask: "0022"
@@ -48,13 +48,13 @@
     virtualenv_python: "{{ airflow_python_executable }}"
 
 - name: Create symbolic link to airflow installation
-  file:
+  ansible.builtin.file:
     src: "{{ airflow_root_dir }}/{{ airflow_release }}"
     dest: "{{ airflow_install_dir }}"
     state: link
 
 - name: Render /usr/bin/airflow command
-  template:
+  ansible.builtin.template:
     src: airflow-command.j2
     dest: "/usr/bin/airflow"
     owner: root
@@ -62,9 +62,9 @@
     mode: "755"
 
 - name: Ensures airflow configuration, log, dags and plugins directories
-  become: yes
+  become: true
   become_user: root
-  file:
+  ansible.builtin.file:
     path: "{{ item.path }}"
     state: directory
     owner: "{{ airflow_user }}"
@@ -82,7 +82,7 @@
     - { path: '{{ airflow_plugins_dir }}', mode: '0755' }
 
 - name: Template airflow tmpfiles.d
-  template:
+  ansible.builtin.template:
     src: tmpfiles-airflow.conf.j2
     dest: /etc/tmpfiles.d/airflow.conf
     owner: root

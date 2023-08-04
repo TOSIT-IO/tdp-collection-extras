@@ -1,11 +1,11 @@
 ---
 - name: Template airflow.cfg file
-  template:
+  ansible.builtin.template:
     src: "{{ airflow_conf_template }}.j2"
     dest: "{{ airflow_conf_dir }}/airflow.cfg"
 
 - name: Template airflow environment variables file
-  template:
+  ansible.builtin.template:
     src: airflow-env.j2
     dest: "{{ airflow_env_file }}"
     mode: 0644
@@ -13,19 +13,19 @@
     group: "{{ airflow_group }}"
 
 - name: Template webserver_config.py file
-  template:
+  ansible.builtin.template:
     src: webserver_config.py.j2
     dest: "{{ airflow_install_dir }}/webserver_config.py"
 
 - name: Create symbolic link to webserver_config.py
-  file:
+  ansible.builtin.file:
     src: "{{ airflow_install_dir }}/webserver_config.py"
     dest: "{{ airflow_conf_dir }}/webserver_config.py"
     state: link
 
 - name: Add users to the airflow group # For impersonation
-  become: yes
-  user:
+  become: true
+  ansible.builtin.user:
     name: "{{ item.user }}"
     groups: "{{ airflow_group }}"
     append: yes
