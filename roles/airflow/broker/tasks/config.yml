@@ -1,17 +1,7 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
 ---
-<<<<<<< HEAD
-- name: Template Airflow worker service file
-  ansible.builtin.template:
-    src: airflow-worker.service.j2
-    dest: /usr/lib/systemd/system/airflow-worker.service
-
-- name: Template Airflow flower service file
-  ansible.builtin.template:
-    src: airflow-flower.service.j2
-    dest: /usr/lib/systemd/system/airflow-flower.service
-
-=======
->>>>>>> ae6a7fa (refactor: fix dags deployment with hive/spark)
 - name: Set Redis bind address
   ansible.builtin.lineinfile:
     path: /etc/redis.conf

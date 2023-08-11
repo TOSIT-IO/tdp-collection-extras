@@ -1,3 +1,6 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
 ---
 - name: Airflow | Delete connections
   ansible.builtin.command: "{{ airflow_executable }} connections delete {{ item.conn_id }}"

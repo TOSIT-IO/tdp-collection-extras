@@ -1,3 +1,6 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
 ---
 # Airflow cluster policies
 airflow_policies_dir: "{{ airflow_install_dir }}/config"

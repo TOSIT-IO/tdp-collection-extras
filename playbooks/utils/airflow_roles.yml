@@ -1,3 +1,6 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
 ---
 - name: "Add Airflow roles"
   hosts: airflow_webserver
@@ -10,4 +13,3 @@
         name: tosit.tdp_extra.airflow.utils
         tasks_from: roles
     - ansible.builtin.meta: clear_facts # noqa unnamed-task
-

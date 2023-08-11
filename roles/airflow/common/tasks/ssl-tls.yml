@@ -1,3 +1,6 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
 ---
 - name: Copy TLS keys and ca certs to airflow folder
   ansible.builtin.copy:
