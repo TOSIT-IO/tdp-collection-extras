@@ -42,7 +42,7 @@ ca_certificate_file: "{{ hue_certs_folder }}/{{ certificates_ca_filename }}.crt"
 
 #hue.ini configuration
 hue_session_secret_key: '4ylAWaEYwLVrMHwVq.N1Vo?{bp+ur$GNJe2CF$V]y_)y#:=#[+FYjA2*16S$(jZ'
-hue_http_port: 8888
+hue_http_port: "{{ hue_web_http_port }}"
 ssl_certificate: "{{ hue_public_key }}"
 ssl_private_key: "{{ hue_private_key }}"
 ssl_cacerts: "{{ ca_certificate_file }}"
