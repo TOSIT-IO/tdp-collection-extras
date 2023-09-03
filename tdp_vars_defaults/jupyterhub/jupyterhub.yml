@@ -41,7 +41,7 @@ jupyterhub_working_dir: /var/lib/jupyterhub
 jupyterhub_hdfs_venvs_dir: /jupyterhub/virtualenvs
 
 # Jupyterhub configuration
-jupyterhub_port: 8000
+jupyterhub_port: "{{ jupyterhub_http_port }}"
 
 jupyterhub_properties:
   jupyterhub:
