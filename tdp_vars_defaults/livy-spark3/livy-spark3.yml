@@ -40,7 +40,7 @@ krb_create_principals_keytabs: yes
 livy_keystore_location: /etc/ssl/certs/keystore.jks
 livy_keystore_password: Keystore123!
 
-livy_server_port: 8999
+livy_server_port: "{{ livy_spark3_server_port }}"
 
 # livy.conf
 livy_conf:
