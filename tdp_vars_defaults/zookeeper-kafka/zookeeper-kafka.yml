@@ -38,9 +38,9 @@ zookeeper_client_quorum: |
      join(',') }}
 
 # Zookeeper servers listen port
-zookeeper_server_quorum_port: 2999
-zookeeper_server_election_port: 3999
-zookeeper_server_client_port: 2191
+zookeeper_server_quorum_port: "{{ zookeeper_kafka_server_quorum_port }}"
+zookeeper_server_election_port: "{{ zookeeper_kafka_server_election_port }}"
+zookeeper_server_client_port: "{{ zookeeper_kafka_server_client_port }}"
 
 # ZooKeeper CLI command
 zookeeper_cli_cmd_script: /usr/bin/zkForKafkaCli.sh
