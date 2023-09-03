@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
+# Jupyterhub ports
+jupyterhub_http_port: 8000
+
 # Exporter ports
 exporter_kafka_broker_http_port: 18202
 exporter_zookeeper_kafka_server_http_port: 18201
