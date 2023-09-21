@@ -131,6 +131,7 @@ def pre_spawn_hook(spawner):
 c.YarnSpawner.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
 {% endfor %}
 
+
 import logging
 import traitlets.log
 {% if jupyterhub_root_logger == "RFA" %}
