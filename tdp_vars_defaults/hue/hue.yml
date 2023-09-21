@@ -49,6 +49,7 @@ ssl_cacerts: "{{ ca_certificate_file }}"
 ssl_validate: "true"
 app_blacklist: "sentry,solr,hbase,oozie,security,search"
 audit_event_log_dir: "{{ hue_log_dir }}/audit.log"
+#for OIDC authentication, set backend_auth to desktop.auth.backend.OIDCBackend
 backend_auth: "desktop.auth.backend.LdapBackend"
 gunicorn_work_class: "sync"
 cherrypy_server_threads: 100
@@ -64,6 +65,18 @@ ldapauth:
   users:
     user_filter: "objectclass=objectClass"
     user_name_attr: "attr"
+oidcauth:
+  oidc_rp_client_id: client_id
+  oidc_rp_client_secret: client_secret
+  oidc_op_authorization_endpoint: https://[keycloak_address]/realms/[your_realm]/protocol/openid-connect/auth
+  oidc_op_token_endpoint: http://[keycloak_address]/realms/[your_realm]/protocol/openid-connect/token
+  oidc_op_user_endpoint: http://[keycloak_address]/realms/[your_realm]/protocol/openid-connect/userinfo
+  oidc_op_jwks_endpoint: http://[keycloak_address]/realms/[your_realm]/protocol/openid-connect/certs
+  login_redirect_url: https://[hue_address]/oidc/callback/
+  logout_redirect_url: https://[keycloak_address]/realms/[your_realm]/protocol/openid-connect/logout
+  login_redirect_url_failure: https://[hue_address]/hue/oidc_failed/
+  create_users_on_login: true
+  oidc_username_attribute: preferred_username
 database:
   engine: "postgresql_psycopg2"
   host: "{{ groups['postgresql'][0] | tosit.tdp.access_fqdn(hostvars) }}"
