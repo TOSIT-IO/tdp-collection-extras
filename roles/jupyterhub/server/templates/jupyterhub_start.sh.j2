@@ -1,3 +1,3 @@
 #!/bin/bash
 
-{{ jupyterhub_install_dir }}/bin/python -m jupyterhub.app -f {{ jupyterhub_server_conf_dir }}/jupyterhub_config.py {% if jupyterhub_root_logger != "RFA" and jupyterhub_root_logger != "DRFA"%}&>> {{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}{% endif %}
+{{ jupyterhub_install_dir }}/bin/python -m jupyterhub.app -f {{ jupyterhub_server_conf_dir }}/jupyterhub_config.py {% if jupyterhub_root_logger != "RFA" and jupyterhub_root_logger != "DRFA" %}&>> {{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}{% endif %}
