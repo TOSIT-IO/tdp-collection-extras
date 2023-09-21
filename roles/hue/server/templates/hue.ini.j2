@@ -783,43 +783,65 @@ kinit_path={{ kerberos.kinit_path }}
 [[oidc]]
 # The client ID as relay party set in OpenID provider
 ## oidc_rp_client_id=XXXXXXXXXXXXXXXXXXXXX
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}oidc_rp_client_id={{ oidcauth.oidc_rp_client_id }}{% endif %}
+
 
 # The client secret as relay party set in OpenID provider
 ## oidc_rp_client_secret=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}oidc_rp_client_secret={{ oidcauth.oidc_rp_client_secret }}{% endif %}
+
 
 # The OpenID provider authoriation endpoint
 ## oidc_op_authorization_endpoint=https://keycloak.example.com/auth/realms/Cloudera/protocol/openid-connect/auth
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}oidc_op_authorization_endpoint={{ oidcauth.oidc_op_authorization_endpoint }}{% endif %}
+
 
 # The OpenID provider token endpoint
 ## oidc_op_token_endpoint=https://keycloak.example.com/auth/realms/cloudera/protocol/openid-connect/token
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}oidc_op_token_endpoint={{ oidcauth.oidc_op_token_endpoint }}{% endif %}
+
 
 # The OpenID provider user info endpoint
 ## oidc_op_user_endpoint=https://keycloak.example.com/auth/realms/cloudera/protocol/openid-connect/userinfo
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}oidc_op_user_endpoint={{ oidcauth.oidc_op_user_endpoint }}{% endif %}
+
 
 # The OpenID provider signing key in PEM or DER format
 ## oidc_rp_idp_sign_key=/path/to/key_file
 
 # The OpenID provider authoriation endpoint
 ## oidc_op_jwks_endpoint=https://keycloak.example.com/auth/realms/Cloudera/protocol/openid-connect/certs
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}oidc_op_jwks_endpoint={{ oidcauth.oidc_op_jwks_endpoint }}{% endif %}
+
 
 # Whether Hue as OpenID Connect client verify SSL cert
 ## oidc_verify_ssl=true
 
 # As relay party Hue URL path to redirect to after login
 ## login_redirect_url=https://localhost:8888/oidc/callback/
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}login_redirect_url={{ oidcauth.login_redirect_url }}{% endif %}
+
 
 # The OpenID provider URL path to redirect to after logout
 ## logout_redirect_url=https://keycloak.example.com/auth/realms/cloudera/protocol/openid-connect/logout
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}logout_redirect_url={{ oidcauth.logout_redirect_url }}{% endif %}
+
 
 # As relay party Hue URL path to redirect to after login
 ## login_redirect_url_failure=https://localhost:8888/hue/oidc_failed/
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}login_redirect_url_failure={{ oidcauth.login_redirect_url_failure }}{% endif %}
+
 
 # Create a new user from OpenID Connect on login if it doesn't exist
 ## create_users_on_login=true
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}create_users_on_login={{ oidcauth.create_users_on_login }}{% endif %}
+
 
 # When creating a new user, which 'claims' attribute from the OIDC provider to be used for creating the username.
 #      Default to 'preferred_username'. Possible values include: 'email'
 ## oidc_username_attribute=preferred_username
+{% if backend_auth.endswith("desktop.auth.backend.OIDCBackend") %}oidc_username_attribute={{ oidcauth.oidc_username_attribute }}{% endif %}
+
 
 # The group of users will be created and updated as superuser. To use this feature, setup in Keycloak:
 # 1. add the name of the group here
