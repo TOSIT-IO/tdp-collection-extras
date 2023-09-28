@@ -8,8 +8,8 @@ hdfs_user: hdfs
 hadoop_group: hadoop
 
 # Hue version
-hue_release: hue-release-4.10.0-TDP-0.1.0
-hue_dist_file: "{% if (ansible_distribution_major_version | int) > 7 %}{{ hue_release }}-python36.tar.gz{% else %}{{ hue_release }}.tar.gz{% endif %}"
+hue_release: hue-release-4.11.0-TDP-0.1.0
+hue_dist_file: "{% if (ansible_distribution_major_version | int) > 7 %}{{ hue_release }}-python38.tar.gz{% else %}{{ hue_release }}.tar.gz{% endif %}"
 
 # Hue configuration directories
 hue_root_dir: /opt/tdp
@@ -51,6 +51,7 @@ app_blacklist: "sentry,solr,hbase,oozie,security,search"
 audit_event_log_dir: "{{ hue_log_dir }}/audit.log"
 backend_auth: "desktop.auth.backend.LdapBackend"
 gunicorn_work_class: "sync"
+cherrypy_server_threads: 100
 ldapauth:
   base_dn: "c=fr"
   ldap_url: ldap://{{ groups['ldap'][0] | tosit.tdp.access_fqdn(hostvars) }}
@@ -73,7 +74,9 @@ database:
 kerberos:
   hue_keytab: "/etc/security/keytabs/hue.service.keytab"
   hue_principal: "hue/{{ ansible_fqdn }}@{{ realm }}"
+  REINIT_FREQUENCY: 3600
   kinit_path: "/usr/bin/kinit"
+  krb5_renewlifetime_enabled: "true"
 interpreters:
   hive:
     name: "Hive"
@@ -125,6 +128,8 @@ filebrowser:
   show_download_button: "true"
   show_upload_button: "true"
   enable_extract_uploaded_archive: "true"
+jobbrowser:
+  share_jobs: "false"
 libzookeeper:
   ensemble: >-
     {{ 
