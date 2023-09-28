@@ -67,6 +67,7 @@ gunicorn_work_class={{ gunicorn_work_class }}
 
 # The number of Gunicorn worker processes. If not specified, it uses: (number of CPU * 2) + 1.
 ## gunicorn_number_of_workers=1
+cherrypy_server_threads={{ cherrypy_server_threads }}
 
 # Webserver runs as this user
 server_user={{ hue_user }}
@@ -750,12 +751,14 @@ hue_keytab={{ kerberos.hue_keytab }}
 hue_principal={{ kerberos.hue_principal }}
 # Frequency in seconds with which Hue will renew its keytab
 ## REINIT_FREQUENCY=3600
+REINIT_FREQUENCY={{ kerberos.REINIT_FREQUENCY }}
 # Path to keep Kerberos credentials cached
 ccache_path=/tmp/krb5cc_{{ hue_user_id }}
 # Path to kinit
 kinit_path={{ kerberos.kinit_path }}
 # Set to false if renew_lifetime in krb5.conf is set to 0m
 ## krb5_renewlifetime_enabled=true
+krb5_renewlifetime_enabled={{ kerberos.krb5_renewlifetime_enabled }}
 
 # Mutual authentication from the server, attaches HTTP GSSAPI/Kerberos Authentication to the given Request object
 ## mutual_authentication="OPTIONAL" or "REQUIRED" or "DISABLED"
@@ -1739,6 +1742,7 @@ enable_extract_uploaded_archive={{ filebrowser.enable_extract_uploaded_archive }
 # Share submitted jobs information with all users. If set to false,
 # submitted jobs are visible only to the owner and administrators.
 ## share_jobs=true
+share_jobs={{ jobbrowser.share_jobs }}
 
 # Whether to disalbe the job kill button for all users in the jobbrowser
 ## disable_killing_jobs=false
