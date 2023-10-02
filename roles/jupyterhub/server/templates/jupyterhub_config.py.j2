@@ -139,7 +139,7 @@ def pre_spawn_hook(spawner):
     spawner.cpu_limit = cpu_limit
     spawner.mem_limit = mem_limit
     spawner.queue = queue
-    spawner.localize_files = { 'environment': { 'source': ("hdfs://{{ jupyterhub_hdfs_venvs_dir }}/" + venv +".tar.gz") } }
+    spawner.localize_files = { 'environment': { 'source': ("hdfs://{{ jupyterhub_hdfs_venvs_dir }}/" + venv +".tar.gz") } , 'config.json': { 'source': '{{ jupyterhub_server_conf_dir }}/sparkmagic/config.json' } }
 
 {% for key, value in jupyterhub_properties.get('yarnspawner', {}).items() +%}
 c.YarnSpawner.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}

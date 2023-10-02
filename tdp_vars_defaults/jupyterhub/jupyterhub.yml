@@ -91,9 +91,12 @@ jupyterhub_properties:
     auth_state_hook: f:auth_state_hook
     cmd:
       - python -m yarnspawner.jupyter_labhub
+    args:
+      - "--NotebookApp.nbserver_extensions.sparkmagic=true"
     default_url: /lab
     # environment:
     keytab: /etc/security/keytabs/jupyterhub.service.keytab
+    environment: { 'ARROW_LIBHDFS_DIR': '{{ hadoop_install_dir }}/lib/native', 'CLASSPATH': '"$(hadoop classpath --glob)"', 'LD_LIBRARY_PATH': '{{ hadoop_install_dir }}/lib/native'}
     mem_limit: 8G
     cpu_limit: 2
     options_form: |-
@@ -107,7 +110,9 @@ jupyterhub_properties:
       <input name="memory" type="text" value="2048M" required /><br />"""
     pre_spawn_hook: f:pre_spawn_hook
     principal: "{{ jupyterhub_principal }}"
-    prologue: source environment/bin/activate
+    prologue: "source environment/bin/activate ; export HOME=$PWD ; chmod 700 $PWD/environment/lib64/python3.6/site-packages/certifi/cacert.pem ; cat {{ certificates_path }}/tdp_ca.crt >> $PWD/environment/lib64/python3.6/site-packages/certifi/cacert.pem ; mkdir .sparkmagic ; mv config.json .sparkmagic/"
+  jupyterlab:
+    livy_url: "https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999"
 
 # Kerberos
 ###

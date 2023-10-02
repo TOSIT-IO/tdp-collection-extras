@@ -69,6 +69,14 @@
     owner: root
     mode: "0755"
 
+- name: Create sparkmagic configuration directory
+  ansible.builtin.file:
+    path: "{{ jupyterhub_server_conf_dir }}/sparkmagic"
+    state: directory
+    group: root
+    owner: root
+    mode: "0755"
+
 - name: Create certificates directory
   ansible.builtin.file:
     path: "{{ jupyterhub_server_certs_folder }}"
