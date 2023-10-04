@@ -117,7 +117,7 @@
     dest: "{{ hue_install_dir }}/build/env/bin/stop-hue-server.sh"
     owner: root
     group: root
-    mode: "644"
+    mode: "755"
 
 - name: Template Hue service file
   ansible.builtin.template:
