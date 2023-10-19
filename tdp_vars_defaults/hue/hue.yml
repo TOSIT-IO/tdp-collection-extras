@@ -166,8 +166,6 @@ hue_restart: "no"
 
 # Hue logging configuration
 # Root logger level should be: [FATAL| ERROR| WARN| INFO| DEBUG| TRACE]
-hue_log_dir: /var/log/hue
-hue_log_file: "hue_server_%PROC_NAME%_{{ ansible_fqdn }}.log"
 hue_log_error_file: "hue_server_error_{{ ansible_fqdn }}.log"
 hue_log_access_file: "hue_server_access_{{ ansible_fqdn }}.log"
 hue_loggers_level: INFO
