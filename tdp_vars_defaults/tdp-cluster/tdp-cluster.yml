@@ -2,6 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
+#############################
+# Service & Component ports #
+#############################
+
 # hue ports
 hue_web_http_port: 8888
 
@@ -25,3 +29,18 @@ zookeeper_kafka_server_election_port: 3999
 # Exporter ports
 exporter_kafka_broker_http_port: 18202
 exporter_zookeeper_kafka_server_http_port: 18201
+
+#################################
+# Service & Component logs dirs #
+#################################
+hue_log_dir: /var/log/hue
+hue_log_file: "hue_server_%PROC_NAME%_{{ ansible_fqdn }}.log"
+
+jupyterhub_log_dir: /var/log/jupyterhub
+jupyterhub_log_file: "jupyterhub_server_{{ ansible_fqdn }}.log"
+
+livy_spark_log_dir: /var/log/livy
+livy_spark_log_file: "livy_server_{{ ansible_fqdn }}.log"
+
+livy_spark3_log_dir: /var/log/livy-spark3
+livy_spark3_log_file: "livy-spark3_server_{{ ansible_fqdn }}.log"

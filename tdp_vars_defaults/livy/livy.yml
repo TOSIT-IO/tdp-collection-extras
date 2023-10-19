@@ -73,8 +73,8 @@ livy_env:
 
 # Livy logging configuration
 # Root logger level should be: [FATAL| ERROR| WARN| INFO| DEBUG| TRACE]
-livy_log_dir: /var/log/livy
-livy_log_file: "livy_server_{{ ansible_fqdn }}.log"
+livy_log_dir: "{{ livy_spark_log_dir }}"
+livy_log_file: "{{ livy_spark_log_file }}"
 livy_root_logger_level: INFO
 # Root logger should be: [RFA | DRFA]  
 livy_root_logger: RFA
