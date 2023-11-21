@@ -1,8 +1,8 @@
-# Ansible TDP Extra Collection
+# Ansible TDP Collection Extras
 
 Ansible collection to deploy additionnal components of TDP. The components here are useful in a TDP installation but are not core to the project (ie: not part of the Hadoop ecosystem).
 
-Please check the main [Ansible TDP Roles](https://github.com/TOSIT-FR/ansible-tdp-roles) repo for the core components.
+Please check the core [Ansible TDP Collection](https://github.com/TOSIT-IO/tdp-collection) repository for the core components.
 
 ## Available Roles
 
@@ -16,7 +16,7 @@ Please check the main [Ansible TDP Roles](https://github.com/TOSIT-FR/ansible-td
 
 ## Example
 
-For examples on how to run these roles, please check out the [TDP Getting Started](https://github.com/TOSIT-FR/tdp-getting-started).
+For examples on how to run these roles, please check out the [TDP Getting Started](https://github.com/TOSIT-IO/tdp-getting-started).
 
 ## Contribute
 
