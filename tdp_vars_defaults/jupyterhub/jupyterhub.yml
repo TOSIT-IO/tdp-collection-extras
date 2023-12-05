@@ -91,6 +91,7 @@ jupyterhub_properties:
     args:
       - --NotebookApp.nbserver_extensions.sparkmagic=true
       - --ServerApp.contents_manager_class="hdfscm.HDFSContentsManager"
+      - --ServerApp.root_dir="/"
     default_url: /lab
     # environment:
     keytab: /etc/security/keytabs/jupyterhub.service.keytab
