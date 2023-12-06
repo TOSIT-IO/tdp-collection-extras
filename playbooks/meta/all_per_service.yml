@@ -3,6 +3,7 @@
 
 ---
 - ansible.builtin.import_playbook: firewall.yml
+- ansible.builtin.import_playbook: hue.yml
 - ansible.builtin.import_playbook: jupyterhub.yml
 - ansible.builtin.import_playbook: livy.yml
 - ansible.builtin.import_playbook: livy-spark3.yml

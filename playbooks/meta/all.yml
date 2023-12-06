@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- ansible.builtin.import_playbook: ../firewall_generic_config.yml
-- ansible.builtin.import_playbook: ../firewall_generic_start.yml
 # firewall_install
-# firewall_config
-# firewall_start
-# firewall_init
+- ansible.builtin.import_playbook: ../hue_server_install.yml
+- ansible.builtin.import_playbook: ../hue_kerberos_install.yml
+- ansible.builtin.import_playbook: ../hue_ssl-tls_install.yml
+# hue_install
+- ansible.builtin.import_playbook: ../hue_server_config.yml
+# hue_config
 - ansible.builtin.import_playbook: ../jupyterhub_server_install.yml
 # jupyterhub_install
 - ansible.builtin.import_playbook: ../jupyterhub_kerberos_install.yml
@@ -36,6 +37,15 @@
 # livy_install
 - ansible.builtin.import_playbook: ../livy_server_config.yml
 # livy_config
+- ansible.builtin.import_playbook: ../firewall_generic_config.yml
+# firewall_config
+- ansible.builtin.import_playbook: ../firewall_generic_start.yml
+# firewall_start
+# firewall_init
+- ansible.builtin.import_playbook: ../hue_server_start.yml
+# hue_server_init
+# hue_start
+# hue_init
 - ansible.builtin.import_playbook: ../jupyterhub_server_hdfs-init.yml
 - ansible.builtin.import_playbook: ../jupyterhub_server_init.yml
 # jupyterhub_init
