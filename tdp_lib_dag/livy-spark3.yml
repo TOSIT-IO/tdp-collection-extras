@@ -15,9 +15,14 @@
     - livy-spark3_kerberos_install
     - livy-spark3_ssl-tls_install
 
+- name: livy-spark3_jmx-exporter_config
+  depends_on:
+    - exporter_jmx_install
+
 - name: livy-spark3_server_start
   depends_on:
     - livy-spark3_server_config
+    - livy-spark3_jmx-exporter_config
     - spark_init
 
 - name: livy-spark3_server_init
