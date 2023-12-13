@@ -1,0 +1,14 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Livy Server jmx-exporter config
+  hosts: livy_server
+  tasks:
+    - tosit.tdp.resolve:               # noqa name[missing]
+        node_name: livy_server
+    - name: Configure Livy Server jmx-exporter
+      ansible.builtin.import_role:
+        name: tosit.tdp_extra.livy.server
+        tasks_from: jmx-exporter
+    - ansible.builtin.meta: clear_facts # noqa name[missing]

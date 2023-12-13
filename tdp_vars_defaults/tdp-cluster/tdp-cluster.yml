@@ -29,6 +29,8 @@ zookeeper_kafka_server_election_port: 3999
 # Exporter ports
 exporter_kafka_broker_http_port: 18202
 exporter_zookeeper_kafka_server_http_port: 18201
+exporter_livy_spark_http_port: 18203
+exporter_livy_spark3_http_port: 18204
 
 #################################
 # Service & Component logs dirs #
