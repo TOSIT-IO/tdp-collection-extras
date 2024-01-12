@@ -76,3 +76,28 @@
 - ansible.builtin.import_playbook: ../kafka_broker_start.yml
 # kafka_start
 # kafka_init
+# Install airflow
+- ansible.builtin.import_playbook: ../airflow_install.yml
+- ansible.builtin.import_playbook: ../airflow_ssl-tls_install.yml
+- ansible.builtin.import_playbook: ../airflow_kerberos_install.yml
+- ansible.builtin.import_playbook: ../airflow_scheduler_install.yml
+- ansible.builtin.import_playbook: ../airflow_webserver_install.yml
+- ansible.builtin.import_playbook: ../airflow_worker_install.yml
+
+# Config airflow
+- ansible.builtin.import_playbook: ../airflow_config.yml
+- ansible.builtin.import_playbook: ../airflow_scheduler_config.yml
+- ansible.builtin.import_playbook: ../airflow_webserver_config.yml
+- ansible.builtin.import_playbook: ../airflow_broker_config.yml
+- ansible.builtin.import_playbook: ../airflow_worker_config.yml
+
+# Init airflow
+- ansible.builtin.import_playbook: ../airflow_scheduler_init.yml
+# airflow_init
+
+# Start airflow services
+- ansible.builtin.import_playbook: ../airflow_broker_start.yml
+- ansible.builtin.import_playbook: ../airflow_webserver_start.yml
+- ansible.builtin.import_playbook: ../airflow_scheduler_start.yml
+- ansible.builtin.import_playbook: ../airflow_worker_start.yml
+# airflow_start

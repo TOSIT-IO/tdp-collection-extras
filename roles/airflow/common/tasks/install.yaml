@@ -1,0 +1,93 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Ensure hadoop group exists
+  ansible.builtin.include_role:
+    name: tosit.tdp.utils.group
+  vars:
+    group: "{{ airflow_group }}"
+
+- name: Ensure airflow user exists
+  ansible.builtin.include_role:
+    name: tosit.tdp.utils.user
+  vars:
+    user: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+
+- name: Ensures {{ airflow_root_dir }} exists
+  ansible.builtin.file:
+    path: "{{ airflow_root_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Upload {{ airflow_dist_file }}
+  ansible.builtin.copy:
+    src: files/{{ airflow_dist_file }}
+    dest: /tmp
+    owner: root
+    group: root
+    mode: "0644"
+  diff: false
+
+- name: Extract {{ airflow_dist_file }}
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ airflow_dist_file }}"
+    dest: "{{ airflow_root_dir }}"
+    owner: root
+    group: root
+    remote_src: true
+    creates: "{{ airflow_root_dir }}/{{ airflow_release }}"
+
+- name: Install airflow 
+  become: true
+  ansible.builtin.pip:
+    requirements: "{{ airflow_root_dir }}/{{ airflow_release }}/requirements.txt"
+    extra_args: "--no-index --find-links=file://{{ airflow_root_dir }}/{{ airflow_release }}/dependencies"
+    umask: "0022"
+    virtualenv: "{{ airflow_root_dir }}/{{ airflow_release }}"
+    virtualenv_python: "{{ airflow_python_executable }}"
+
+- name: Create symbolic link to airflow installation
+  ansible.builtin.file:
+    src: "{{ airflow_root_dir }}/{{ airflow_release }}"
+    dest: "{{ airflow_install_dir }}"
+    state: link
+
+- name: Render /usr/bin/airflow command
+  ansible.builtin.template:
+    src: airflow-command.j2
+    dest: "/usr/bin/airflow"
+    owner: root
+    group: root
+    mode: "755"
+
+- name: Ensures airflow configuration, log, dags and plugins directories
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+    mode: "{{ item.mode }}"
+    recurse: yes
+  with_items:
+    - { path: '{{ airflow_root_conf_dir }}', mode: '0755' }
+    - { path: '{{ airflow_conf_dir }}', mode: '0755' }
+    - { path: '{{ airflow_pid_dir }}', mode: '0755' }
+    - { path: '{{ airflow_certs_dir }}', mode: '0755' }
+    - { path: '{{ airflow_log_dir }}', mode: '0775' }
+    - { path: '{{ airflow_child_process_log_dir }}', mode: '0775' }
+    - { path: '{{ airflow_dag_dir }}', mode: '0755' }
+    - { path: '{{ airflow_plugins_dir }}', mode: '0755' }
+
+- name: Template airflow tmpfiles.d
+  ansible.builtin.template:
+    src: tmpfiles-airflow.conf.j2
+    dest: /etc/tmpfiles.d/airflow.conf
+    owner: root
+    group: root
+    mode: "644"

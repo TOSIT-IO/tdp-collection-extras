@@ -2,15 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- name: "Install Airflow"
-  hosts: airflow
+- name: "Add Airflow roles"
+  hosts: airflow_webserver
   strategy: linear
   tasks:
     - tosit.tdp.resolve: # noqa unnamed-task
-        node_name: airflow
-    - name: "Install Airflow"
+        node_name: airflow_webserver
+    - name: "Add Airflow roles"
       ansible.builtin.import_role:
-        name: tosit.tdp_extra.airflow.common
-        tasks_from: install
+        name: tosit.tdp_extra.airflow.utils
+        tasks_from: roles
     - ansible.builtin.meta: clear_facts # noqa unnamed-task
-

@@ -1,0 +1,40 @@
+from airflow import DAG
+from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
+from datetime import datetime, timedelta
+
+default_args = {
+    'owner': 'tdp_user',
+    'depends_on_past': False,
+    'queue': 'edge'
+
+}
+
+dag = DAG('tdp_user-spark3-example',
+        default_args=default_args,
+        description='A simple spark3 DAG',
+        schedule_interval=timedelta(days=1),
+        start_date=datetime(2023, 1, 1),
+        catchup=False,
+        tags=['spark3'],
+        access_control={
+       "tdp": {"can_dag_read"},
+       "tdp_user": {"can_dag_read", "can_dag_edit", "can_delete"},
+        }
+        )
+
+submit_operator = SparkSubmitOperator(
+    task_id='spark_submit_task',
+    conn_id='spark3_tdp',
+    java_class='org.apache.spark.examples.SparkPi',
+    application='/opt/tdp/spark-3.2.2-0.0-bin-tdp/examples/jars/spark-examples_2.12-3.2.2-0.0.jar',
+    total_executor_cores='2',
+    executor_cores='1',
+    executor_memory='2g',
+    driver_memory='1g',
+    num_executors='2',
+    proxy_user='tdp_user',
+    verbose=True,
+    application_args=['100'],
+    name='Spark3 Example',
+    dag=dag
+)

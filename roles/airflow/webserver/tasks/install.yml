@@ -1,0 +1,8 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+# - name: Ensure common airflow installation tasks are performed
+#   ansible.builtin.import_role:
+#     name: tosit.tdp_extra.airflow.common
+#     tasks_from: install

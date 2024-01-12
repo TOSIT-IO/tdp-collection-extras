@@ -1,0 +1,14 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: "Start Redis"
+  hosts: airflow_broker
+  strategy: linear
+  tasks:
+    - tosit.tdp.resolve: # noqa unnamed-task
+        node_name: airflow_webserver
+    - ansible.builtin.import_role:
+        name: tosit.tdp_extra.airflow.broker
+        tasks_from: start
+    - ansible.builtin.meta: clear_facts # noqa unnamed-task

@@ -1,0 +1,110 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+# Airflow Version
+airflow_release: airflow-2.6.2-TDP-1.0.0
+airflow_dist_file: "{{ airflow_release }}.tar.gz"
+
+# Airflow directory
+airflow_root_dir: /opt/tdp
+airflow_install_dir: "{{ airflow_root_dir }}/airflow"
+airflow_root_conf_dir: /etc/airflow
+airflow_conf_dir: "{{ airflow_root_conf_dir }}/conf"
+airflow_certs_dir: "{{ airflow_root_conf_dir }}/certs"
+airflow_dag_dir: "{{ airflow_install_dir }}/dags"
+airflow_env_file: "{{airflow_conf_dir }}/airflow-env.sh"
+airflow_log_dir: /var/log/airflow
+airflow_child_process_log_dir: "{{ airflow_log_dir }}/scheduler"
+airflow_plugins_dir: "{{ airflow_install_dir }}/plugins"
+airflow_pid_dir: /var/run/airflow
+
+# Airflow Executable:
+airflow_executable: /usr/bin/airflow
+
+airflow_start_on_boot: true
+
+# Airflow users and group
+airflow_user: airflow
+airflow_group: airflow
+
+# Airflow python
+# Airflow version > 2.2.5 requires python >= 3.7.
+airflow_python_executable: /usr/bin/python3.9
+airflow_constraints_file: constraints-3.9.txt
+
+# airflow conf template. 
+# For old versions of airflow use airflow-v1.cfg 
+airflow_conf_template: airflow-v2.cfg
+
+airflow_impersonation: true
+
+# Airflow database
+airflow_db_user: airflow
+airflow_db_pass: airflow
+airflow_db_host: "{{ groups['postgresql'][0] }}"
+airflow_db_port: 5432
+airflow_db_name: airflow
+airflow_sql_alchemy_conn: "postgresql+psycopg2://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
+
+# Airflow config
+airflow_web_server_port: 8280
+airflow_flower_port: 8281
+airflow_executor: CeleryExecutor
+airflow_result_backend: "db+postgresql://{{ airflow_db_user }}:{{ airflow_db_pass }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
+airflow_broker_url: "redis://{{ groups['airflow_webserver'][0] }}:6379/0"
+
+#SSL configuration
+certificates_path: /etc/ssl/certs
+certificates_cert_filename: "{{ ansible_fqdn }}"
+certificates_ca_filename: "tdp_ca"
+certificates_public_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.pem"
+certificates_private_key: "{{ certificates_path }}/{{ certificates_cert_filename }}.key"
+certificates_ca: "{{ certificates_path }}/{{ certificates_ca_filename }}.crt" 
+airflow_public_key: "{{ airflow_certs_dir }}/{{ certificates_cert_filename }}.pem"
+airflow_private_key: "{{ airflow_certs_dir }}/{{ certificates_cert_filename }}.key"
+ca_certificate_file: "{{ airflow_certs_dir }}/{{ certificates_ca_filename }}.crt"
+
+ssl_certificate: "{{ airflow_public_key }}"
+ssl_private_key: "{{ airflow_private_key }}"
+
+# Redis configuration
+redis_bind_address: 0.0.0.0
+flower_basic_auth_user: admin
+flower_basic_auth_password: admin123
+
+# Airflow hadoop env variables
+airflow_hadoop_env:
+  JAVA_HOME: /usr/lib/jvm/jre-1.8.0-openjdk
+  HADOOP_HOME: /opt/tdp/hadoop
+  HADOOP_CONF_DIR: /etc/hadoop/conf
+  SPARK_HOME: /opt/tdp/spark3
+  SPARK_CONF_DIR: /etc/spark3/conf
+  HADOOP_USER_NAME: airflow
+
+# Kerberos
+krb_create_principals_keytabs: yes
+airflow_kerberos:
+  ccache: /tmp/airflow_krb5_ccache
+  keytab: airflow.service.keytab
+  principal: airflow/_HOST@REALM.TDP
+  kinit_path: kinit
+  reinit_frequency: 3600
+
+# Ldap
+airflow_ldap:
+  server: "{{ ldap.address }}"
+  search_base: "{{ ldap.user_search_base }}"
+  uid_field: "{{ ldap.user_name_attribute }}"
+  bind_user: "{{ ldap.bind_dn }}"
+  bind_password: "{{ ldap.password }}"
+  group_field: "gidNumber"
+  role_admin: "Admin"
+  user_registration: True
+  user_registration_role: "Public"
+  user_registration_firstname_field: "cn"
+  user_registration_lastname_field: "sn"
+  user_registration_mail_field: "cn"
+  roles_sync_at_login: True
+  permanent_session_lifetime: 1800
+  use_tls: False
