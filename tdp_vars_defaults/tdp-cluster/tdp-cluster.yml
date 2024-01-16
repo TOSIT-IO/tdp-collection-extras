@@ -46,3 +46,25 @@ livy_spark_log_file: "livy_server_{{ ansible_fqdn }}.log"
 
 livy_spark3_log_dir: /var/log/livy-spark3
 livy_spark3_log_file: "livy-spark3_server_{{ ansible_fqdn }}.log"
+
+#
+# Observability
+#
+observability_tdp_targets:
+  livy:
+    labels:
+      type: tdp_core
+      svc_dashboard: "{{ dashboard_without_workers }}"
+    server:
+      jobs:
+        - log_file: "{{ livy_spark_log_dir }}/{{ livy_spark_log_file }}"
+          exporter_port: "{{ exporter_livy_spark_http_port }}"
+
+  livy_spark3:
+    labels:
+      type: tdp_core
+      svc_dashboard: "{{ dashboard_without_workers }}"
+    server:
+      jobs:
+        - log_file: "{{ livy_spark3_log_dir }}/{{ livy_spark3_log_file }}"
+          exporter_port: "{{ exporter_livy_spark3_http_port }}"
