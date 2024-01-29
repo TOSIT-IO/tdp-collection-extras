@@ -12,7 +12,7 @@ jupyterhub_python_executable: "python3.6"
 
 # Jupyterhub user and group
 jupyterhub_user: jupyterhub
-jupyterhub_group: jupyterhub
+jupyterhub_group: "{{ hadoop_group }}"
 
 # Jupyterhub installation directory
 jupyterhub_root_dir: /opt/tdp
@@ -102,7 +102,7 @@ jupyterhub_properties:
       f:"""<label for="queue">Queue name:&nbsp;</label>
       <input name="queue" type="text" value="default" required /><br />
       <label for="venv">Venv Name:&nbsp;</label>
-      <input name="venv" type="text" value="yarn_environment" required /><br />      
+      <input name="venv" type="text" value="yarn_environment" required /><br />
       <label for="cpu">Instance Cpu:&nbsp;</label>
       <input name="cpu" type="number" min="1" step="1" value="1" required /><br />
       <label for="memory">Instance Memory:&nbsp;</label>
@@ -132,10 +132,13 @@ jupyterhub_restart: "no"
 # Jupyterhub logging configuration
 # Root logger level should be: [FATAL| ERROR| WARN| INFO| DEBUG| TRACE]
 jupyterhub_root_logger_level: INFO
-# Root logger should be: [RFA | DRFA]  
+# Root logger should be: [RFA | DRFA]
 jupyterhub_root_logger: RFA
 # Common appenders config
-jupyterhub_log_layout_pattern: "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
+jupyterhub_log_iso8601_with_tz_enable : "{{ tdp_date_iso8601_with_tz_enable }}"
+jupyterhub_log_layout_pattern: "{{ tdp_python_log_layout_pattern }}"
+jupyterhub_python_date_pattern: "{{ tdp_python_date_pattern }}"
+
 # DRFA appenders config
 # Check this link for more values https://docs.python.org/3/library/logging.handlers.html#timedrotatingfilehandler
 jupyterhub_log_drfa_date_pattern: "D"

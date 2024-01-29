@@ -35,11 +35,11 @@ c.JupyterHub.{{ key }} = {% if value is string and not value.startswith('f:') %}
 #------------------------------------------------------------------------------
 
 ## Base class for spawning single-user notebook servers.
-#  
+#
 #  Subclass this, and override the following methods:
-#  
+#
 #  - load_state - get_state - start - stop - poll
-#  
+#
 #  As JupyterHub supports multiple users, an instance of the Spawner subclass is
 #  created for each user. If there are 20 JupyterHub users, there will be 20
 #  instances of the subclass.
@@ -61,7 +61,7 @@ c.Authenticator.{{ key }} = {% if value is string and not value.startswith('f:')
 #------------------------------------------------------------------------------
 
 ## Encapsulate encryption configuration
-#  
+#
 #  Use via the encryption_config singleton below.
 {% for key, value in jupyterhub_properties.get('cryptKeeper', {}).items() +%}
 c.CryptKeeper.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
@@ -145,9 +145,25 @@ def pre_spawn_hook(spawner):
 c.YarnSpawner.{{ key }} = {% if value is string and not value.startswith('f:') %}'{{ value }}'{% else %}{{ value if value is not string else value.lstrip('f:') }}{% endif %}
 {% endfor %}
 
-
 import logging
 import traitlets.log
+
+{% if jupyterhub_log_iso8601_with_tz_enable   %}
+import time
+import datetime
+
+class IsoFormatter(logging.Formatter):
+  def formatTime(self, record, datefmt=None):
+    try:
+      ct = datetime.datetime.fromtimestamp(record.created).astimezone()
+    except (OverflowError, TypeError, ValueError):
+      # Fallback to original.
+      return super(Formatter, self).formatTime(record, datefmt=datefmt)
+
+    return ct.isoformat(sep='T', timespec='milliseconds')
+{% endif %}
+
+
 {% if jupyterhub_root_logger == "RFA" %}
 h = logging.handlers.RotatingFileHandler("{{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}", backupCount={{ jupyterhub_log_rfa_maxbackupindex }}, maxBytes={{ jupyterhub_log_rfa_maxfilesize_mb }} * 1024)
 h.setLevel(logging.{{ jupyterhub_root_logger_level }} )
@@ -155,7 +171,12 @@ h.setLevel(logging.{{ jupyterhub_root_logger_level }} )
 h = logging.handlers.TimedRotatingFileHandler("{{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}", when='{{ jupyterhub_log_drfa_date_pattern }}', interval=1, backupCount={{ jupyterhub_log_drfa_maxbackupindex }})
 h.setLevel(logging.{{ jupyterhub_root_logger_level }} )
 {% endif %}
-formatter = logging.Formatter("{{ jupyterhub_log_layout_pattern }}")
+{% if jupyterhub_log_iso8601_with_tz_enable | default(false) %}
+formatter = IsoFormatter("{{ jupyterhub_log_layout_pattern }}")
+{% else %}
+formatter = logging.Formatter("{{ jupyterhub_log_layout_pattern }}", "{{ jupyterhub_python_date_pattern }}")
+{% endif %}
+
 h.setFormatter(formatter)
 root_log = traitlets.log.get_logger()
 root_log.addHandler(h)
