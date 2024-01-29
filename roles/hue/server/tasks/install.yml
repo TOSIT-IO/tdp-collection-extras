@@ -119,10 +119,19 @@
     group: root
     mode: "755"
 
+- name: Get current Timezone
+  ansible.builtin.command: timedatectl show --property=Timezone --value
+  register: timezone_output
+  changed_when: false
+
+- name: set os_timezone fact
+  ansible.builtin.set_fact:
+    os_timezone: "{{ timezone_output.stdout }}"
+
 - name: Template Hue service file
   ansible.builtin.template:
     src: hue.service.j2
     dest: /usr/lib/systemd/system/hue.service
     owner: root
     group: root
-    mode: "644" 
+    mode: "644"

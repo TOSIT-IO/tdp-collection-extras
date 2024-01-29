@@ -8,6 +8,7 @@ User={{ hue_user }}
 Group={{ hadoop_group }}
 Type=simple
 PIDFile={{ hue_pid_dir }}/hue.pid
+Environment="TZ={{ os_timezone }}"
 ExecStart={{ hue_install_dir }}/build/env/bin/supervisor -l {{ hue_log_dir }} &
 ExecStop={{ hue_install_dir }}/build/env/bin/stop-hue-server.sh
 SuccessExitStatus=143
