@@ -57,6 +57,7 @@ jupyterhub_properties:
     spawner_class: yarnspawner.YarnSpawner
     ssl_cert: "{{ jupyterhub_public_key }}"
     ssl_key: "{{ jupyterhub_private_key }}"
+    authenticate_prometheus: false
   spawner: {}
   authenticator: {}
   ldapauthenticator:

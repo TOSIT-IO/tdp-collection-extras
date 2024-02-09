@@ -78,13 +78,20 @@ observability_tdp_targets:
   jupyterhub:
     labels:
       type: tdp_core
+      svc_dashboard: "{{ dashboard_python }}"
     server:
       jobs:
         - log_file: "{{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}"
+        - exporter_port: "{{ jupyterhub_http_port }}"
+          prometheus_scrape_options:
+            scheme: https
+            tls_config:
+              ca_file: "{{ ca_file }}"
 
   hue:
     labels:
       type: tdp_core
+      svc_dashboard: "{{ dashboard_python }}"
     server:
       jobs:
         - log_file: "{{ hue_log_dir }}/{{ hue_promtail_collected_log }}"
@@ -101,3 +108,8 @@ observability_tdp_targets:
               source: 'datetime'
           - labels:
               level: ''
+        - exporter_port: "{{ hue_web_http_port }}"
+          prometheus_scrape_options:
+            scheme: https
+            tls_config:
+              ca_file: "{{ ca_file }}"
