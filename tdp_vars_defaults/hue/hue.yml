@@ -81,7 +81,7 @@ oidcauth:
   oidc_username_attribute: preferred_username
 database:
   engine: "postgresql_psycopg2"
-  host: "{{ groups['postgresql'][0] | tosit.tdp.access_fqdn(hostvars) }}"
+  host: "{{ groups['postgresql'][0] | default('localhost') | tosit.tdp.access_fqdn(hostvars) }}"
   port: "{{ postgresql_server_port }}"
   user: "{{ db_hue_user }}"
   password: "{{ db_hue_password }}"
