@@ -666,11 +666,14 @@ user_name_attr={{ ldapauth.users.user_name_attr }}
 # Note for Oracle, options={"threaded":true} must be set in order to avoid crashes.
 # Note for Oracle, you can use the Oracle Service Name by setting "host=" and "port=" and then "name=<host>:<port>/<service_name>".
 # Note for MariaDB use the 'mysql' engine.
+
 engine={{ database.engine }}
+{% if database.engine != 'sqlite3' %}
 host={{ database.host }}
 port={{ database.port }}
 user={{ database.user }}
 password={{ database.password }}
+{% endif %}
 name={{ database.name }}
 # conn_max_age option to make database connection persistent value in seconds
 # https://docs.djangoproject.com/en/1.11/ref/databases/#persistent-connections
@@ -1038,7 +1041,7 @@ show_notebooks=true
 #[[[postgresql]]]
 #  name = postgresql
 #  interface=sqlalchemy
-#  options='{"url": "postgresql://hue:hue@{{ groups['postgresql'][0] }}:5432/hue"}'
+#  options='{"url": "postgresql://hue:hue@{{ groups['postgresql'][0] | default('pgserver') }}:5432/hue"}'
 
 # [[[druid]]]
 #   name = Druid
