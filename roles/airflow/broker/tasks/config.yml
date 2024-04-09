@@ -1,0 +1,14 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Set Redis bind address
+  ansible.builtin.lineinfile:
+    path: /etc/redis.conf
+    regexp: '^bind'
+    line: 'bind {{ redis_bind_address }}'
+
+- name: Template Airflow flower service file
+  ansible.builtin.template:
+    src: airflow-flower.service.j2
+    dest: /usr/lib/systemd/system/airflow-flower.service

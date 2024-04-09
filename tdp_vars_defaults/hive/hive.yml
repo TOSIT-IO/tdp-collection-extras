@@ -4,3 +4,9 @@
 ---
 #hive-site.xml for Hue
 hive_hue_properties: "{{ hive_site | combine(hiveserver2_site) }}"
+
+#hive-site.xml for airflow
+hive_site:
+  hive.security.authorization.sqlstd.confwhitelist.append: "{{ 'mapred.job.name' }}|{{ 'mapred.queue.name' }}|{{ 'airflow.ctx.*' }}"
+  hive.stats.autogather: false
+  hive.txn.stats.enabled: false

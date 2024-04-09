@@ -1,0 +1,10 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Stop airflow scheduler service
+  ansible.builtin.systemd:
+    name: airflow-scheduler
+    state: stopped
+    enabled: "{{ airflow_start_on_boot }}"
+

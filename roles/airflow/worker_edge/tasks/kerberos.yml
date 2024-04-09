@@ -1,0 +1,37 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Airflow | Ensure kerberos common installation steps are performed
+  ansible.builtin.import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: install
+
+- name: Airflow | Ensure airflow airflow's principal and keytab exist
+  ansible.builtin.import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: create_principal_keytab
+  vars:
+    principal: airflow/{{ ansible_fqdn }}
+    keytab: "{{ airflow_kerberos.keytab }}"
+    user: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+    mode: "0600"
+  when: krb_create_principals_keytabs
+
+- name: Airflow | Ensure airflow's keytab is working
+  ansible.builtin.import_role:
+    name: tosit.tdp.utils.kerberos
+    tasks_from: check_secure_keytab
+  vars:
+    principal: airflow/{{ ansible_fqdn }}
+    keytab: "{{ airflow_kerberos.keytab }}"
+    user: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+    mode: "0600"
+  when: not krb_create_principals_keytabs
+
+- name: Template airflow kerberos service
+  ansible.builtin.template:
+    src: airflow-kerberos.service.j2
+    dest: /usr/lib/systemd/system/airflow-kerberos.service

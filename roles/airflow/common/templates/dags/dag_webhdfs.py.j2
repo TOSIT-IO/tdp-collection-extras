@@ -1,0 +1,59 @@
+from datetime import datetime, timedelta
+from airflow.utils.dates import days_ago
+from airflow.models import DAG
+from airflow.operators.bash import BashOperator
+from airflow.operators.python_operator import PythonOperator
+from airflow.hooks.webhdfs_hook import WebHDFSHook
+from airflow.providers.apache.hdfs.sensors.web_hdfs import WebHdfsSensor
+from airflow.operators.dummy_operator import DummyOperator
+
+
+default_args = {
+    'owner': 'tdp_user',
+    'depends_on_past': False,
+    'start_date': days_ago(1),
+    'run_as_user': 'tdp_user',
+    'queue': 'edge'
+}
+
+def load_file(source, destination, conn_id, proxy_user, overwrite=True):
+    hook = WebHDFSHook(webhdfs_conn_id=conn_id, proxy_user=proxy_user)
+    hook.load_file(source, destination, overwrite)
+
+with DAG(
+    dag_id="tdp_user-webhdfs_example",
+    default_args=default_args,
+    catchup=False,
+    access_control={
+    "tdp": {"can_dag_read"},
+    "tdp_user": {"can_dag_read", "can_dag_edit", "can_delete"},
+    }
+) as dag:
+    create_file = BashOperator(
+        task_id='create_file',
+        bash_command='echo "This is a sample text file" > /tmp/airflow_file.txt'
+    )
+
+    load_to_hdfs = PythonOperator(
+        task_id="load_to_hdfs",
+        python_callable=load_file,
+        op_kwargs={
+            'source': '/tmp/airflow_file.txt',
+            'destination': '/user/tdp_user/',
+            'conn_id': 'webhdfs_tdp',
+            'proxy_user': 'tdp_user'
+        }
+    )
+
+    file_hdfs_sensor = WebHdfsSensor(
+        task_id='file_hdfs_sensor',
+        webhdfs_conn_id='webhdfs_tdp',
+        filepath='/user/tdp_user/airflow_file.txt',
+        timeout=300,
+        poke_interval=5
+    )
+
+    task_dummy = DummyOperator(task_id="Dummy-Operator")
+
+    create_file >> load_to_hdfs
+    file_hdfs_sensor >> task_dummy

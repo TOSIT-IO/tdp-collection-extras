@@ -1,0 +1,17 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Restart redis service
+  ansible.builtin.systemd:
+    name: redis
+    state: restarted
+    enabled: true
+    daemon_reload: true
+
+- name: restart airflow flower service
+  ansible.builtin.systemd:
+    name: airflow-flower
+    state: restarted
+    enabled: true
+    daemon_reload: true

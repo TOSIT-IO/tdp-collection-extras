@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+export AIRFLOW_CONFIG={{ airflow_conf_dir }}/airflow.cfg
+export AIRFLOW_HOME={{ airflow_install_dir }}
+
+{{ airflow_install_dir }}/bin/airflow "$@"
