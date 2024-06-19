@@ -75,11 +75,11 @@ observability_tdp_targets:
         - log_file: "{{ livy_spark3_log_dir }}/{{ livy_spark3_log_file }}"
           exporter_port: "{{ exporter_livy_spark3_http_port }}"
 
-  jupyterhub:
+  jupyter:
     labels:
       type: tdp_core
       svc_dashboard: "{{ dashboard_python | default('') }}"
-    server:
+    hub:
       jobs:
         - log_file: "{{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}"
         - exporter_port: "{{ jupyterhub_http_port }}"

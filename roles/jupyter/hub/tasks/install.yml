@@ -41,7 +41,16 @@
     remote_src: true
     creates: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}"
 
-- name: Install Jupyterhub
+- name: Create virtual env and update pip if necessary
+  ansible.builtin.pip:
+    name: pip
+    state: latest
+    extra_args: "--no-index --find-links=file://{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/dependencies"
+    umask: "0022"
+    virtualenv: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}"
+    virtualenv_python: "{{ jupyterhub_python_executable }}"
+
+- name: Install Jupyterhub in virtual env
   ansible.builtin.pip:
     requirements: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/requirements.txt"
     extra_args: "--no-index --find-links=file://{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/dependencies"
@@ -64,14 +73,6 @@
 - name: Create configuration directory
   ansible.builtin.file:
     path: "{{ jupyterhub_server_conf_dir }}"
-    state: directory
-    group: root
-    owner: root
-    mode: "0755"
-
-- name: Create sparkmagic configuration directory
-  ansible.builtin.file:
-    path: "{{ jupyterhub_server_conf_dir }}/sparkmagic"
     state: directory
     group: root
     owner: root

@@ -3,7 +3,7 @@
 
 ---
 # Jupyterhub version
-jupyterhub_release: jupyterhub-2.3.1-TDP-0.1.0
+jupyterhub_release: jupyterhub-2.3.1-0.0
 jupyterhub_dist_file: "{{ jupyterhub_release }}.tar.gz"
 
 jupyterhub_upload_directory: "{{ binaries_upload_dir }}"
@@ -31,14 +31,17 @@ certificates_private_key: "{{ certificates_path }}/{{ certificates_cert_filename
 jupyterhub_public_key: "{{ jupyterhub_server_certs_folder }}/{{ certificates_cert_filename }}.pem"
 jupyterhub_private_key: "{{ jupyterhub_server_certs_folder }}/{{ certificates_cert_filename }}.key"
 
+certificates_ca_filename: "tdp_ca"
+certificates_ca: "{{ certificates_path }}/{{ certificates_ca_filename }}.crt"
+
 # Jupyterhub working directory
 jupyterhub_working_dir: /var/lib/jupyterhub
 
-# Jupyterhub HDFS venvs dir
-jupyterhub_hdfs_venvs_dir: /jupyterhub/virtualenvs
-
 # Jupyterhub configuration
 jupyterhub_port: "{{ jupyterhub_http_port }}"
+
+jupyterhub_generated_yarnspawner_prologue: source {{ jupyterlab_root_dir }}/{{ jupyterlab_release }}/bin/activate ; export CLASSPATH="$CLASSPATH:$(hadoop classpath --glob)" ; export HOME=$PWD
+jupyterhub_additional_yarnspawner_prologue: ""
 
 jupyterhub_properties:
   jupyterhub:
@@ -96,23 +99,24 @@ jupyterhub_properties:
     default_url: /lab
     # environment:
     keytab: /etc/security/keytabs/jupyterhub.service.keytab
-    environment: { 'ARROW_LIBHDFS_DIR': '{{ hadoop_install_dir }}/lib/native', 'LD_LIBRARY_PATH': '{{ hadoop_install_dir }}/lib/native'}
+    environment:
+      ARROW_LIBHDFS_DIR: "{{ hadoop_install_dir }}/lib/native"
+      LD_LIBRARY_PATH: "{{ hadoop_install_dir }}/lib/native"
+      SPARKMAGIC_CONF_DIR: "{{ jupyterlab_sparkmagic_conf_dir }}"
+      # Needed for sparkmagic to perform https request to Livy
+      REQUESTS_CA_BUNDLE: "{{ certificates_ca }}"
     mem_limit: 8G
     cpu_limit: 2
     options_form: |-
       f:"""<label for="queue">Queue name:&nbsp;</label>
       <input name="queue" type="text" value="default" required /><br />
-      <label for="venv">Venv Name:&nbsp;</label>
-      <input name="venv" type="text" value="yarn_environment" required /><br />
       <label for="cpu">Instance Cpu:&nbsp;</label>
       <input name="cpu" type="number" min="1" step="1" value="1" required /><br />
       <label for="memory">Instance Memory:&nbsp;</label>
       <input name="memory" type="text" value="2048M" required /><br />"""
     pre_spawn_hook: f:pre_spawn_hook
     principal: "{{ jupyterhub_principal }}"
-    prologue: source environment/bin/activate ; export CLASSPATH="$CLASSPATH:$(hadoop classpath --glob)" ; export HOME=$PWD ; chmod 700 $PWD/environment/lib64/python3.6/site-packages/certifi/cacert.pem ; cat {{ certificates_path }}/tdp_ca.crt >> $PWD/environment/lib64/python3.6/site-packages/certifi/cacert.pem ; mkdir .sparkmagic ; mv config.json .sparkmagic/
-  jupyterlab:
-    livy_url: "https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999"
+    prologue: "{{ jupyterhub_generated_yarnspawner_prologue }} ; {{ jupyterhub_additional_yarnspawner_prologue }}"
 
 # Kerberos
 ###
@@ -122,7 +126,6 @@ jupyterhub_properties:
 ###
 krb_create_principals_keytabs: yes
 jupyterhub_principal: jupyterhub/{{ ansible_fqdn }}@{{ realm}}
-hdfs_user: hdfs
 
 # Service start on boot policies
 jupyterhub_start_on_boot: no
@@ -136,7 +139,7 @@ jupyterhub_root_logger_level: INFO
 # Root logger should be: [RFA | DRFA]
 jupyterhub_root_logger: RFA
 # Common appenders config
-jupyterhub_log_iso8601_with_tz_enable : "{{ tdp_date_iso8601_with_tz_enable }}"
+jupyterhub_log_iso8601_with_tz_enable: "{{ tdp_date_iso8601_with_tz_enable }}"
 jupyterhub_log_layout_pattern: "{{ tdp_python_log_layout_pattern }}"
 jupyterhub_python_date_pattern: "{{ tdp_python_date_pattern }}"
 
@@ -149,3 +152,195 @@ jupyterhub_log_drfa_maxbackupindex: 30
 jupyterhub_log_rfa_maxfilesize_mb: 256
 jupyterhub_log_rfa_maxbackupindex: 10
 
+# Jupyterlab version
+jupyterlab_release: jupyterlab-3.2.9-0.0
+jupyterlab_dist_file: "{{ jupyterlab_release }}.tar.gz"
+
+jupyterlab_upload_directory: "{{ binaries_upload_dir }}"
+
+jupyterlab_python_executable: "python3.6"
+
+# Jupyterlab installation directory
+jupyterlab_root_dir: /opt/tdp
+jupyterlab_install_dir: "{{ jupyterlab_root_dir }}/jupyterlab"
+
+# Jupyterlab configuration directories
+jupyterlab_root_conf_dir: /etc/jupyterlab
+jupyterlab_kernels_dir: /usr/local/share/jupyter/kernels
+
+# Jupyterlab Sparkmagic version
+jupyterlab_sparkmagic_enable: true
+jupyterlab_sparkmagic_release: sparkmagic-0.21.0-0.0
+jupyterlab_sparkmagic_dist_file: "{{ jupyterlab_sparkmagic_release }}.tar.gz"
+
+# Jupyterlab Sparkmagic pysparkkernel kernel configuration
+jupyterlab_sparkmagic_pysparkkernel_enable: "{{ jupyterlab_sparkmagic_enable }}"
+jupyterlab_sparkmagic_pysparkkernel_kernel_js: |-
+  define(["base/js/namespace"], function(IPython) {
+    var onload = function() {
+      IPython.CodeCell.config_defaults.highlight_modes["magic_text/x-sql"] = {
+        reg: [/^%%sql/]
+      };
+    };
+
+    return { onload: onload };
+  });
+jupyterlab_sparkmagic_pysparkkernel_kernel_json:
+  argv:
+    - python
+    - -m
+    - sparkmagic.kernels.pysparkkernel.pysparkkernel
+    - -f
+    - "{connection_file}"
+  display_name: PySpark
+  language: python
+
+# Jupyterlab Sparkmagic sparkkernel kernel configuration
+jupyterlab_sparkmagic_sparkkernel_enable: "{{ jupyterlab_sparkmagic_enable }}"
+jupyterlab_sparkmagic_sparkkernel_kernel_js: |-
+  define(["base/js/namespace"], function(IPython) {
+    var onload = function() {
+      IPython.CodeCell.config_defaults.highlight_modes["magic_text/x-sql"] = {
+        reg: [/^%%sql/]
+      };
+      IPython.CodeCell.config_defaults.highlight_modes["magic_text/x-python"] = {
+        reg: [/^%%local/]
+      };
+    };
+
+    return { onload: onload };
+  });
+jupyterlab_sparkmagic_sparkkernel_kernel_json:
+  argv:
+    - python
+    - -m
+    - sparkmagic.kernels.sparkkernel.sparkkernel
+    - -f
+    - "{connection_file}"
+  display_name: Spark
+  language: scala
+
+jupyterlab_sparkmagic_sparkrkernel_enable: false
+jupyterlab_sparkmagic_sparkrkernel_kernel_js: |-
+  define(["base/js/namespace"], function(IPython) {
+    var onload = function() {
+      IPython.CodeCell.config_defaults.highlight_modes["magic_text/x-sql"] = {
+        reg: [/^%%sql/]
+      };
+    };
+
+    return { onload: onload };
+  });
+jupyterlab_sparkmagic_sparkrkernel_kernel_json:
+  argv:
+    - python
+    - -m
+    - sparkmagic.kernels.sparkrkernel.sparkrkernel
+    - -f
+    - "{connection_file}"
+  display_name: SparkR
+  language: r
+
+# Jupyterlab Sparkmagic configuration directories
+jupyterlab_sparkmagic_conf_dir: "{{ jupyterlab_root_conf_dir }}/sparkmagic"
+
+jupyterlab_sparkmagic_properties:
+  kernel_python_credentials:
+    username: ''
+    password: ''
+    url: "https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999"
+    auth: Kerberos
+  kernel_scala_credentials:
+    username: ''
+    password: ''
+    url: "https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999"
+    auth: Kerberos
+  kernel_r_credentials:
+    username: ''
+    password: ''
+    url: "https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999"
+    auth: Kerberos
+  logging_config:
+    version: 1
+    formatters:
+      magicsFormatter:
+        format: "%(asctime)s\t%(levelname)s\t%(message)s"
+        datefmt: ''
+    handlers:
+      magicsHandler:
+        class: hdijupyterutils.filehandler.MagicsFileHandler
+        formatter: magicsFormatter
+        home_path: "~/.sparkmagic"
+    loggers:
+      magicsLogger:
+        handlers:
+          - magicsHandler
+        level: DEBUG
+        propagate: 0
+  authenticators:
+    Kerberos: sparkmagic.auth.kerberos.Kerberos
+    None: sparkmagic.auth.customauth.Authenticator
+    Basic_Access: sparkmagic.auth.basic.Basic
+  wait_for_idle_timeout_seconds: 120
+  livy_session_startup_timeout_seconds: 240
+  http_session_config:
+    adapters:
+      - prefix: https://
+        adapter: requests.adapters.HTTPAdapter
+  fatal_error_suggestion: "The code failed because of a fatal error:\n\t{}.\n\nSome
+    things to try:\na) Make sure Spark has enough available resources for Jupyter to
+    create a Spark context.\nb) Contact your Jupyter administrator to make sure the
+    Spark magics library is configured correctly.\nc) Restart the kernel."
+  ignore_ssl_errors: false
+  session_configs:
+    driverMemory: 1000M
+    executorCores: 2
+  session_configs_defaults:
+    conf:
+      spark.sql.catalog.spark_catalog.type: hive
+  use_auto_viz: true
+  coerce_dataframe: true
+  max_results_sql: 2500
+  pyspark_dataframe_encoding: utf-8
+  heartbeat_refresh_seconds: 30
+  livy_server_heartbeat_timeout_seconds: 0
+  heartbeat_retry_seconds: 10
+  server_extension_default_kernel_name: pysparkkernel
+  custom_headers: {}
+  retry_policy: configurable
+  retry_seconds_to_sleep_list:
+    - 0.2
+    - 0.5
+    - 1
+    - 3
+    - 5
+  configurable_retry_policy_max_retries: 8
+
+# Jupyterlab extra dependencies
+jupyterlab_extra_dependencies_dirs: "{{ jupyterlab_install_dir }}/extra_dependencies"
+jupyterlab_generated_extra_dependencies_dist_files: >-
+  [
+    {%- if jupyterlab_sparkmagic_enable -%}
+      "{{ jupyterlab_sparkmagic_dist_file }}",
+    {%- endif -%}
+  ]
+jupyterlab_additional_extra_dependencies_dist_files: []
+jupyterlab_extra_dependencies_dist_files: "{{ jupyterlab_generated_extra_dependencies_dist_files + jupyterlab_additional_extra_dependencies_dist_files }}"
+
+jupyterlab_generated_extra_dependencies_requirements_files: >-
+  [
+    {%- if jupyterlab_sparkmagic_enable -%}
+      "{{ jupyterlab_extra_dependencies_dirs }}/{{ jupyterlab_sparkmagic_release }}/requirements.txt",
+    {%- endif -%}
+  ]
+jupyterlab_additional_extra_dependencies_requirements_files: []
+jupyterlab_extra_dependencies_requirements_files: "{{ jupyterlab_generated_extra_dependencies_requirements_files + jupyterlab_additional_extra_dependencies_requirements_files }}"
+
+jupyterlab_generated_extra_dependencies_wheel_dirs: >-
+  [
+    {%- if jupyterlab_sparkmagic_enable -%}
+      "{{ jupyterlab_extra_dependencies_dirs }}/{{ jupyterlab_sparkmagic_release }}/dependencies",
+    {%- endif -%}
+  ]
+jupyterlab_additional_extra_dependencies_wheel_dirs: []
+jupyterlab_extra_dependencies_wheel_dirs: "{{ jupyterlab_generated_extra_dependencies_wheel_dirs + jupyterlab_additional_extra_dependencies_wheel_dirs }}"

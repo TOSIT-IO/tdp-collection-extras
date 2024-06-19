@@ -2,57 +2,55 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- name: jupyterhub_server_install
+- name: jupyter_hub_install
   depends_on: []
 
-- name: jupyterhub_server_config
-  depends_on:
-    - jupyterhub_server_install
-    - jupyterhub_kerberos_install
-    - jupyterhub_ssl-tls_install
+- name: jupyter_lab_install
+  depends_on: []
 
-- name: jupyterhub_server_start
+- name: jupyter_hub_config
   depends_on:
-    - jupyterhub_server_config
+    - jupyter_hub_install
+    - jupyter_kerberos_install
+    - jupyter_ssl-tls_install
 
-- name: jupyterhub_server_hdfs-init
+- name: jupyter_lab_config
   depends_on:
-    - hdfs_init
+    - jupyter_lab_install
 
-- name: jupyterhub_server_init
+- name: jupyter_hub_start
   depends_on:
-    - jupyterhub_server_hdfs-init
-    - jupyterhub_server_start
+    - jupyter_hub_config
 
-- name: jupyterhub_kerberos_install
+- name: jupyter_kerberos_install
   depends_on:
-    - jupyterhub_server_install
+    - jupyter_hub_install
 
-- name: jupyterhub_ssl-tls_install
+- name: jupyter_ssl-tls_install
   depends_on:
-    - jupyterhub_server_install
+    - jupyter_hub_install
 
-- name: jupyterhub_install
+- name: jupyter_install
   noop: yes
   depends_on:
-    - jupyterhub_server_install
+    - jupyter_hub_install
+    - jupyter_lab_install
+    - jupyter_kerberos_install
+    - jupyter_ssl-tls_install
 
-- name: jupyterhub_config
+- name: jupyter_config
   noop: yes
   depends_on:
-    - jupyterhub_install
-    - jupyterhub_server_config
+    - jupyter_install
+    - jupyter_hub_config
 
-- name: jupyterhub_start
+- name: jupyter_start
   noop: yes
   depends_on:
-    - jupyterhub_config
-    - jupyterhub_server_start
+    - jupyter_config
+    - jupyter_hub_start
 
-- name: jupyterhub_init
+- name: jupyter_init
   noop: yes
   depends_on:
-    - yarn_init
-    - spark3_init
-    - jupyterhub_start
-    - jupyterhub_server_init
+    - jupyter_start
