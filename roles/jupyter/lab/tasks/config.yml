@@ -1,0 +1,54 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Create sparkmagic configuration directory
+  ansible.builtin.file:
+    path: "{{ jupyterlab_sparkmagic_conf_dir }}"
+    state: directory
+    group: root
+    owner: root
+    mode: "0755"
+  when: jupyterlab_sparkmagic_enable
+
+- name: Backup sparkmagic configuration
+  ansible.builtin.copy:
+    src: "{{ jupyterlab_sparkmagic_conf_dir }}/"
+    dest: "{{ jupyterlab_sparkmagic_conf_dir }}.{{ ansible_date_time.epoch }}"
+    owner: root
+    group: root
+    mode: "0755"
+    remote_src: true
+  tags:
+    - backup
+  when: jupyterlab_sparkmagic_enable
+
+- name: Template sparkmagic configuration
+  ansible.builtin.template:
+    src: sparkmagic_config.json.j2
+    dest: "{{ jupyterlab_sparkmagic_conf_dir }}/config.json"
+    owner: root
+    group: root
+    mode: "0644"
+  when: jupyterlab_sparkmagic_enable
+
+- import_tasks: kernel.yml
+  vars:
+    kernel_name: pysparkkernel
+    kernel_js: "{{ jupyterlab_sparkmagic_pysparkkernel_kernel_js }}"
+    kernel_json: "{{ jupyterlab_sparkmagic_pysparkkernel_kernel_json }}"
+  when: jupyterlab_sparkmagic_pysparkkernel_enable
+
+- import_tasks: kernel.yml
+  vars:
+    kernel_name: sparkkernel
+    kernel_js: "{{ jupyterlab_sparkmagic_sparkkernel_kernel_js }}"
+    kernel_json: "{{ jupyterlab_sparkmagic_sparkkernel_kernel_json }}"
+  when: jupyterlab_sparkmagic_sparkkernel_enable
+
+- import_tasks: kernel.yml
+  vars:
+    kernel_name: sparkrkernel
+    kernel_js: "{{ jupyterlab_sparkmagic_sparkrkernel_kernel_js }}"
+    kernel_json: "{{ jupyterlab_sparkmagic_sparkrkernel_kernel_json }}"
+  when: jupyterlab_sparkmagic_sparkrkernel_enable

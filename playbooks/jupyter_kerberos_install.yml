@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- name: HDFS Init Jupyterhub Server
-  hosts: jupyterhub_edge
+- name: Kerberos Jupyterhub install
+  hosts: jupyter_hub
   strategy: linear
   tasks:
     - tosit.tdp.resolve: # noqa unnamed-task
-        node_name: jupyterhub_server
-    - name: Initialize Jupyterhub Server HDFS
+        node_name: jupyter_kerberos
+    - name: Install Jupyterhub Kerberos
       ansible.builtin.import_role:
-        name: tosit.tdp_extra.jupyterhub.server
-        tasks_from: hdfs-init
+        name: tosit.tdp_extra.jupyter.hub
+        tasks_from: kerberos
     - ansible.builtin.meta: clear_facts # noqa unnamed-task

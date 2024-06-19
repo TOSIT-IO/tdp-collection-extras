@@ -1,0 +1,87 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: Upload {{ jupyterlab_dist_file }}
+  ansible.builtin.copy:
+    src: "{{ binaries_local_dir }}/{{ jupyterlab_dist_file }}"
+    dest: "{{ jupyterlab_upload_directory }}"
+    owner: root
+    group: root
+    mode: "0644"
+  diff: false
+
+- name: Upload Jupyterlab extra dependencies
+  ansible.builtin.copy:
+    src: "{{ binaries_local_dir }}/{{ item }}"
+    dest: "{{ jupyterlab_upload_directory }}"
+    owner: root
+    group: root
+    mode: "0644"
+  diff: false
+  loop: "{{ jupyterlab_extra_dependencies_dist_files }}"
+
+- name: Ensure {{ jupyterlab_root_dir }} exists
+  ansible.builtin.file:
+    path: "{{ jupyterlab_root_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Extract {{ jupyterlab_dist_file }}
+  ansible.builtin.unarchive:
+    src: "{{ jupyterlab_upload_directory }}/{{ jupyterlab_dist_file }}"
+    dest: "{{ jupyterlab_root_dir }}"
+    owner: root
+    group: root
+    remote_src: true
+    creates: "{{ jupyterlab_root_dir }}/{{ jupyterlab_release }}"
+
+- name: Create symbolic link to Jupyterlab installation
+  ansible.builtin.file:
+    src: "{{ jupyterlab_root_dir }}/{{ jupyterlab_release }}"
+    dest: "{{ jupyterlab_install_dir }}"
+    state: link
+
+- name: Ensure {{ jupyterlab_extra_dependencies_dirs }} exists
+  ansible.builtin.file:
+    path: "{{ jupyterlab_extra_dependencies_dirs }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Extract Jupyterlab extra dependencies
+  ansible.builtin.unarchive:
+    src: "{{ jupyterlab_upload_directory }}/{{ item }}"
+    dest: "{{ jupyterlab_extra_dependencies_dirs }}"
+    owner: root
+    group: root
+    remote_src: true
+  loop: "{{ jupyterlab_extra_dependencies_dist_files }}"
+
+- name: Create virtual env and update pip if necessary
+  ansible.builtin.pip:
+    name: pip
+    state: latest
+    extra_args: "--no-index --find-links=file://{{ jupyterlab_root_dir }}/{{ jupyterlab_release }}/dependencies"
+    umask: "0022"
+    virtualenv: "{{ jupyterlab_root_dir }}/{{ jupyterlab_release }}"
+    virtualenv_python: "{{ jupyterlab_python_executable }}"
+
+- name: Install Jupyterlab in virtual env
+  ansible.builtin.pip:
+    requirements: "{{ jupyterlab_root_dir }}/{{ jupyterlab_release }}/requirements.txt"
+    extra_args: >-
+      --no-index
+      --find-links="file://{{ jupyterlab_root_dir }}/{{ jupyterlab_release }}/dependencies"
+      {% for requirements_file in jupyterlab_extra_dependencies_requirements_files %}
+      --requirement="{{ requirements_file }}"
+      {% endfor %}
+      {% for wheel_dir in jupyterlab_extra_dependencies_wheel_dirs %}
+      --find-links="{{ wheel_dir }}"
+      {% endfor %}
+    umask: "0022"
+    virtualenv: "{{ jupyterlab_root_dir }}/{{ jupyterlab_release }}"
+    virtualenv_python: "{{ jupyterlab_python_executable }}"

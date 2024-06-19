@@ -1,0 +1,32 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+# vars:
+#   kernel_name: <str>
+#   kernel_js: <str>
+#   kernel_json: <dict>
+
+---
+- name: Create kernel configuration directory for {{ kernel_name }}
+  ansible.builtin.file:
+    path: "{{ jupyterlab_kernels_dir }}/{{ kernel_name }}"
+    state: directory
+    group: root
+    owner: root
+    mode: "0755"
+
+- name: Template kernel.js for {{ kernel_name }}
+  ansible.builtin.copy:
+    content: "{{ kernel_js }}\n"
+    dest: "{{ jupyterlab_kernels_dir }}/{{ kernel_name }}/kernel.js"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Template kernel.json for {{ kernel_name }}
+  ansible.builtin.copy:
+    content: "{{ kernel_json | to_nice_json }}\n"
+    dest: "{{ jupyterlab_kernels_dir }}/{{ kernel_name }}/kernel.json"
+    owner: root
+    group: root
+    mode: "0644"

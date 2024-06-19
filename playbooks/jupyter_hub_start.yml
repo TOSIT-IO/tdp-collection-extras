@@ -2,13 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- name: Start Jupyterhub Server
-  hosts: jupyterhub_server
+- name: Start Jupyterhub
+  hosts: jupyter_hub
   tasks:
     - tosit.tdp.resolve: # noqa unnamed-task
-        node_name: jupyterhub_server
-    - name: Start Jupyterhub Server
+        node_name: jupyter_hub
+    - name: Start Jupyterhub
       ansible.builtin.import_role:
-        name: tosit.tdp_extra.jupyterhub.server
+        name: tosit.tdp_extra.jupyter.hub
         tasks_from: start
     - ansible.builtin.meta: clear_facts # noqa unnamed-task
