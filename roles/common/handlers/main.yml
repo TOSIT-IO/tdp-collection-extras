@@ -2,6 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- name: reload systemd
+- name: systemctl daemon-reload
   ansible.builtin.systemd:
     daemon_reload: true

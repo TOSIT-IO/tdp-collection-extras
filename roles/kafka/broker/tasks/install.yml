@@ -30,3 +30,4 @@
     owner: root
     group: root
     mode: "644"
+  notify: systemctl daemon-reload
