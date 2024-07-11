@@ -14,3 +14,4 @@
   ansible.builtin.template:
     src: airflow-flower.service.j2
     dest: /usr/lib/systemd/system/airflow-flower.service
+  notify: systemctl daemon-reload
