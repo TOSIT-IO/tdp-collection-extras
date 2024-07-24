@@ -59,6 +59,15 @@ livy_conf:
   livy.repl.enable-hive-context: "true"
   livy.superusers: "hue,livy,knox"
   livy.server.access-control.enabled: "true"
+  livy.server.recovery.mode: "recovery"
+  livy.server.recovery.state-store: "zookeeper"
+  livy.server.zookeeper.url: |-
+    {{ groups['zk'] |
+      map('tosit.tdp.access_fqdn', hostvars) |
+      map('regex_replace', '^(.*)$', '\1:' + zookeeper_server_client_port | string) |
+      list |
+      join(',') }}
+  livy.server.recovery.zk-state-store.key-prefix: "livy{{ spark_version }}"
 
 # jmx exporter config
 jmx_exporter_conf_file: "{{ jmx_exporter_conf_dir }}/ls2.yml"
