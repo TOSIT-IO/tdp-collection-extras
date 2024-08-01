@@ -47,7 +47,7 @@ livy_conf:
   livy.keystore: "{{ livy_keystore_location }}"
   livy.keystore.password: "{{ livy_keystore_password }}"
   livy.server.auth.type: kerberos
-  livy.server.auth.kerberos.principal: "HTTP/_HOST@{{ realm }}"
+  livy.server.auth.kerberos.principal: "HTTP/{% if livy_ha_address is defined %}{{ livy_ha_address | urlsplit('hostname') }}{% else %}_HOST{% endif %}@{{ realm }}"
   livy.server.auth.kerberos.keytab: /etc/security/keytabs/spnego.service.keytab
   livy.server.launch.kerberos.principal: "livy/_HOST@{{ realm }}"
   livy.server.launch.kerberos.keytab: /etc/security/keytabs/livy.service.keytab
