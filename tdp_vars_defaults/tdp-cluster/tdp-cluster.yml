@@ -102,3 +102,9 @@ observability_tdp_targets:
             scheme: https
             tls_config:
               ca_file: "{{ ca_file }}"
+
+ #############################
+#        Common Addresses       #
+#############################
+
+# livy3_common_address: "http[s]://dns_alias:port"

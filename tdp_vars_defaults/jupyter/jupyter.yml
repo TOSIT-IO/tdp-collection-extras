@@ -251,17 +251,17 @@ jupyterlab_sparkmagic_properties:
   kernel_python_credentials:
     username: ''
     password: ''
-    url: "https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999"
+    url: "{% if livy3_common_address is defined %}{{ livy3_common_address }}{% else %}https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999{% endif %}"
     auth: Kerberos
   kernel_scala_credentials:
     username: ''
     password: ''
-    url: "https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999"
+    url: "{% if livy3_common_address is defined %}{{ livy3_common_address }}{% else %}https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999{% endif %}"
     auth: Kerberos
   kernel_r_credentials:
     username: ''
     password: ''
-    url: "https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999"
+    url: "{% if livy3_common_address is defined %}{{ livy3_common_address }}{% else %}https://{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}:8999{% endif %}"
     auth: Kerberos
   logging_config:
     version: 1

@@ -51,7 +51,7 @@ livy_conf:
   livy.keystore: "{{ livy_keystore_location }}"
   livy.keystore.password: "{{ livy_keystore_password }}"
   livy.server.auth.type: kerberos
-  livy.server.auth.kerberos.principal: "HTTP/_HOST@{{ realm }}"
+  livy.server.auth.kerberos.principal: "HTTP/{% if livy3_common_address is defined %}{{ livy3_common_address | urlsplit('hostname') }}{% else %}_HOST{% endif %}@{{ realm }}"
   livy.server.auth.kerberos.keytab: /etc/security/keytabs/spnego.service.keytab
   livy.server.launch.kerberos.principal: "livy/_HOST@{{ realm }}"
   livy.server.launch.kerberos.keytab: /etc/security/keytabs/livy.service.keytab
@@ -71,7 +71,7 @@ livy_conf:
       map('regex_replace', '^(.*)$', '\1:' + zookeeper_server_client_port | string) |
       list |
       join(',') }}
-  livy.server.recovery.zk-state-store.key-prefix: "livy{{ spark_version }}"
+  livy.server.recovery.zk-state-store.key-prefix: "livy{{ spark_version }}-{{ ansible_hostname }}"
 
 # jmx exporter config
 livy_jmx_exporter_conf_file: "jmx-exporter.yml"
