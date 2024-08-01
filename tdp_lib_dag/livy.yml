@@ -4,6 +4,7 @@
 
 - name: livy_kerberos_install
   depends_on:
+    - kerberos_spnego_install
     - livy_server_install
 
 - name: livy_ssl-tls_install

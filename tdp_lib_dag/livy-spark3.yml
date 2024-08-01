@@ -4,6 +4,7 @@
 
 - name: livy-spark3_kerberos_install
   depends_on:
+    - kerberos_spnego_install
     - livy-spark3_server_install
 
 - name: livy-spark3_ssl-tls_install

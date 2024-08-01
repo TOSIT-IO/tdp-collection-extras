@@ -113,3 +113,10 @@ observability_tdp_targets:
             scheme: https
             tls_config:
               ca_file: "{{ ca_file }}"
+
+ #############################
+#        HA Addresses       #
+#############################
+
+# livy_ha_address: "http[s]://dns_alias:port"
+# livy3_ha_address: "http[s]://dns_alias:port"
