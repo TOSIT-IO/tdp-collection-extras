@@ -965,7 +965,7 @@ krb5_renewlifetime_enabled={{ kerberos.krb5_renewlifetime_enabled }}
 [notebook]
 #enable_notebook_2=true
 ## Show the notebook menu or not
-show_notebooks=true
+show_notebooks={{ show_notebook }}
 
 ## Flag to enable the selection of queries from files, saved queries into the editor or as snippet.
 # enable_external_statements=false
@@ -1047,17 +1047,23 @@ show_notebooks=true
 #   interface=sqlalchemy
 #   options='{"url": "hive://user:password@localhost:10000/database"}'
 
+{% if enable_sparksql_notebook %}
 [[[sparksql]]]
   name=SparkSql
   interface=livy
+{% endif %}
 
+{% if enable_spark_notebook %}
 [[[spark]]]
   name=Scala
   interface=livy
+{% endif %}
 
+{% if enable_pyspark_notebook %}
 [[[pyspark]]]
   name=PySpark
   interface=livy
+{% endif %}
 
 # [[[r]]]
 #   name=R
@@ -1533,7 +1539,7 @@ validate={{ beeswax.ssl_validate }}
 ###########################################################################
 # Settings to configure the Spark application.
 ###########################################################################
-
+{% if groups['livy_spark3_server'] is defined and groups['livy_spark3_server'] | length > 0 %}  
 [spark]
 # The Livy Server URL.
 livy_server_url=https://{{ spark.livy_server_host }}:{{ livy_port }}
@@ -1556,7 +1562,7 @@ ssl_cert_ca_verify={{ spark.ssl_cert_ca_verify }}
 
 # Use SASL framework to establish connection to host.
 use_sasl={{ spark.use_sasl }}
-
+{% endif %}
 ###########################################################################
 # Settings to configure the Oozie app
 ###########################################################################
