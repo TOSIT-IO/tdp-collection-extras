@@ -55,6 +55,10 @@ hue_prometheus_enable: "true"
 backend_auth: "desktop.auth.backend.LdapBackend"
 gunicorn_work_class: "sync"
 cherrypy_server_threads: 100
+show_notebook: "false"
+enable_sparksql_notebook: false
+enable_spark_notebook: false
+enable_pyspark_notebook: false
 ldapauth:
   base_dn: "c=fr"
   ldap_url: ldap://{{ groups['ldap'][0] | tosit.tdp.access_fqdn(hostvars) }}
@@ -128,7 +132,7 @@ hadoop:
 beeswax:
   hive_server_host: "{{ groups['hive_s2'][0] | tosit.tdp.access_fqdn(hostvars) }}"
   hive_server_port: "{{ hive_hiveserver2_thrift_port }}"
-  hive_server_http_port: "{{ hive_hiveserver2_thrift_port }}"
+  hive_server_http_port: "{{ hive_hiveserver2_thrift_http_port }}"
   hive_discovery_hs2: "true"
   hive_discovery_hiveserver2_znode: "/hiveserver2"
   hive_metastore_host: "{{ groups['hive_ms'][0] | tosit.tdp.access_fqdn(hostvars) }}"
@@ -156,7 +160,7 @@ libzookeeper:
     }}
   principal_name: "zookeeper/{{ ansible_fqdn }}@{{ realm }}"
 spark:
-  livy_server_host: "{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}"
+  livy_server_host: "{% if groups['livy_spark3_server'] is defined and groups['livy_spark3_server'] | length > 0 %}{{ groups['livy_spark3_server'][0] | tosit.tdp.access_fqdn(hostvars) }}{% else %}{% endif %}"
   security_enabled: "true"
   ssl_cert_ca_verify: "true"
   use_sasl: "true"
