@@ -1,6 +1,6 @@
 ---
 # Livy version
-livy_release: apache-livy-0.8.0-incubating-TDP-0.1.0-SNAPSHOT-bin
+livy_release: apache-livy-0.8.0-incubating-1.0_2.12-bin
 livy_dist_file: "{{ livy_release }}.zip"
 
 # Spark version ('spark2' or 'spark3')
