@@ -27,12 +27,14 @@
 - ansible.builtin.import_playbook: ../kafka_ranger_install.yml
 - ansible.builtin.import_playbook: ../kafka_ssl-tls_install.yml
 # kafka_install
+- ansible.builtin.import_playbook: ../livy-spark3_jmx-exporter_config.yml
 - ansible.builtin.import_playbook: ../livy-spark3_server_install.yml
 - ansible.builtin.import_playbook: ../livy-spark3_kerberos_install.yml
 - ansible.builtin.import_playbook: ../livy-spark3_ssl-tls_install.yml
 # livy-spark3_install
 - ansible.builtin.import_playbook: ../livy-spark3_server_config.yml
 # livy-spark3_config
+- ansible.builtin.import_playbook: ../livy_jmx-exporter_config.yml
 - ansible.builtin.import_playbook: ../livy_server_install.yml
 - ansible.builtin.import_playbook: ../livy_kerberos_install.yml
 - ansible.builtin.import_playbook: ../livy_ssl-tls_install.yml
