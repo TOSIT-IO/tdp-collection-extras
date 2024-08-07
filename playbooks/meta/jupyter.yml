@@ -1,0 +1,15 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- ansible.builtin.import_playbook: ../jupyter_hub_install.yml
+# jupyter_hub_install
+- ansible.builtin.import_playbook: ../jupyter_kerberos_install.yml
+- ansible.builtin.import_playbook: ../jupyter_ssl-tls_install.yml
+- ansible.builtin.import_playbook: ../jupyter_hub_config.yml
+# jupyter_hub_config
+- ansible.builtin.import_playbook: ../jupyter_hub_start.yml
+# jupyter_hub_start
+- ansible.builtin.import_playbook: ../jupyter_lab_install.yml
+- ansible.builtin.import_playbook: ../jupyter_lab_config.yml
+# jupyterlab
