@@ -50,7 +50,7 @@ ssl_validate: "true"
 app_blacklist: "sentry,solr,hbase,oozie,security,search"
 audit_event_log_dir: "{{ hue_log_dir }}/audit.log"
 hue_prometheus_enable: "true"
-
+http_debug_mode: "false"
 #for OIDC authentication, set backend_auth to desktop.auth.backend.OIDCBackend
 backend_auth: "desktop.auth.backend.LdapBackend"
 gunicorn_work_class: "sync"
