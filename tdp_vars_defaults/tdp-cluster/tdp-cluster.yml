@@ -13,6 +13,7 @@ hue_web_http_port: 8888
 
 # Jupyterhub ports
 jupyterhub_http_port: 8000
+jupyterhub_hub_http_port: 8081
 
 # Kafka ports
 kafka_server_listener_port: 9092

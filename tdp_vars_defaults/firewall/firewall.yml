@@ -828,6 +828,13 @@ firewalld_rules:
         - internal
         - public
       state: present
+    - name: jupyterhub_hub_http_port
+      short: Jupyterhub - hub HTTP port - jupyterhub.hub_bind_url
+      port: "{{ jupyterhub_hub_http_port }}"
+      protocol: tcp
+      zones:
+      - internal
+      state: present
 
   # Livy
   livy:

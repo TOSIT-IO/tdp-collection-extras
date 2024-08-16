@@ -39,6 +39,7 @@ jupyterhub_working_dir: /var/lib/jupyterhub
 
 # Jupyterhub configuration
 jupyterhub_port: "{{ jupyterhub_http_port }}"
+jupyterhub_hub_port: "{{ jupyterhub_hub_http_port }}"
 
 jupyterhub_generated_yarnspawner_prologue: source {{ jupyterlab_root_dir }}/{{ jupyterlab_release }}/bin/activate ; export CLASSPATH="$CLASSPATH:$(hadoop classpath --glob)" ; export HOME=$PWD
 jupyterhub_additional_yarnspawner_prologue: ""
@@ -49,6 +50,7 @@ jupyterhub_properties:
     active_user_window: 1800
     authenticator_class: ldapauthenticator.LDAPAuthenticator
     bind_url: http://{{ ansible_fqdn }}:{{ jupyterhub_port }}
+    hub_bind_url: http://{{ ansible_fqdn }}:{{ jupyterhub_hub_port }}
     cleanup_proxy: false
     cleanup_servers: false
     concurrent_spawn_limit: 100
