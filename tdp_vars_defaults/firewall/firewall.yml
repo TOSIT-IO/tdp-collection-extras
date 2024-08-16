@@ -817,3 +817,33 @@ firewalld_rules:
         - internal
         - public
       state: present
+
+  # Jupyter
+  jupyter_hub:
+    - name: jupyterhub_http_port
+      short: Jupyterhub - HTTP port - bind_url_port
+      port: "{{ jupyterhub_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # Livy
+  livy:
+    - name: livy_spark2_server_port
+      short: livy spark2 - HTTP port - livy.server.port
+      port: "{{ livy_spark2_server_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: livy_spark3_server_port
+      short: livy spark3 - HTTP port - livy.server.port
+      port: "{{ livy_spark3_server_port }}"
+      protocol: tcp
+      zones:
+      - internal
+      - public
+      state: present
