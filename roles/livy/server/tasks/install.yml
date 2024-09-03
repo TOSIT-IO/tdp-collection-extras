@@ -8,7 +8,7 @@
 - name: Upload {{ livy_dist_file }}
   ansible.builtin.copy:
     src: "{{ binaries_local_dir }}/{{ livy_dist_file }}"
-    dest: "{{ binaries_upload_dir }}"
+    dest: "{{ binaries_upload_dir }}/{{ livy_dist_file }}"
     group: root
     owner: root
     mode: "644"

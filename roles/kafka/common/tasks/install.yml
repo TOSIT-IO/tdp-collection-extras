@@ -16,7 +16,7 @@
 - name: "Upload {{ kafka_dist_file }}"
   ansible.builtin.copy:
     src: "{{ binaries_local_dir }}/{{ kafka_dist_file }}"
-    dest: "{{ binaries_upload_dir }}"
+    dest: "{{ binaries_upload_dir }}/{{ kafka_dist_file }}"
   diff: no
 
 - name: "Ensure {{ kafka_root_dir }} exists"

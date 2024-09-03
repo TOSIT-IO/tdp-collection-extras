@@ -18,7 +18,7 @@
 - name: Upload {{ hue_dist_file }}
   ansible.builtin.copy:
     src: "{{ binaries_local_dir }}/{{ hue_dist_file }}"
-    dest: "{{ binaries_upload_dir }}"
+    dest: "{{ binaries_upload_dir }}/{{ hue_dist_file }}"
     owner: root
     group: root
     mode: "644"
