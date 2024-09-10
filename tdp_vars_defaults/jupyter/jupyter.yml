@@ -15,7 +15,7 @@ jupyterhub_user: jupyterhub
 jupyterhub_group: "{{ hadoop_group }}"
 
 # Jupyterhub installation directory
-jupyterhub_root_dir: /opt/tdp
+jupyterhub_root_dir: "{{ tdp_extra_root_dir }}"
 jupyterhub_install_dir: "{{ jupyterhub_root_dir }}/jupyterhub"
 
 # Jupyterhub configuration directories
@@ -161,7 +161,7 @@ jupyterlab_upload_directory: "{{ binaries_upload_dir }}"
 jupyterlab_python_executable: "python3.6"
 
 # Jupyterlab installation directory
-jupyterlab_root_dir: /opt/tdp
+jupyterlab_root_dir: "{{ tdp_extra_root_dir }}"
 jupyterlab_install_dir: "{{ jupyterlab_root_dir }}/jupyterlab"
 
 # Jupyterlab configuration directories

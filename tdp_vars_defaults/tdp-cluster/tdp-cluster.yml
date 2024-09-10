@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
+
+tdp_extra_root_dir: "{{ tdp_root_dir }}"
 #############################
 # Service & Component ports #
 #############################

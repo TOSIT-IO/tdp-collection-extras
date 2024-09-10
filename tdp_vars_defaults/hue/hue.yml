@@ -12,7 +12,7 @@ hue_release: hue-release-4.11.0-TDP-0.1.0
 hue_dist_file: "{% if (ansible_distribution_major_version | int) > 7 %}{{ hue_release }}-python38.tar.gz{% else %}{{ hue_release }}.tar.gz{% endif %}"
 
 # Hue configuration directories
-hue_root_dir: /opt/tdp
+hue_root_dir: "{{ tdp_extra_root_dir }}"
 hue_install_dir: "{{ hue_root_dir }}/hue"
 hue_pid_dir: /var/run/hue
 hue_root_conf_dir: /etc/hue
