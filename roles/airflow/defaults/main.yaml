@@ -3,7 +3,7 @@
 airflow_version: 2.2.2
 
 # Airflow installation directory
-airflow_root_dir: /opt/tdp
+airflow_root_dir: "{{ tdp_extra_root_dir }}"
 airflow_install_dir: "{{ airflow_root_dir }}/airflow"
 
 # Airflow users and group

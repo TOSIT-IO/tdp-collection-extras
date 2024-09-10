@@ -11,7 +11,7 @@ livy_user: livy
 hadoop_group: hadoop
 
 # Livy installation directory
-livy_root_dir: /opt/tdp
+livy_root_dir: "{{ tdp_extra_root_dir }}"
 livy_install_dir: "{{ livy_root_dir }}/livy"
 
 # Livy configuration directories
