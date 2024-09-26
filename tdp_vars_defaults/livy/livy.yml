@@ -78,6 +78,17 @@ jmx_exporter:
   startDelaySeconds: 0
   lowercaseOutputName: false
   lowercaseOutputLabelNames: false
+  httpServer:
+    authentication:
+      basic:
+        username: "{{ exporter_livy_jmxremote_username }}"
+        password: "{{ exporter_livy_jmxremote_password }}"
+    ssl:
+      keyStore:
+        filename: "{{ livy_keystore_location }}"
+        password: "{{ livy_keystore_password }}"
+      certificate:
+        alias: "{{ ansible_fqdn }}"
 
 # livy-env.sh
 livy_env:
