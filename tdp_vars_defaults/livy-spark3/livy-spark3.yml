@@ -72,17 +72,10 @@ livy_conf:
 # jmx exporter config
 jmx_exporter_conf_file: "{{ jmx_exporter_conf_dir }}/ls3.yml"
 exporter_livy_http_port: "{{ exporter_livy_spark3_http_port }}"
-jmx_password_opts: "-Dcom.sun.management.jmxremote.password.file={{ livy_server_conf_dir }}/jmxremote.password"
 jmx_exporter_opts: "-javaagent:{{ jmx_exporter_install_file }}={{ exporter_livy_http_port }}:{{ jmx_exporter_conf_file }}"
-
-jmxremote_username: jmxuser
-jmxremote_password: Tdpjmx123,
 
 jmx_exporter:
   startDelaySeconds: 0
-  ssl: true
-  username: "{{ jmxremote_username }}"
-  password: "{{ jmxremote_password }}"
   lowercaseOutputName: false
   lowercaseOutputLabelNames: false
 
@@ -98,7 +91,7 @@ livy_env:
   LIVY_CONF_DIR: "{{ livy_server_conf_dir }}"
   LIVY_LOG_DIR: "{{ livy_log_dir }}"
   LIVY_PID_DIR: "{{ livy_pid_dir }}"
-  LIVY_JMX_OPTS: "'{{ jmx_common_opts }} {{ jmx_password_opts }} {{ jmx_exporter_opts }}'"
+  LIVY_JMX_OPTS: "'{{ jmx_common_opts }} {{ jmx_exporter_opts }}'"
   LIVY_SERVER_JAVA_OPTS: '"$LIVY_SERVER_JAVA_OPTS $LIVY_JMX_OPTS"'
 
 # Livy logging configuration
