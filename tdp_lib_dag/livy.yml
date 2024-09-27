@@ -19,6 +19,8 @@
 - name: livy_jmx-exporter_config
   depends_on:
     - exporter_jmx_install
+    - livy_ssl-tls_install
+    - livy_server_install
 
 - name: livy_server_start
   depends_on:
