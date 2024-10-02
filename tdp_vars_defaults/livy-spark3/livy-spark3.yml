@@ -70,10 +70,9 @@ livy_conf:
   livy.server.recovery.zk-state-store.key-prefix: "livy{{ spark_version }}"
 
 # jmx exporter config
-livy_jmx_exporter_conf_dir: "/etc/livy-spark3"
 livy_jmx_exporter_conf_file: "jmx-exporter.yml"
 exporter_livy_http_port: "{{ exporter_livy_spark3_http_port }}"
-jmx_exporter_opts: "{% if 'exporter_jmx' in groups and groups['exporter_jmx'] %}-javaagent:{{ jmx_exporter_install_file }}={{ exporter_livy_spark3_http_port }}:{{ livy_jmx_exporter_conf_dir }}/{{ livy_jmx_exporter_conf_file }}{% endif %}"
+jmx_exporter_opts: "{% if 'exporter_jmx' in groups and groups['exporter_jmx'] %}-javaagent:{{ jmx_exporter_install_file }}={{ exporter_livy_spark3_http_port }}:{{ livy_root_conf_dir }}/{{ livy_jmx_exporter_conf_file }}{% endif %}"
 
 jmx_exporter:
   startDelaySeconds: 0
