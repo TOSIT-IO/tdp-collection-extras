@@ -1,9 +1,4 @@
 ---
-- name: Check if livy config exists
-  ansible.builtin.stat:
-    path: "{{ livy_server_conf_dir }}/"
-  register: livy_config
-
 - name: Backup configuration
   ansible.builtin.copy:
     src: "{{ livy_server_conf_dir }}/"
@@ -12,15 +7,7 @@
     owner: "{{ livy_user }}"
     mode: "755"
     remote_src: yes
-  when: livy_config.stat.exists
-
-- name: Ensure livy config dir exists
-  ansible.builtin.file:
-    path: "{{ livy_server_conf_dir }}/"
-    state: directory
-    group: root
-    owner: root
-    mode: "755"
+  tags: ['backup', 'never']
 
 - name: Template livy-env.sh
   ansible.builtin.template:

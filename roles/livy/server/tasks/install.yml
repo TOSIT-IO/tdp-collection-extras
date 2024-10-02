@@ -62,6 +62,14 @@
     mode: "750"
     recurse: yes
 
+- name: Create config directory
+  ansible.builtin.file:
+    path: "{{ livy_server_conf_dir }}/"
+    state: directory
+    group: "{{ hadoop_group }}"
+    owner: "{{ livy_user }}"
+    mode: "755"
+
 - name: Template Livy Server service file
   ansible.builtin.template:
     src: livy-server.service.j2
