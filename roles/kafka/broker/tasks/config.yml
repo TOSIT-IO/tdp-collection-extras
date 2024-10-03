@@ -40,11 +40,3 @@
     mode: "644"
   vars:
     broker_id: "{{ groups['all'].index(inventory_hostname) }}"
-
-- name: Render jmxremote.password
-  ansible.builtin.template:
-    src: jmxremote.password.j2
-    dest: "{{ kafka_broker_conf_dir }}/jmxremote.password"
-    owner: root
-    group: root
-    mode: "644"
