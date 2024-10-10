@@ -818,6 +818,17 @@ firewalld_rules:
         - public
       state: present
 
+  # Hue
+  hue_server:
+    - name: hue_web_http_port
+      short: Hue - HTTP port - bind_url_port
+      port: "{{ hue_web_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
   # Jupyter
   jupyter_hub:
     - name: jupyterhub_http_port
@@ -836,8 +847,8 @@ firewalld_rules:
       - internal
       state: present
 
-  # Livy
-  livy:
+  # Livy for Spark2
+  livy_server:
     - name: livy_spark2_server_port
       short: livy spark2 - HTTP port - livy.server.port
       port: "{{ livy_spark2_server_port }}"
@@ -846,6 +857,18 @@ firewalld_rules:
         - internal
         - public
       state: present
+    # Prometheus exporter
+    - name: exporter_livy_spark_http_port
+      short: livy spark2 - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_livy_spark_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # Livy for Spark3
+  livy_spark3_server:
     - name: livy_spark3_server_port
       short: livy spark3 - HTTP port - livy.server.port
       port: "{{ livy_spark3_server_port }}"
@@ -853,4 +876,13 @@ firewalld_rules:
       zones:
       - internal
       - public
+      state: present
+      # Prometheus exporter
+    - name: exporter_livy_spark3_http_port
+      short: livy spark3 - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_livy_spark3_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
       state: present
