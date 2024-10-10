@@ -818,6 +818,17 @@ firewalld_rules:
         - public
       state: present
 
+  # Hue
+  hue_server:
+    - name: hue_web_http_port
+      short: Hue - HTTP port - bind_url_port
+      port: "{{ hue_web_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
   # Jupyter
   jupyter_hub:
     - name: jupyterhub_http_port
