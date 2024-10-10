@@ -847,8 +847,8 @@ firewalld_rules:
       - internal
       state: present
 
-  # Livy
-  livy:
+  # Livy for Spark2
+  livy_server:
     - name: livy_spark2_server_port
       short: livy spark2 - HTTP port - livy.server.port
       port: "{{ livy_spark2_server_port }}"
@@ -857,6 +857,9 @@ firewalld_rules:
         - internal
         - public
       state: present
+
+  # Livy for Spark3
+  livy_spark3_server:
     - name: livy_spark3_server_port
       short: livy spark3 - HTTP port - livy.server.port
       port: "{{ livy_spark3_server_port }}"
