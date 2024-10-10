@@ -857,6 +857,15 @@ firewalld_rules:
         - internal
         - public
       state: present
+    # Prometheus exporter
+    - name: exporter_livy_spark_http_port
+      short: livy spark2 - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_livy_spark_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
 
   # Livy for Spark3
   livy_spark3_server:
@@ -867,4 +876,13 @@ firewalld_rules:
       zones:
       - internal
       - public
+      state: present
+      # Prometheus exporter
+    - name: exporter_livy_spark3_http_port
+      short: livy spark3 - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_livy_spark3_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
       state: present
