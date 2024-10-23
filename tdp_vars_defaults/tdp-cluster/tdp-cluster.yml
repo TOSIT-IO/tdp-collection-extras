@@ -66,6 +66,7 @@ livy_spark3_log_file: "livy-spark3_server_{{ ansible_fqdn }}.log"
 #
 observability_tdp_targets:
   livy:
+    unix_group: "{{ hadoop_group }}"
     labels:
       type: tdp_core
       svc_dashboard: "{{ dashboard_without_workers | default('') }}"
@@ -82,6 +83,7 @@ observability_tdp_targets:
               password: "{{ exporter_livy_jmxremote_password }}"
 
   livy_spark3:
+    unix_group: "{{ hadoop_group }}"
     labels:
       type: tdp_core
       svc_dashboard: "{{ dashboard_without_workers | default('') }}"
@@ -98,6 +100,7 @@ observability_tdp_targets:
               password: "{{ exporter_livy_spark3_jmxremote_password }}"
 
   jupyter:
+    unix_group: "{{ hadoop_group }}"
     labels:
       type: tdp_core
       svc_dashboard: "{{ dashboard_python | default('') }}"
@@ -111,6 +114,7 @@ observability_tdp_targets:
               ca_file: "{{ ca_file }}"
 
   hue:
+    unix_group: "{{ hadoop_group }}"
     labels:
       type: tdp_core
       svc_dashboard: "{{ dashboard_python | default('') }}"
