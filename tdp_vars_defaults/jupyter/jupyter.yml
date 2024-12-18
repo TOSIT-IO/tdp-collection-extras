@@ -161,6 +161,7 @@ jupyterlab_dist_file: "{{ jupyterlab_release }}.tar.gz"
 jupyterlab_upload_directory: "{{ binaries_upload_dir }}"
 
 jupyterlab_python_executable: "python3.6"
+jupyterlab_virtualenv_command: "{{ jupyterlab_python_executable }} -m venv"
 
 # Jupyterlab installation directory
 jupyterlab_root_dir: "{{ tdp_extra_root_dir }}"
