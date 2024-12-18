@@ -886,14 +886,3 @@ firewalld_rules:
         - internal
         - public
       state: present
-
-# Grafana
-  grafana:
-    - name: grafana_web_port
-      short: Grafana - HTTP port - bind_url_port
-      port: "{{ grafana_web_port }}"
-      protocol: tcp
-      zones:
-        - internal
-        - public
-      state: present
