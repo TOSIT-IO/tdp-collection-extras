@@ -69,6 +69,7 @@
     umask: "0022"
     virtualenv: "{{ jupyterlab_root_dir }}/{{ jupyterlab_release }}"
     virtualenv_python: "{{ jupyterlab_python_executable }}"
+    virtualenv_command: "{{ jupyterlab_virtualenv_command }}"
 
 - name: Install Jupyterlab in virtual env
   ansible.builtin.pip:
