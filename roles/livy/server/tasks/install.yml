@@ -37,6 +37,15 @@
     src: "{{ livy_root_dir }}/{{ livy_release }}/"
     state: link
 
+- name: Upload sparklyr jar in Livy installation
+  ansible.builtin.copy:
+    src: "{{ binaries_local_dir }}/{{ sparklyr_jar_file }}"
+    dest: "{{ livy_install_dir }}/rsc-jars/{{ sparklyr_jar_file }}"
+    group: root
+    owner: root
+    mode: "644"
+  when: livy_enable_sparklyr
+
 - name: Create directory for pid
   ansible.builtin.file:
     path: "{{ livy_pid_dir }}"

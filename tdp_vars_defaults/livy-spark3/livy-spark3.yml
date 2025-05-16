@@ -6,6 +6,10 @@ livy_dist_file: "{{ livy_release }}.zip"
 # Spark version
 spark_version: spark3
 
+#Sparklyr jar
+sparklyr_jar_file: "sparklyr-master-2.12.jar"
+livy_enable_sparklyr: "{{ enable_r | default(false) | bool }}"
+
 # Livy user and group
 livy_user: livy
 hadoop_group: hadoop
@@ -125,4 +129,3 @@ livy_start_on_boot: false
 
 # Service restart policies
 livy_restart: "no"
-
