@@ -70,6 +70,7 @@
     owner: "{{ livy_user }}"
     mode: "750"
     recurse: yes
+    follow: false
 
 - name: Create config directory
   ansible.builtin.file:
