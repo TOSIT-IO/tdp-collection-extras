@@ -50,6 +50,7 @@
     mode: "755"
     state: directory
     recurse: true
+    follow: false
 
 - name: Create symbolic link to Hue installation
   ansible.builtin.file:
