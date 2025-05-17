@@ -1,6 +1,6 @@
 ---
 - name: Stop livy-server
   ansible.builtin.service:
-    name: "livy-server-{{ spark_version }}"
+    name: "livy-server-{{ spark_flavor }}"
     state: stopped
     enabled: "{{ livy_start_on_boot }}"

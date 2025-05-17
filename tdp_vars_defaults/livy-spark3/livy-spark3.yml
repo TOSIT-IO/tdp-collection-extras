@@ -4,7 +4,7 @@ livy_release: apache-livy-0.8.0-incubating-1.0_2.12-bin
 livy_dist_file: "{{ livy_release }}.zip"
 
 # Spark version
-spark_version: spark3
+spark_flavor: spark3
 
 #Sparklyr jar
 sparklyr_jar_file: "sparklyr-master-2.12.jar"
@@ -71,7 +71,7 @@ livy_conf:
       map('regex_replace', '^(.*)$', '\1:' + zookeeper_server_client_port | string) |
       list |
       join(',') }}
-  livy.server.recovery.zk-state-store.key-prefix: "livy{{ spark_version }}"
+  livy.server.recovery.zk-state-store.key-prefix: "livy{{ spark_flavor }}"
 
 # jmx exporter config
 livy_jmx_exporter_conf_file: "jmx-exporter.yml"

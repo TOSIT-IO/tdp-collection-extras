@@ -57,7 +57,7 @@
 - name: Template livy tmpfiles.d
   ansible.builtin.template:
     src: tmpfiles-livy.conf.j2
-    dest: "/etc/tmpfiles.d/livy-server-{{ spark_version }}.conf"
+    dest: "/etc/tmpfiles.d/livy-server-{{ spark_flavor }}.conf"
     owner: root
     group: root
     mode: "644"
@@ -83,7 +83,7 @@
 - name: Template Livy Server service file
   ansible.builtin.template:
     src: livy-server.service.j2
-    dest: "/usr/lib/systemd/system/livy-server-{{ spark_version }}.service"
+    dest: "/usr/lib/systemd/system/livy-server-{{ spark_flavor }}.service"
     owner: root
     group: root
     mode: "644"
