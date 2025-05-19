@@ -8,6 +8,9 @@
         host_firewalld_rules: |
           {{ group_names | intersect(firewalld_rules.keys()) | map('extract', firewalld_rules) | flatten }}
 
+    - name: Gather facts for IP detection
+      ansible.builtin.setup:
+
     - name: Template firewalld ipsets from Ansible groups
       ansible.builtin.template:
         src: firewalld-ipset.xml.j2
