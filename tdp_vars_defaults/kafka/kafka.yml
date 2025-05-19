@@ -134,7 +134,7 @@ hadoop_client_missing_jars:
 hadoop_client_class_path: "{{ hadoop_client_missing_jars | join(':') }}"
 
 # Ranger Kafka properties
-ranger_kafka_release: ranger-2.0.0-1.0-kafka-plugin
+ranger_kafka_release: ranger-{{ ranger_version }}-kafka-plugin
 ranger_kafka_dist_file: "{{ ranger_kafka_release }}.tar.gz"
 ranger_kafka_install_dir: "{{ kafka_root_dir }}/ranger-kafka-plugin"
 ranger_kafka_install_properties:
