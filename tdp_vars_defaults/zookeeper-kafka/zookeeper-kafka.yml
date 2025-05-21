@@ -12,6 +12,7 @@ zookeeper_user: zookeeper
 hadoop_group: hadoop
 
 # Zookeeper installation directory
+zookeeper_data_dir: /var/lib/zookeeper
 hadoop_root_dir: "{{ tdp_extra_root_dir }}"
 zookeeper_install_dir: "{{ hadoop_root_dir }}/zookeeper-kafka"
 
@@ -26,12 +27,12 @@ zookeeper_server_service_desc: ZooKeeper Server for Kafka
 
 # ZooKeeper servers
 zk_servers: |
-  {{ groups['zk_kafka'] | 
-     map('tosit.tdp.access_fqdn', hostvars) | 
+  {{ groups['zk_kafka'] |
+     map('tosit.tdp.access_fqdn', hostvars) |
      map('regex_replace', '^(.*)$', '\1:' + (zookeeper_server_quorum_port | string) + ':' + (zookeeper_server_election_port | string)) |
      list }}
 zookeeper_client_quorum: |
-  {{ groups['zk_kafka'] | 
+  {{ groups['zk_kafka'] |
      map('tosit.tdp.access_fqdn', hostvars) |
      map('regex_replace', '^(.*)$', '\1:' + (zookeeper_server_client_port | string) ) |
      list |
@@ -48,7 +49,7 @@ zookeeper_cli_cmd_script: /usr/bin/zkForKafkaCli.sh
 # Zookeeper logging configuration
 # Root logger level should be: [FATAL| ERROR| WARN| INFO| DEBUG| TRACE]
 zookeeper_root_logger_level: INFO
-# Root logger should be: [RFA | DRFA]  
+# Root logger should be: [RFA | DRFA]
 zookeeper_root_logger: RFA
 zookeeper_log_dir: /var/log/zookeeper-kafka
 zookeeper_log_file: "zookeeper-server_{{ ansible_fqdn }}.log"
@@ -109,4 +110,4 @@ jmx_exporter:
 
 # zookeeper resources allocation
 zookeeper_server_heapsize: 512m
-zookeeper_server_data_dirs: "{{ zookeeper_install_dir }}/zkData"
+zookeeper_server_data_dir: "{{ zookeeper_data_dir }}/zkData-kafka"
