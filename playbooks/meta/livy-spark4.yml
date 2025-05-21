@@ -1,0 +1,15 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- ansible.builtin.import_playbook: ../livy-spark4_server_install.yml
+- ansible.builtin.import_playbook: ../livy-spark4_kerberos_install.yml
+- ansible.builtin.import_playbook: ../livy-spark4_ssl-tls_install.yml
+# livy-spark4_install
+- ansible.builtin.import_playbook: ../livy-spark4_jmx-exporter_config.yml
+- ansible.builtin.import_playbook: ../livy-spark4_server_config.yml
+# livy-spark4_config
+- ansible.builtin.import_playbook: ../livy-spark4_server_start.yml
+# livy-spark4_server_init
+# livy-spark4_start
+# livy-spark4_init

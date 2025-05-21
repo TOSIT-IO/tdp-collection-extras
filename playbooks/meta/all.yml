@@ -20,6 +20,7 @@
 # jupyter_config
 # jupyter_start
 # jupyter_init
+# kafka_install
 - ansible.builtin.import_playbook: ../kafka_broker_install.yml
 - ansible.builtin.import_playbook: ../kafka_client_install.yml
 - ansible.builtin.import_playbook: ../kafka_jmx-exporter_config.yml
@@ -27,35 +28,33 @@
 - ansible.builtin.import_playbook: ../kafka_client_config.yml
 - ansible.builtin.import_playbook: ../kafka_ranger_install.yml
 - ansible.builtin.import_playbook: ../kafka_ssl-tls_install.yml
-# kafka_install
+# livy-spark3_install
 - ansible.builtin.import_playbook: ../livy-spark3_server_install.yml
 - ansible.builtin.import_playbook: ../livy-spark3_kerberos_install.yml
 - ansible.builtin.import_playbook: ../livy-spark3_ssl-tls_install.yml
-# livy-spark3_install
 - ansible.builtin.import_playbook: ../livy-spark3_jmx-exporter_config.yml
 - ansible.builtin.import_playbook: ../livy-spark3_server_config.yml
-# livy-spark3_config
-- ansible.builtin.import_playbook: ../livy_server_install.yml
-- ansible.builtin.import_playbook: ../livy_kerberos_install.yml
-- ansible.builtin.import_playbook: ../livy_ssl-tls_install.yml
-# livy_install
-- ansible.builtin.import_playbook: ../livy_jmx-exporter_config.yml
-- ansible.builtin.import_playbook: ../livy_server_config.yml
-# livy_config
-- ansible.builtin.import_playbook: ../firewall_generic_config.yml
+# livy-spark3_start
+- ansible.builtin.import_playbook: ../livy-spark3_server_start.yml
+# livy-spark4_install
+- ansible.builtin.import_playbook: ../livy-spark4_server_install.yml
+- ansible.builtin.import_playbook: ../livy-spark4_kerberos_install.yml
+- ansible.builtin.import_playbook: ../livy-spark4_ssl-tls_install.yml
+- ansible.builtin.import_playbook: ../livy-spark4_jmx-exporter_config.yml
+- ansible.builtin.import_playbook: ../livy-spark4_server_config.yml
+# livy-spark4_start
+- ansible.builtin.import_playbook: ../livy-spark4_server_start.yml
 # firewall_config
-- ansible.builtin.import_playbook: ../firewall_generic_start.yml
+- ansible.builtin.import_playbook: ../firewall_generic_config.yml
 # firewall_start
+- ansible.builtin.import_playbook: ../firewall_generic_start.yml
 # firewall_init
 - ansible.builtin.import_playbook: ../hue_server_start.yml
 # hue_server_init
 # hue_start
 # hue_init
-- ansible.builtin.import_playbook: ../livy-spark3_server_start.yml
 # livy-spark3_server_init
-# livy-spark3_start
 # livy-spark3_init
-- ansible.builtin.import_playbook: ../livy_server_start.yml
 # livy_server_init
 # livy_start
 # livy_init

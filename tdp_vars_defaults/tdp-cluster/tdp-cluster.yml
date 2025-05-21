@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-
 tdp_extra_root_dir: "{{ tdp_root_dir }}"
 #############################
 # Service & Component ports #
@@ -19,7 +18,7 @@ jupyterhub_hub_http_port: 8081
 kafka_server_listener_port: 9092
 
 # Livy ports
-livy_spark2_server_port: 8998
+livy_spark4_server_port: 8998
 
 # Livy-spark3 ports
 livy_spark3_server_port: 8999
@@ -33,9 +32,9 @@ zookeeper_kafka_server_election_port: 3999
 exporter_kafka_broker_http_port: 18202
 exporter_zookeeper_kafka_server_http_port: 18201
 
-exporter_livy_spark_http_port: 18203
-exporter_livy_jmxremote_username: "{{ jmxremote_username }}"
-exporter_livy_jmxremote_password: "{{ jmxremote_password }}"
+exporter_livy_spark4_http_port: 18203
+exporter_livy_spark4_jmxremote_username: "{{ jmxremote_username }}"
+exporter_livy_spark4_jmxremote_password: "{{ jmxremote_password }}"
 
 exporter_livy_spark3_http_port: 18204
 exporter_livy_spark3_jmxremote_username: "{{ jmxremote_username }}"
@@ -55,8 +54,8 @@ hue_promtail_collected_log: "hue_server_error_{{ ansible_fqdn }}.log"
 jupyterhub_log_dir: /var/log/jupyterhub
 jupyterhub_log_file: "jupyterhub_server_{{ ansible_fqdn }}.log"
 
-livy_spark_log_dir: /var/log/livy
-livy_spark_log_file: "livy_server_{{ ansible_fqdn }}.log"
+livy_spark4_log_dir: /var/log/livy-spark4
+livy_spark4_log_file: "livy-spark4_server_{{ ansible_fqdn }}.log"
 
 livy_spark3_log_dir: /var/log/livy-spark3
 livy_spark3_log_file: "livy-spark3_server_{{ ansible_fqdn }}.log"
@@ -65,22 +64,22 @@ livy_spark3_log_file: "livy-spark3_server_{{ ansible_fqdn }}.log"
 # Observability
 #
 observability_tdp_targets:
-  livy:
+  livy_spark4:
     unix_group: "{{ hadoop_group }}"
     labels:
       type: tdp_core
       svc_dashboard: "{{ dashboard_without_workers | default('') }}"
     server:
       jobs:
-        - log_file: "{{ livy_spark_log_dir }}/{{ livy_spark_log_file }}"
-          exporter_port: "{{ exporter_livy_spark_http_port }}"
+        - log_file: "{{ livy_spark4_log_dir }}/{{ livy_spark4_log_file }}"
+          exporter_port: "{{ exporter_livy_spark4_http_port }}"
           prometheus_scrape_options:
             scheme: https
             tls_config:
               ca_file: "{{ ca_file }}"
             basic_auth:
-              username: "{{ exporter_livy_jmxremote_username }}"
-              password: "{{ exporter_livy_jmxremote_password }}"
+              username: "{{ exporter_livy_spark4_jmxremote_username }}"
+              password: "{{ exporter_livy_spark4_jmxremote_password }}"
 
   livy_spark3:
     unix_group: "{{ hadoop_group }}"
@@ -122,18 +121,18 @@ observability_tdp_targets:
       jobs:
         - log_file: "{{ hue_log_dir }}/{{ hue_promtail_collected_log }}"
           promtail_pipeline:
-          - multiline:
-              firstline: '^\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}[.]\d{3}'
-          - regex:
-              expression: '^(?P<datetime>.*?) - (?P<level>[A-Z]+)\s*- .*'
-          - template:
-              source: 'level'
-              template: "{{ '{{ ToLower .Value }}' }}"
-          - timestamp:
-              format: '2006-01-02T15:04:05.000000-0700'
-              source: 'datetime'
-          - labels:
-              level: ''
+            - multiline:
+                firstline: '^\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}[.]\d{3}'
+            - regex:
+                expression: '^(?P<datetime>.*?) - (?P<level>[A-Z]+)\s*- .*'
+            - template:
+                source: "level"
+                template: "{{ '{{ ToLower .Value }}' }}"
+            - timestamp:
+                format: "2006-01-02T15:04:05.000000-0700"
+                source: "datetime"
+            - labels:
+                level: ""
         - exporter_port: "{{ hue_web_http_port }}"
           prometheus_scrape_options:
             scheme: https

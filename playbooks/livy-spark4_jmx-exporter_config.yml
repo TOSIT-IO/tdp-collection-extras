@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-- name: Livy Server jmx-exporter config
-  hosts: livy_server
+- name: Livy Spark4 Server jmx-exporter config
+  hosts: livy_spark4_server
   tasks:
-    - tosit.tdp.resolve:               # noqa name[missing]
-        node_name: livy_server
-    - name: Configure Livy Server jmx-exporter
+    - tosit.tdp.resolve: # noqa name[missing]
+        node_name: livy-spark4_server
+    - name: Configure Livy Spark4 Server jmx-exporter
       ansible.builtin.import_role:
         name: tosit.tdp_extra.livy.common
         tasks_from: jmx-exporter

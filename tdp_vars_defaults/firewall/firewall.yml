@@ -744,33 +744,7 @@ firewalld_rules:
         - public
       state: present
 
-  # Spark
-  spark_hs:
-    - name: spark_hs_http_port
-      short: Spark History Server - HTTP port - spark.history.ui.port
-      port: "{{ spark_hs_http_port }}"
-      protocol: tcp
-      zones:
-        - internal
-        - public
-      state: present
-    - name: spark_hs_https_port
-      short: Spark History Server - HTTPS port - spark.ssl.historyServer.port
-      port: "{{ spark_hs_https_port }}"
-      protocol: tcp
-      zones:
-        - internal
-        - public
-      state: present
-    # Prometheus exporter
-    - name: exporter_spark_hs_http_port
-      short: Spark History Server - Prometheus exporter HTTP port - ?
-      port: "{{ exporter_spark_hs_http_port }}"
-      protocol: tcp
-      zones:
-        - internal
-        - public
-      state: present
+  #Spark3
   spark3_hs:
     - name: spark3_hs_http_port
       short: Spark3 History Server - HTTP port - spark.history.ui.port
@@ -792,6 +766,33 @@ firewalld_rules:
     - name: exporter_spark3_hs_http_port
       short: Spark3 History Server - Prometheus exporter HTTP port - ?
       port: "{{ exporter_spark3_hs_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+  # Spark4
+  spark4_hs:
+    - name: spark4_hs_http_port
+      short: Spark History Server - HTTP port - spark.history.ui.port
+      port: "{{ spark4_hs_http_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: spark4_hs_https_port
+      short: Spark4 History Server - HTTPS port - spark.ssl.historyServer.port
+      port: "{{ spark4_hs_https_port }}"
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    # Prometheus exporter
+    - name: exporter_spark4_hs_http_port
+      short: Spark4 History Server - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_spark4_hs_http_port }}"
       protocol: tcp
       zones:
         - internal
@@ -844,23 +845,23 @@ firewalld_rules:
       port: "{{ jupyterhub_hub_http_port }}"
       protocol: tcp
       zones:
-      - internal
+        - internal
       state: present
 
-  # Livy for Spark2
-  livy_server:
-    - name: livy_spark2_server_port
-      short: livy spark2 - HTTP port - livy.server.port
-      port: "{{ livy_spark2_server_port }}"
+  # Livy for Spark4
+  livy_spark4_server:
+    - name: livy_spark4_server_port
+      short: livy spark4 - HTTP port - livy.server.port
+      port: "{{ livy_spark4_server_port }}"
       protocol: tcp
       zones:
         - internal
         - public
       state: present
     # Prometheus exporter
-    - name: exporter_livy_spark_http_port
-      short: livy spark2 - Prometheus exporter HTTP port - ?
-      port: "{{ exporter_livy_spark_http_port }}"
+    - name: exporter_livy_spark4_http_port
+      short: livy spark4 - Prometheus exporter HTTP port - ?
+      port: "{{ exporter_livy_spark4_http_port }}"
       protocol: tcp
       zones:
         - internal
@@ -874,8 +875,8 @@ firewalld_rules:
       port: "{{ livy_spark3_server_port }}"
       protocol: tcp
       zones:
-      - internal
-      - public
+        - internal
+        - public
       state: present
       # Prometheus exporter
     - name: exporter_livy_spark3_http_port

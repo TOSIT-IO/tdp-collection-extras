@@ -5,7 +5,7 @@
 - ansible.builtin.import_playbook: jupyter.yml
 - ansible.builtin.import_playbook: firewall.yml
 - ansible.builtin.import_playbook: hue.yml
-- ansible.builtin.import_playbook: livy.yml
 - ansible.builtin.import_playbook: livy-spark3.yml
+- ansible.builtin.import_playbook: livy-spark4.yml
 - ansible.builtin.import_playbook: zookeeper-kafka.yml
 - ansible.builtin.import_playbook: kafka.yml

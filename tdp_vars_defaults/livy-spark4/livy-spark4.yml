@@ -3,8 +3,8 @@
 livy_release: apache-livy-0.8.0-incubating-1.0_2.12-bin
 livy_dist_file: "{{ livy_release }}.zip"
 
-# Spark flavor ('spark2' or 'spark3')
-spark_flavor: spark2
+# Spark flavor ('spark3' or 'spark4')
+spark_flavor: spark4
 
 #Sparklyr jar
 sparklyr_jar_file: "sparklyr-master-2.12.jar"
@@ -28,8 +28,8 @@ livy_pid_dir: /var/run/livy
 # Properties
 hadoop_home: /opt/tdp/hadoop
 hadoop_conf_dir: /etc/hadoop/conf
-spark_home: /opt/tdp/spark
-spark_conf_dir: /etc/spark/conf
+spark_home: /opt/tdp/spark4
+spark_conf_dir: /etc/spark4/conf
 java_home: /usr/lib/jvm/jre-1.8.0-openjdk
 
 # Kerberos
@@ -44,7 +44,7 @@ krb_create_principals_keytabs: true
 livy_keystore_location: /etc/ssl/certs/keystore.jks
 livy_keystore_password: Keystore123!
 
-livy_server_port: "{{ livy_spark2_server_port }}"
+livy_server_port: "{{ livy_spark4_server_port }}"
 
 # livy.conf
 livy_conf:
@@ -75,8 +75,8 @@ livy_conf:
 
 # jmx exporter config
 livy_jmx_exporter_conf_file: "jmx-exporter.yml"
-exporter_livy_http_port: "{{ exporter_livy_spark_http_port }}"
-jmx_exporter_opts: "{% if 'exporter_jmx' in groups and groups['exporter_jmx'] %}-javaagent:{{ jmx_exporter_install_file }}={{ exporter_livy_spark_http_port }}:{{ livy_root_conf_dir }}/{{ livy_jmx_exporter_conf_file }}{% endif %}"
+exporter_livy_http_port: "{{ exporter_livy_spark4_http_port }}"
+jmx_exporter_opts: "{% if 'exporter_jmx' in groups and groups['exporter_jmx'] %}-javaagent:{{ jmx_exporter_install_file }}={{ exporter_livy_spark4_http_port }}:{{ livy_root_conf_dir }}/{{ livy_jmx_exporter_conf_file }}{% endif %}"
 jmx_exporter:
   startDelaySeconds: 0
   lowercaseOutputName: false
@@ -84,8 +84,8 @@ jmx_exporter:
   httpServer:
     authentication:
       basic:
-        username: "{{ exporter_livy_jmxremote_username }}"
-        password: "{{ exporter_livy_jmxremote_password }}"
+        username: "{{ exporter_livy_spark4_jmxremote_username }}"
+        password: "{{ exporter_livy_spark4_jmxremote_password }}"
     ssl:
       keyStore:
         filename: "{{ livy_keystore_location }}"
@@ -108,8 +108,8 @@ livy_env:
   LIVY_SERVER_JAVA_OPTS: '"$LIVY_SERVER_JAVA_OPTS $LIVY_JMX_OPTS"'
 # Livy logging configuration
 # Root logger level should be: [FATAL| ERROR| WARN| INFO| DEBUG| TRACE]
-livy_log_dir: "{{ livy_spark_log_dir }}"
-livy_log_file: "{{ livy_spark_log_file }}"
+livy_log_dir: "{{ livy_spark4_log_dir }}"
+livy_log_file: "{{ livy_spark4_log_file }}"
 livy_root_logger_level: INFO
 # Root logger should be: [RFA | DRFA]
 livy_root_logger: RFA

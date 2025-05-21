@@ -1,0 +1,59 @@
+---
+- name: livy-spark4_server_install
+  depends_on: []
+
+- name: livy-spark4_kerberos_install
+  depends_on:
+    - kerberos_spnego_install
+    - livy-spark4_server_install
+
+- name: livy-spark4_ssl-tls_install
+  depends_on:
+    - livy-spark4_server_install
+
+- name: livy-spark4_server_config
+  depends_on:
+    - livy-spark4_kerberos_install
+    - livy-spark4_ssl-tls_install
+
+- name: livy-spark4_jmx-exporter_config
+  depends_on:
+    - exporter_jmx_install
+    - livy-spark4_ssl-tls_install
+    - livy-spark4_server_install
+
+- name: livy-spark4_server_start
+  depends_on:
+    - livy-spark4_server_config
+    - livy-spark4_jmx-exporter_config
+    - spark4_init
+
+- name: livy-spark4_server_init
+  noop: yes
+  depends_on:
+    - livy-spark4_server_start
+
+- name: livy-spark4_install
+  noop: yes
+  depends_on:
+    - livy-spark4_server_install
+    - livy-spark4_kerberos_install
+    - livy-spark4_ssl-tls_install
+
+- name: livy-spark4_config
+  noop: yes
+  depends_on:
+    - livy-spark4_install
+    - livy-spark4_server_config
+
+- name: livy-spark4_start
+  noop: yes
+  depends_on:
+    - livy-spark4_config
+    - livy-spark4_server_start
+
+- name: livy-spark4_init
+  noop: yes
+  depends_on:
+    - livy-spark4_start
+    - livy-spark4_server_init
