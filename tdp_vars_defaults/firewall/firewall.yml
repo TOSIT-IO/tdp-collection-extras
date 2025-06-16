@@ -798,6 +798,58 @@ firewalld_rules:
         - public
       state: present
 
+  # Spark Client
+  spark_client:
+    - name: spark_driver_bind_portrange
+      short: Spark Driver - Bind port range - spark.driver.port
+      port: '{{ spark_driver_bind_port }}-{{ spark_driver_bind_port + spark_port_max_retries }}'
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+    - name: spark_blockmanager_bind_portrange
+      short: Spark Block Manager - Bind port range - spark.blockManager.port
+      port: '{{ spark_blockmanager_bind_port }}-{{ spark_blockmanager_bind_port + spark_port_max_retries }}'
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: spark_ui_bind_portrange
+      short: Spark UI - Bind port range - spark.ui.port
+      port: '{{ spark_ui_bind_port }}-{{ spark_ui_bind_port + spark_port_max_retries }}'
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
+  # Spark3 Client
+  spark3_client:
+    - name: spark3_driver_bind_portrange
+      short: Spark3 Driver - Bind port range - spark.driver.port
+      port: '{{ spark3_driver_bind_port }}-{{ spark3_driver_bind_port + spark3_port_max_retries }}'
+      protocol: tcp
+      zones:
+        - public
+        - internal
+      state: present
+    - name: spark3_blockmanager_bind_portrange
+      short: Spark3 Block Manager - Bind port range - spark.blockManager.port
+      port: '{{ spark3_blockmanager_bind_port }}-{{ spark3_blockmanager_bind_port + spark3_port_max_retries }}'
+      protocol: tcp
+      zones:
+        - internal
+      state: present
+    - name: spark3_ui_bind_portrange
+      short: Spark3 UI - Bind port range - spark.ui.port
+      port: '{{ spark3_ui_bind_port }}-{{ spark3_ui_bind_port + spark3_port_max_retries }}'
+      protocol: tcp
+      zones:
+        - internal
+        - public
+      state: present
+
   # Knox
   knox:
     - name: knox_gateway_http_port
