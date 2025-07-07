@@ -26,7 +26,7 @@
   depends_on:
     - livy-spark3_server_config
     - livy-spark3_jmx-exporter_config
-    - spark_init
+    - spark3_init
 
 - name: livy-spark3_server_init
   noop: yes

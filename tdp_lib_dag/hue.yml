@@ -18,7 +18,6 @@
 - name: hue_server_start
   depends_on:
     - hue_server_config
-    - spark_init
     - spark3_init
     - yarn_init
     - hdfs_init
