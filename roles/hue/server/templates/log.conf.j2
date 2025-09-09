@@ -74,7 +74,7 @@ args=('%LOG_DIR%/{{ hue_log_error_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb *
 class=handlers.TimedRotatingFileHandler
 args=('%LOG_DIR%/{{ hue_log_error_file }}', '{{ hue_log_drfa_date_pattern  }}', 1, {{ hue_log_drfa_maxbackupindex }})
 {% endif %}
-level={{ hue_loggers_level }}
+level=ERROR
 formatter=default
 
 [formatter_default]
