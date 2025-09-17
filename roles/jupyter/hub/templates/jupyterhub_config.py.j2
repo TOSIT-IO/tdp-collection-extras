@@ -163,7 +163,7 @@ class IsoFormatter(logging.Formatter):
 
 
 {% if jupyterhub_root_logger == "RFA" %}
-h = logging.handlers.RotatingFileHandler("{{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}", backupCount={{ jupyterhub_log_rfa_maxbackupindex }}, maxBytes={{ jupyterhub_log_rfa_maxfilesize_mb }} * 1024)
+h = logging.handlers.RotatingFileHandler("{{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}", backupCount={{ jupyterhub_log_rfa_maxbackupindex }}, maxBytes={{ jupyterhub_log_rfa_maxfilesize_mb }} * 1024 * 1024)
 h.setLevel(logging.{{ jupyterhub_root_logger_level }} )
 {% elif jupyterhub_root_logger == "DRFA" %}
 h = logging.handlers.TimedRotatingFileHandler("{{ jupyterhub_log_dir }}/{{ jupyterhub_log_file }}", when='{{ jupyterhub_log_drfa_date_pattern }}', interval=1, backupCount={{ jupyterhub_log_drfa_maxbackupindex }})
