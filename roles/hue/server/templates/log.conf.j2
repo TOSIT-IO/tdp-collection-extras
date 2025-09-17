@@ -8,7 +8,7 @@
 [handler_logfile]
 {% if hue_root_logger == "RFA" %}
 class=handlers.RotatingFileHandler
-args=('%LOG_DIR%/{{ hue_log_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1000000 }}, {{ hue_log_rfa_maxbackupindex }})
+args=('%LOG_DIR%/{{ hue_log_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1024 * 1024 }}, {{ hue_log_rfa_maxbackupindex }})
 {% elif hue_root_logger == "DRFA" %}
 class=handlers.TimedRotatingFileHandler
 args=('%LOG_DIR%/{{ hue_log_file }}' , '{{ hue_log_drfa_date_pattern  }}' , 1, {{ hue_log_drfa_maxbackupindex }})
@@ -56,7 +56,7 @@ qualname=boto
 [handler_accesslog]
 {% if hue_root_logger == "RFA" %}
 class=handlers.RotatingFileHandler
-args=('%LOG_DIR%/{{ hue_log_access_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1000000 }}, {{ hue_log_rfa_maxbackupindex }})
+args=('%LOG_DIR%/{{ hue_log_access_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1024 * 1024 }}, {{ hue_log_rfa_maxbackupindex }})
 {% elif hue_root_logger == "DRFA" %}
 class=handlers.TimedRotatingFileHandler
 args=('%LOG_DIR%/{{ hue_log_access_file }}', '{{ hue_log_drfa_date_pattern  }}' , 1, {{ hue_log_drfa_maxbackupindex }})
@@ -69,7 +69,7 @@ formatter=access
 [handler_errorlog]
 {% if hue_root_logger == "RFA" %}
 class=handlers.RotatingFileHandler
-args=('%LOG_DIR%/{{ hue_log_error_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1000000 }}, {{ hue_log_rfa_maxbackupindex }})
+args=('%LOG_DIR%/{{ hue_log_error_file }}', 'a', {{ hue_log_rfa_maxfilesize_mb * 1024 * 1024 }}, {{ hue_log_rfa_maxbackupindex }})
 {% elif hue_root_logger == "DRFA" %}
 class=handlers.TimedRotatingFileHandler
 args=('%LOG_DIR%/{{ hue_log_error_file }}', '{{ hue_log_drfa_date_pattern  }}', 1, {{ hue_log_drfa_maxbackupindex }})
