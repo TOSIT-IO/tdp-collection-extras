@@ -1262,7 +1262,7 @@ is_enabled={{ hadoop.hdfs.is_enabled }}
 
 [[[default]]]
 # Enter the host on which you are running the ResourceManager
-resourcemanager_host={{ hadoop.yarn.resourcemanager_host }}
+resourcemanager_host={{ hadoop.yarn.resourcemanager_hosts[0] }}
 
 # The port where the ResourceManager IPC listens on
 resourcemanager_port={{ hadoop.yarn.resourcemanager_port }}
@@ -1271,7 +1271,7 @@ resourcemanager_port={{ hadoop.yarn.resourcemanager_port }}
 submit_to={{ hadoop.yarn.submit_to }}
 
 # Resource Manager logical name (required for HA)
-logical_name={{ hadoop.yarn.logical_name }}
+logical_name={{ hadoop.yarn.logical_name + '1' }}
 
 # Change this if your YARN cluster is Kerberos-secured
 security_enabled={{ hadoop.yarn.security_enabled }}
@@ -1299,18 +1299,20 @@ ssl_cert_ca_verify={{ hadoop.yarn.ssl_cert_ca_verify }}
   # Redefine different properties there.
   # e.g.
 
-[[[ha]]]
-resourcemanager_host={{ hadoop.yarn.ha.resourcemanager_host }}
-resourcemanager_port={{ hadoop.yarn.ha.resourcemanager_port }}
-submit_to={{ hadoop.yarn.ha.submit_to }}
-logical_name={{ hadoop.yarn.ha.logical_name }}
-security_enabled={{ hadoop.yarn.ha.security_enabled }}
-resourcemanager_api_url={{ hadoop.yarn.ha.resourcemanager_api_url }}
-history_server_api_url={{ hadoop.yarn.ha.history_server_api_url }}
-spark_history_server_url={{ hadoop.yarn.ha.spark_history_server_url }}
-spark_history_server_security_enabled={{ hadoop.yarn.ha.spark_history_server_security_enabled }}
-ssl_cert_ca_verify={{ hadoop.yarn.ha.ssl_cert_ca_verify }}
+{% for i in range(1, groups['yarn_rm'] | length) %}
+{{ '[[[ha' + i | string + ']]]' }}
+resourcemanager_host={{ hadoop.yarn.resourcemanager_hosts[i] }}
+resourcemanager_port={{ hadoop.yarn.resourcemanager_port }}
+submit_to={{ hadoop.yarn.submit_to }}
+logical_name={{ hadoop.yarn.logical_name + (i + 1) | string }}
+security_enabled={{ hadoop.yarn.security_enabled }}
+resourcemanager_api_url={{ 'https://' + hadoop.yarn.resourcemanager_hosts[i] + ':' + hadoop.yarn.resourcemanager_port | string }}
+history_server_api_url={{ hadoop.yarn.history_server_api_url }}
+spark_history_server_url={{ hadoop.yarn.spark_history_server_url }}
+spark_history_server_security_enabled={{ hadoop.yarn.spark_history_server_security_enabled }}
+ssl_cert_ca_verify={{ hadoop.yarn.ssl_cert_ca_verify }}
 
+{% endfor %}
 
 ###########################################################################
 # Settings to configure Beeswax with Hive
