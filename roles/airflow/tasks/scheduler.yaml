@@ -1,6 +1,0 @@
----
-- name: Template Airflow scheduler service file
-  ansible.builtin.template:
-    src: airflow-scheduler.service.j2
-    dest: /usr/lib/systemd/system/airflow-scheduler.service
-  notify: systemctl daemon-reload
