@@ -1,9 +1,0 @@
-# Kafka client common properties
-{% for name, value in (kafka_client_common_properties | dictsort) %}
-{{ name }}={{ value }}
-{% endfor %}
-
-# Kafka producer properties
-{% for name, value in (kafka_consumer_properties | dictsort) %}
-{{ name }}={{ value }}
-{% endfor %}

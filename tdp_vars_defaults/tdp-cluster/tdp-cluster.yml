@@ -15,21 +15,10 @@ hue_web_http_port: 8888
 jupyterhub_http_port: 8000
 jupyterhub_hub_http_port: 8081
 
-# Kafka ports
-kafka_server_listener_port: 9092
-
 # Livy-spark3 ports
 livy_spark3_server_port: 8999
 
-# Zookeeper-kafka ports
-zookeeper_kafka_server_client_port: 2191
-zookeeper_kafka_server_quorum_port: 2999
-zookeeper_kafka_server_election_port: 3999
-
 # Exporter ports
-exporter_kafka_broker_http_port: 18202
-exporter_zookeeper_kafka_server_http_port: 18201
-
 exporter_livy_spark3_http_port: 18204
 exporter_livy_spark3_jmxremote_username: "{{ jmxremote_username }}"
 exporter_livy_spark3_jmxremote_password: "{{ jmxremote_password }}"

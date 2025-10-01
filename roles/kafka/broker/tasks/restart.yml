@@ -1,9 +1,0 @@
-# Copyright 2022 TOSIT.IO
-# SPDX-License-Identifier: Apache-2.0
-
----
-- name: Restart Kafka Broker
-  ansible.builtin.service:
-    name: kafka-broker
-    state: restarted
-    enabled: "{{ kafka_start_on_boot }}"

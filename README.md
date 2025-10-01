@@ -8,11 +8,6 @@ Please check the core [Ansible TDP Collection](https://github.com/TOSIT-IO/tdp-c
 
 - `hue`: deploys Cloudera Hue
 - `livy.server`: deploys Apache Livy Server
-- `kafka`: deploys Kafka brokers and Kafka client
-
-## Other services
-
-- `zookeeper-kafka`: deploys Apache ZooKeeper dedicated to Kafka (version 3.5.9 by default). Note that this service is deployed to hosts member of the `[zk]` group and uses `tdp-collection`'s [zookeeper role](https://github.com/TOSIT-IO/tdp-collection/tree/master/roles/zookeeper).
 
 ## Example
 
