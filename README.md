@@ -6,7 +6,7 @@ Please check the core [Ansible TDP Collection](https://github.com/TOSIT-IO/tdp-c
 
 ## Available Roles
 
-- `airflow`: deploys the Apache Airflow release (Airflow Webserver + Scheduler + Worker)
+- `hue`: deploys Cloudera Hue
 - `livy.server`: deploys Apache Livy Server
 - `kafka`: deploys Kafka brokers and Kafka client
 

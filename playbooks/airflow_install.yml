@@ -1,6 +1,0 @@
----
-- name: "Deploy Airflow"
-  hosts: airflow
-  tasks:
-    - ansible.builtin.import_role:
-        name: tosit.tdp_extra.airflow
