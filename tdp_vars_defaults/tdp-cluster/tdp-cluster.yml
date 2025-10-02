@@ -43,7 +43,7 @@ tdp_python_log_layout_pattern: "%(asctime)s - %(levelname)s - %(name)s - %(funcN
 
 hue_log_dir: /var/log/hue
 hue_log_file: "hue_server_%PROC_NAME%_{{ ansible_fqdn }}.log"
-hue_promtail_collected_log: "hue_server_error_{{ ansible_fqdn }}.log"
+hue_collected_log: "hue_server_error_{{ ansible_fqdn }}.log"
 
 jupyterhub_log_dir: /var/log/jupyterhub
 jupyterhub_log_file: "jupyterhub_server_{{ ansible_fqdn }}.log"
@@ -93,12 +93,12 @@ observability_tdp_targets:
       svc_dashboard: "{{ dashboard_python | default('') }}"
     server:
       jobs:
-        - log_file: "{{ hue_log_dir }}/{{ hue_promtail_collected_log }}"
-          promtail_pipeline:
+        - log_file: "{{ hue_log_dir }}/{{ hue_collected_log }}"
+          alloy_pipeline:
           - multiline:
-              firstline: '^\d{4}-\d{2}-\d{2}[T]\d{2}:\d{2}:\d{2}[.]\d{3}'
+              firstline: '^\\d{4}-\\d{2}-\\d{2}[T]\\d{2}:\\d{2}:\\d{2}[.]\\d{3}'
           - regex:
-              expression: '^(?P<datetime>.*?) - (?P<level>[A-Z]+)\s*- .*'
+              expression: '^(?P<datetime>.*?) - (?P<level>[A-Z]+)\\s*- .*'
           - template:
               source: 'level'
               template: "{{ '{{ ToLower .Value }}' }}"
@@ -106,7 +106,8 @@ observability_tdp_targets:
               format: '2006-01-02T15:04:05.000000-0700'
               source: 'datetime'
           - labels:
-              level: ''
+              values:
+                level: ""
         - exporter_port: "{{ hue_web_http_port }}"
           prometheus_scrape_options:
             scheme: https
