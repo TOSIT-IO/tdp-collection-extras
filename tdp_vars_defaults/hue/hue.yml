@@ -114,8 +114,8 @@ hadoop:
     logical_name: "rm"
     security_enabled: "true"
     resourcemanager_api_url: "https://{{ groups['yarn_rm'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ yarn_rm_https_port}}"
-    history_server_api_url: "https://{{ groups['mapred_jhs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ mapred_jhs_https_port }}"
-    spark_history_server_url: "https://{{ groups['spark3_hs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ spark3_hs_https_port }}"
+    history_server_api_url: "{% if jhs_ha_address is defined %}{{ jhs_ha_address }}{% else %}https://{{ groups['mapred_jhs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ mapred_jhs_https_port }}{% endif %}"
+    spark_history_server_url: "{% if spark3_hs_ha_address is defined %}{{ spark3_hs_ha_address }}{% else %}https://{{ groups['spark3_hs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ spark3_hs_https_port }}{% endif %}"
     spark_history_server_security_enabled: "true"
     ssl_cert_ca_verify: "true"
 beeswax:
