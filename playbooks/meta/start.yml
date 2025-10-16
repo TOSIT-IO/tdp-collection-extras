@@ -1,0 +1,42 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+## firewall_install
+# - ansible.builtin.import_playbook: ../hue_server_install.yml
+# - ansible.builtin.import_playbook: ../hue_kerberos_install.yml
+# - ansible.builtin.import_playbook: ../hue_ssl-tls_install.yml
+## hue_install
+# - ansible.builtin.import_playbook: ../hue_server_config.yml
+## hue_config
+# - ansible.builtin.import_playbook: ../jupyter_hub_install.yml
+# - ansible.builtin.import_playbook: ../jupyter_kerberos_install.yml
+# - ansible.builtin.import_playbook: ../jupyter_lab_install.yml
+# - ansible.builtin.import_playbook: ../jupyter_lab_config.yml
+# - ansible.builtin.import_playbook: ../jupyter_ssl-tls_install.yml
+# - ansible.builtin.import_playbook: ../jupyter_hub_config.yml
+- ansible.builtin.import_playbook: ../jupyter_hub_start.yml
+## jupyter_install
+## jupyter_config
+## jupyter_start
+## jupyter_init
+# - ansible.builtin.import_playbook: ../livy-spark3_server_install.yml
+# - ansible.builtin.import_playbook: ../livy-spark3_kerberos_install.yml
+# - ansible.builtin.import_playbook: ../livy-spark3_ssl-tls_install.yml
+## livy-spark3_install
+# - ansible.builtin.import_playbook: ../livy-spark3_jmx-exporter_config.yml
+# - ansible.builtin.import_playbook: ../livy-spark3_server_config.yml
+## livy-spark3_config
+# - ansible.builtin.import_playbook: ../firewall_generic_config.yml
+## firewall_config
+- ansible.builtin.import_playbook: ../firewall_generic_start.yml
+## firewall_start
+## firewall_init
+- ansible.builtin.import_playbook: ../hue_server_start.yml
+## hue_server_init
+## hue_start
+## hue_init
+- ansible.builtin.import_playbook: ../livy-spark3_server_start.yml
+## livy-spark3_server_init
+## livy-spark3_start
+## livy-spark3_init

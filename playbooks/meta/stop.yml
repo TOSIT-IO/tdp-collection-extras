@@ -1,0 +1,12 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+# livy-spark3_stop
+- ansible.builtin.import_playbook: ../livy-spark3_server_stop.yml
+# hue_stop
+- ansible.builtin.import_playbook: ../hue_server_stop.yml
+# firewall_stop
+- ansible.builtin.import_playbook: ../firewall_generic_stop.yml
+# jupyter_stop
+- ansible.builtin.import_playbook: ../jupyter_hub_stop.yml
