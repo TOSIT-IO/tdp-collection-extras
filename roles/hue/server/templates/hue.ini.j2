@@ -1018,7 +1018,7 @@ show_notebooks={{ show_notebook }}
 # [[[phoenix]]]
 # name=HBase Phoenix
 # interface=sqlalchemy
-# options='{"url": "phoenix://{{ groups['phoenix_queryserver_daemon'][0] | default('localhost') | tosit.tdp.access_fqdn(hostvars) }}:8765", "tls": true, "connect_args": {"authentication": "SPNEGO", "verify": false }}'
+# options='{"url": "phoenix://localhost:8765", "tls": true, "connect_args": {"authentication": "SPNEGO", "verify": false }}'
 
 # [[[hplsql]]]
 #   name=Hplsql
