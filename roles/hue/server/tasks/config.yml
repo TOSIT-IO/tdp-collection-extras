@@ -27,6 +27,7 @@
   vars:
     hue_user_id: "{{ hue_user_id_output.stdout | trim }}"
     livy_port: "{{ livy_server_port }}"
+  no_log: "{{ tdp_no_log is not defined or tdp_no_log }}"
 
 - name: Template Hue log configuration
   ansible.builtin.template:

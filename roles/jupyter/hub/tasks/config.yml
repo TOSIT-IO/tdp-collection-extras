@@ -37,3 +37,4 @@
     owner: root
     group: root
     mode: "0644"
+  no_log: "{{ tdp_no_log is not defined or tdp_no_log }}"
