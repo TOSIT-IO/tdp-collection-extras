@@ -1,0 +1,10 @@
+# Copyright 2022 TOSIT.IO
+# SPDX-License-Identifier: Apache-2.0
+
+---
+tdpspnego_authentication:
+  parameters:
+    hadoop.proxyuser.jupyterhub.groups: '*'
+    hadoop.proxyuser.jupyterhub.hosts: '*'
+    hadoop.proxyuser.hue.hosts: '*'
+    hadoop.proxyuser.hue.groups: '*'
