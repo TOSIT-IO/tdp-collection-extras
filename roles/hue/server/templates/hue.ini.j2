@@ -1277,7 +1277,7 @@ logical_name={{ hadoop.yarn.logical_name + '1' }}
 security_enabled={{ hadoop.yarn.security_enabled }}
 
 # URL of the ResourceManager API
-resourcemanager_api_url={{ hadoop.yarn.resourcemanager_api_url }}
+resourcemanager_api_url={{ 'https://' + hadoop.yarn.resourcemanager_hosts[0] + ':' + hadoop.yarn.resourcemanager_port | string }}
 
 # URL of the ProxyServer API
 # proxy_api_url=http://localhost:8088

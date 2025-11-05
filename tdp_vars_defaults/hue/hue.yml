@@ -113,7 +113,6 @@ hadoop:
     submit_to: "true"
     logical_name: "rm"
     security_enabled: "true"
-    resourcemanager_api_url: "https://{{ groups['yarn_rm'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ yarn_rm_https_port}}"
     history_server_api_url: "{% if groups['knox'][0] is defined %}https://{{ groups['knox'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ knox_gateway_http_port }}/gateway/tdpspnego/jobhistory{% else %}https://{{ groups['mapred_jhs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ mapred_jhs_https_port }}{% endif %}"
     spark_history_server_url: "https://{{ groups['spark3_hs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ spark3_hs_https_port }}"
     spark_history_server_security_enabled: "true"
