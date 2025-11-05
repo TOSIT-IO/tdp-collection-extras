@@ -9,7 +9,7 @@ hadoop_group: hadoop
 
 # Hue version
 hue_release: hue-release-4.11.0
-hue_dist_file: "{% if (ansible_distribution_major_version | int) > 7 %}{{ hue_release }}-cp38-cp38-manylinux2014_x86_64.tar.gz{% else %}{{ hue_release }}.tar.gz{% endif %}"
+hue_dist_file: "{% if (ansible_distribution_major_version | int) > 7 %}{{ hue_release }}-2.0-cp38-cp38-manylinux2014_x86_64.tar.gz{% else %}{{ hue_release }}.tar.gz{% endif %}"
 
 # Hue configuration directories
 hue_root_dir: "{{ tdp_extra_root_dir }}"
@@ -103,7 +103,7 @@ interpreters:
 hadoop:
   hdfs:
     fs_defaults: "hdfs://{{ cluster_name }}:{{ hdfs_nn_rpc_port }}"
-    webhdfs_url: "https://{{ groups['hdfs_httpfs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ hdfs_httpfs_port }}/webhdfs/v1"
+    webhdfs_url: "{% if groups['knox'][0] is defined %}https://{{ groups['knox'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ knox_gateway_http_port }}/gateway/tdpspnego/webhdfs/v1{% else %}https://{{ groups['hdfs_httpfs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ hdfs_httpfs_port }}/webhdfs/v1{% endif %}"
     security_enabled: "true"
     hadoop_conf_dir: "{{ hadoop_conf_dir }}"
     is_enabled: "true"
@@ -114,7 +114,7 @@ hadoop:
     logical_name: "rm"
     security_enabled: "true"
     resourcemanager_api_url: "https://{{ groups['yarn_rm'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ yarn_rm_https_port}}"
-    history_server_api_url: "https://{{ groups['mapred_jhs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ mapred_jhs_https_port }}"
+    history_server_api_url: "{% if groups['knox'][0] is defined %}https://{{ groups['knox'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ knox_gateway_http_port }}/gateway/tdpspnego/jobhistory{% else %}https://{{ groups['mapred_jhs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ mapred_jhs_https_port }}{% endif %}"
     spark_history_server_url: "https://{{ groups['spark3_hs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ spark3_hs_https_port }}"
     spark_history_server_security_enabled: "true"
     ssl_cert_ca_verify: "true"
