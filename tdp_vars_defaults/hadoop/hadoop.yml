@@ -12,8 +12,32 @@ auth_to_local:
 
 core_site:
   hadoop.proxyuser.jupyterhub.groups: '*'
-  hadoop.proxyuser.jupyterhub.hosts: '*'
-  hadoop.proxyuser.hue.hosts: '*'
+  hadoop.proxyuser.jupyterhub.hosts: >-
+    {%- if hadoop_proxyuser_hosts_groups.jupyterhub is defined and hadoop_proxyuser_hosts_groups.jupyterhub | length > 0 -%}
+    {{
+      hadoop_proxyuser_hosts_groups.jupyterhub
+      | map('extract', groups)
+      | sum(start=[])
+      | map('tosit.tdp.access_fqdn', hostvars)
+      | unique
+      | join(',')
+    }}
+    {%- else -%}
+        ""
+    {%- endif -%}
+  hadoop.proxyuser.hue.hosts: >-
+    {%- if hadoop_proxyuser_hosts_groups.hue is defined and hadoop_proxyuser_hosts_groups.hue | length > 0 -%}
+    {{
+      hadoop_proxyuser_hosts_groups.hue
+      | map('extract', groups)
+      | sum(start=[])
+      | map('tosit.tdp.access_fqdn', hostvars)
+      | unique
+      | join(',')
+    }}
+    {%- else -%}
+        ""
+    {%- endif -%}
   hadoop.proxyuser.hue.groups: '*'
   hadoop.proxyuser.livy.hosts: '*'
   hadoop.proxyuser.livy.groups: '*'
