@@ -103,7 +103,7 @@ interpreters:
 hadoop:
   hdfs:
     fs_defaults: "hdfs://{{ cluster_name }}:{{ hdfs_nn_rpc_port }}"
-    webhdfs_url: "{% if groups['knox'][0] is defined %}https://{{ groups['knox'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ knox_gateway_http_port }}/gateway/tdpspnego/webhdfs/v1{% else %}https://{{ groups['hdfs_httpfs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ hdfs_httpfs_port }}/webhdfs/v1{% endif %}"
+    webhdfs_url: "{% if knox_ha_address is defined %}{{ knox_ha_address }}/gateway/tdpspnego/webhdfs/v1{% elif groups['knox'][0] is defined %}https://{{ groups['knox'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ knox_gateway_http_port }}/gateway/tdpspnego/webhdfs/v1{% else %}https://{{ groups['hdfs_httpfs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ hdfs_httpfs_port }}/webhdfs/v1{% endif %}"
     security_enabled: "true"
     hadoop_conf_dir: "{{ hadoop_conf_dir }}"
     is_enabled: "true"
@@ -113,7 +113,7 @@ hadoop:
     submit_to: "true"
     logical_name: "rm"
     security_enabled: "true"
-    history_server_api_url: "{% if groups['knox'][0] is defined %}https://{{ groups['knox'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ knox_gateway_http_port }}/gateway/tdpspnego/jobhistory{% else %}https://{{ groups['mapred_jhs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ mapred_jhs_https_port }}{% endif %}"
+    history_server_api_url: "{% if knox_ha_address is defined %}{{ knox_ha_address }}/gateway/tdpspnego/jobhistory{% elif groups['knox'][0] is defined %}https://{{ groups['knox'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ knox_gateway_http_port }}/gateway/tdpspnego/jobhistory{% else %}https://{{ groups['mapred_jhs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ mapred_jhs_https_port }}{% endif %}"
     spark_history_server_url: "https://{{ groups['spark3_hs'][0] | tosit.tdp.access_fqdn(hostvars) }}:{{ spark3_hs_https_port }}"
     spark_history_server_security_enabled: "true"
     ssl_cert_ca_verify: "true"
