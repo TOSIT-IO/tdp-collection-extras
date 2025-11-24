@@ -1,0 +1,28 @@
+httpfs.proxyuser.hue.hosts: >-
+    {%- if httpfs_proxyuser_hosts_groups.hue is defined and httpfs_proxyuser_hosts_groups.hue | length > 0 -%}
+    {{
+      httpfs_proxyuser_hosts_groups.hue
+      | map('extract', groups)
+      | sum(start=[])
+      | map('tosit.tdp.access_fqdn', hostvars)
+      | unique
+      | join(',')
+    }}
+    {%- else -%}
+        ""
+    {%- endif -%}
+httpfs.proxyuser.hue.groups: "*"
+httpfs.proxyuser.hdfs.hosts: >-
+    {%- if httpfs_proxyuser_hosts_groups.hdfs is defined and httpfs_proxyuser_hosts_groups.hdfs | length > 0 -%}
+    {{
+      httpfs_proxyuser_hosts_groups.hdfs
+      | map('extract', groups)
+      | sum(start=[])
+      | map('tosit.tdp.access_fqdn', hostvars)
+      | unique
+      | join(',')
+    }}
+    {%- else -%}
+        ""
+    {%- endif -%}
+httpfs.proxyuser.hdfs.groups: "*"
