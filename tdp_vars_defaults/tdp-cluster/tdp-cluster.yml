@@ -13,7 +13,10 @@ hadoop_proxyuser_hosts_groups:
     - hue_server
   jupyterhub:
     - jupyter_hub
-  
+  livy:
+    - livy_server
+    - livy_spark3_server
+
 #############################
 # Service & Component ports #
 #############################
