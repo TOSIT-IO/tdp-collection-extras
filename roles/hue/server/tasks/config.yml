@@ -38,6 +38,7 @@
     mode: "0644"
 
 - name: Initiate Hue database
+  run_once: true
   ansible.builtin.command: |
     {{ hue_install_dir }}/build/env/bin/hue migrate
   register: hue_database_migrate
