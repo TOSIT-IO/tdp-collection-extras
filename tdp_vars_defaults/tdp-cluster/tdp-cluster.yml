@@ -4,6 +4,24 @@
 ---
 
 tdp_extra_root_dir: "{{ tdp_root_dir }}"
+##########################
+# Proxyuser hosts groups #
+##########################
+
+hadoop_proxyuser_hosts_groups:
+  hue:
+    - hue_server
+  jupyterhub:
+    - jupyter_hub
+  livy:
+    - livy_spark3_server
+
+httpfs_proxyuser_hosts_groups:
+  hue:
+    - hue_server
+  hdfs:
+    - hdfs_httpfs
+
 #############################
 # Service & Component ports #
 #############################
