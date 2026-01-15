@@ -26,7 +26,6 @@ db_hue_password: hue
 db_hue_name: hue
 
 # Kerberos
-realm: TDP.LOCAL
 krb_create_principals_keytabs: true
 
 #SSL configuration
