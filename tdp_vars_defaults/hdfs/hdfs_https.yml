@@ -4,7 +4,9 @@ httpfs_site:
       {{
         httpfs_proxyuser_hosts_groups.hue
         | map('extract', groups)
+        | map('default', False)
         | flatten
+        | select()
         | map('tosit.tdp.access_fqdn', hostvars)
         | unique
         | join(',')
@@ -18,7 +20,9 @@ httpfs_site:
       {{
         httpfs_proxyuser_hosts_groups.hdfs
         | map('extract', groups)
+        | map('default', False)
         | flatten
+        | select()
         | map('tosit.tdp.access_fqdn', hostvars)
         | unique
         | join(',')
