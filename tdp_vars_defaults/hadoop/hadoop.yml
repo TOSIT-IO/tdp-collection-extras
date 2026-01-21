@@ -17,7 +17,9 @@ core_site:
     {{
       hadoop_proxyuser_hosts_groups.jupyterhub
       | map('extract', groups)
+      | map('default', False)
       | flatten
+      | select()
       | map('tosit.tdp.access_fqdn', hostvars)
       | unique
       | join(',')
@@ -30,7 +32,9 @@ core_site:
     {{
       hadoop_proxyuser_hosts_groups.hue
       | map('extract', groups)
+      | map('default', False)
       | flatten
+      | select()
       | map('tosit.tdp.access_fqdn', hostvars)
       | unique
       | join(',')
@@ -44,7 +48,9 @@ core_site:
     {{
       hadoop_proxyuser_hosts_groups.livy
       | map('extract', groups)
+      | map('default', False)
       | flatten
+      | select()
       | map('tosit.tdp.access_fqdn', hostvars)
       | unique
       | join(',')
