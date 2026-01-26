@@ -11,14 +11,8 @@ Please check the core [Ansible TDP Collection](https://github.com/TOSIT-IO/tdp-c
 
 ## Example
 
-For examples on how to run these roles, please check out the [TDP Getting Started](https://github.com/TOSIT-IO/tdp-getting-started).
+For examples on how to run these roles, please check out the website [Trunk Data Platform](https://www.trunkdataplatform.io/en/learn).
 
 ## Contribute
 
 Please follow the guidelines at [contributing](./docs/contributing.md) and respect the [code of conduct](./CODE_OF_CONDUCT.md).
-
-## Contributors
-
-- [leopaul36](https://github.com/leopaul36)
-- [DanielJohnHarty](https://github.com/DanielJohnHarty)
-- [Nuttymoon](https://github.com/Nuttymoon)
