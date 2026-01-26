@@ -13,25 +13,13 @@ Deploys Jupyterhub server to the `jupyterhub_server` Ansible group.
 - A functioning spark 3 deployment and spark configuration files at `$SPARK_HOME` of the `yarn_nm` hosts
 - The `{{ jupyterhub_user }}` (default `jupyterhub`) has to be added to the list of proxy users in Hadoop's `core-site.xml` through the `core_site` variable:
 
-```yaml
-# This section can be added to tdp_vars/hadoop/hadoop.yml
-# This should be done automatically at tdp init step
----
-auth_to_local:
-  jupyterhub:
-    - RULE:[2:$1/$2@$0](jupyterhub/.*@{{ realm }})s/.*/jupyterhub/
-core_site:
-  hadoop.proxyuser.jupyterhub.groups: '*'
-  hadoop.proxyuser.jupyterhub.hosts: '*'
-```
-
 ## Example
 
 The following hosts file and playbook are given as examples.
 
 ### Host file
 
-```
+```ini
 [spark3_client:children]
 yarn_nm
 
@@ -42,7 +30,7 @@ jupyterhub_server
 master-03
 ```
 
-# Current ISSUES
+## Current ISSUES
 
 Currently, there is no delegation token fetch by the yarnspawner for the HIVE or HBASE service.
 If you need access to the service, the easiest way is to use `kinit` from inside the yarn container through
