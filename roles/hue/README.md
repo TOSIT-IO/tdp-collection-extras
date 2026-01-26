@@ -9,12 +9,13 @@ Currently the roles only supports the deployment of HA, SSL-enabled, Kerberos au
 - Group `hue_server` defined in the Ansible inventory
 - Certificate files `{{ fqdn }}.key` and `{{ fqdn }}.pem` for every node available in `files`
 - Admin access to a KDC with the `realm`, `kadmin_principal` and `kadmin_password` role vars provided
-- The hue tarball must be present in the files directory. The tested version in [hue-release-4.10.0-TDP-0.1.0.tar.gz] for python2.7 and [hue-release-4.10.0-TDP-0.1.0-python36.tar.gz] for python3.6 (https://github.com/TOSIT-IO/hue/releases/tag/hue-release-4.10.0-TDP-0.1.0-python36).
+- The hue tarball must be present in the files directory. The tested version is [hue-release-4.11.0-2.0-cp38-cp38-manylinux2014_x86_64.tar.gz] for python3.8.
 - The hue_user role must already exist on the target database where the hue desktop database will be created
 - The LDAP confifugration (`ldapauth` path of variable file) needs to be adapted to your environment.
 - All hue dependencies must exist on the target hue_server [check here for Hue dependencies](https://docs.gethue.com/administrator/installation/dependencies/)
 
-# Notes:
+## Notes
+
 - The first user logged to the hue web-ui will be the hue admin user.
 - Upon a successful deployment of hue, the default web-ui url is `https://<_hue_server_host_>:<hue_port>`
 - `yarn_rm` and `hdfs_nn` *must* be defined in the ansible hosts file
@@ -26,14 +27,7 @@ The following hosts file and playbook are given as examples.
 
 ### Host file
 
-```
+```ini
 [hue_server]
 edge
 ```
-
-### Available playbooks
-
-## TODO
-
-- Implement automatic failover for Hive and Hue
-
