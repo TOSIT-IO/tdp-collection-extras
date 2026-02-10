@@ -1,0 +1,4 @@
+#!/bin/bash
+
+umask 0022
+{{ jupyterhub_install_dir }}/bin/python {{ jupyterhub_install_dir }}/init_db.py -f {{ jupyterhub_server_conf_dir }}/jupyterhub_config.py
