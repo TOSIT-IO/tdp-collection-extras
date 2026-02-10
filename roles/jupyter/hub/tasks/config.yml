@@ -30,6 +30,14 @@
     group: root
     mode: "0755"
 
+- name: Template jupyterhub_init.sh
+  ansible.builtin.template:
+    src: jupyterhub_init.sh.j2
+    dest: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/bin/jupyterhub_init.sh"
+    owner: root
+    group: root
+    mode: "0755"
+
 - name: Template Jupyterhub configuration
   ansible.builtin.template:
     src: jupyterhub_config.py.j2
@@ -38,3 +46,19 @@
     group: root
     mode: "0644"
   no_log: "{{ tdp_no_log is not defined or tdp_no_log }}"
+
+- name: Template Jupyterhub init_db.py
+  ansible.builtin.template:
+    src: init_db.py.j2
+    dest: "{{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/init_db.py"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Initiate JupyterHub database
+  run_once: true
+  become_user: "{{ jupyterhub_user }}"
+  ansible.builtin.command: |
+    {{ jupyterhub_root_dir }}/{{ jupyterhub_release }}/bin/jupyterhub_init.sh
+  register: jupyterhub_database_init
+  failed_when: jupyterhub_database_init.rc != 0

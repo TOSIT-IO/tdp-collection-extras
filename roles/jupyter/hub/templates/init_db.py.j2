@@ -1,0 +1,34 @@
+import argparse
+
+from jupyterhub.app import JupyterHub
+from traitlets import Unicode
+from traitlets.config import Application
+
+class InitDb(Application):
+    name = "jupyterhub-init"
+    version = "{{ jupyterhub_release.split('-', 1)[1] }}"
+    description = """Generate initial tables."""
+
+    def __init__(self, config_file: str):
+        self.config_file = config_file
+
+    def start(self):
+        hub = JupyterHub(parent=self)
+        hub.config_file = self.config_file
+        hub.load_config_file(hub.config_file)
+        hub.init_db()
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-f", "--file",
+        required=True,
+        help="Path to config file"
+    )
+
+    args = parser.parse_args()
+    init_db = InitDb(config_file=args.file)
+    init_db.start()
+
+if __name__=="__main__":
+    main()
