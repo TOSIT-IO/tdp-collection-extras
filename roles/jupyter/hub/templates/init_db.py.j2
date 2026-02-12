@@ -1,8 +1,8 @@
 import argparse
 
 from jupyterhub.app import JupyterHub
-from traitlets import Unicode
 from traitlets.config import Application
+
 
 class InitDb(Application):
     name = "jupyterhub-init"
@@ -18,17 +18,15 @@ class InitDb(Application):
         hub.load_config_file(hub.config_file)
         hub.init_db()
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-f", "--file",
-        required=True,
-        help="Path to config file"
-    )
+    parser.add_argument("-f", "--file", required=True, help="Path to config file")
 
     args = parser.parse_args()
     init_db = InitDb(config_file=args.file)
     init_db.start()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
