@@ -3,6 +3,7 @@
 
 ---
 - name: Start Jupyterhub Server
+  throttle: 1
   ansible.builtin.service:
     name: jupyterhub
     state: started
