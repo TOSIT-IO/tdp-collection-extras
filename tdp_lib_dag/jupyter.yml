@@ -10,12 +10,14 @@
 
 - name: jupyter_hub_config
   depends_on:
+    - tdp-cluster_config
     - jupyter_hub_install
     - jupyter_kerberos_install
     - jupyter_ssl-tls_install
 
 - name: jupyter_lab_config
   depends_on:
+    - tdp-cluster_config
     - jupyter_lab_install
 
 - name: jupyter_hub_start
