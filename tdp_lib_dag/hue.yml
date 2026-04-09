@@ -12,6 +12,7 @@
 
 - name: hue_server_config
   depends_on:
+    - tdp-cluster_config
     - hue_kerberos_install
     - hue_ssl-tls_install
 
