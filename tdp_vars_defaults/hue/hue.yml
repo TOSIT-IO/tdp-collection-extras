@@ -125,6 +125,7 @@ beeswax:
   hive_metastore_host: "{{ groups['hive_ms'][0] | tosit.tdp.access_fqdn(hostvars) }}"
   hive_metastore_port: "{{ hive_metastore_listener_port }}"
   hive_conf_dir: "{{ hue_conf_dir }}"
+  max_number_of_sessions: "-1"
   thrift_version: "11"
   use_sasl: "true"
   cacerts: "{{ ca_certificate_file }}"
